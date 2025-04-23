@@ -1,0 +1,8 @@
+type: example
+
+quality_weight: 0.4
+diversity_weight: 0.4
+novelty_weight: 0.2
+
+description: "Example benchmark"
+version: "0.0.1" 

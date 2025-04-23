@@ -1,0 +1,52 @@
+# Copyright 2025 Entalpic
+[project]
+name = "lematerial-forgebench"
+version = "0.1.0"
+description = "Benchmark and metrics materials generative models"
+readme = "README.md"
+authors = []
+requires-python = ">=3.11"
+dependencies = [
+    "ase>=3.25.0",
+    "click>=8.1.8",
+    "datasets>=3.5.0",
+    "material-hasher",
+    "pandas>=2.2.3",
+    "pymatgen>=2025.4.20",
+    "rich>=14.0.0",
+]
+
+[project.scripts]
+lematerial-forgebench = "lematerial_forgebench.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "ipython>=8.29.0",
+    "ipdb>=0.13.13",
+    "ruff>=0.7.1",
+    "pytest>=8.3",
+    "shibuya>=2024.10.15",
+    "sphinx-autoapi>=3.3.2",
+    "sphinx-autodoc-typehints>=2.5.0",
+    "sphinx-code-include>=1.4.0",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx-design>=0.6.1",
+    "sphinx-math-dollar>=1.2.1",
+    "sphinxawesome-theme>=5.3.2",
+    "pre-commit>=4.0.1",
+    "beautifulsoup4>=4.12.3",
+    "lxml>=5.3.0",
+    "requests>=2.32.3",
+    "botocore>=1.36.20",
+]
+
+[tool.uv.sources]
+material-hasher = { git = "https://github.com/LeMaterial/lematerial-hasher.git" }
+
+
+[tool.ruff.lint]
+extend-select = ["I"]
