@@ -90,7 +90,6 @@ def test_evaluator_basic():
         metrics=metrics,
         weights=weights,
         aggregation_method="weighted_mean",
-        normalize_values=True,
     )
 
     result = evaluator.evaluate(structures)

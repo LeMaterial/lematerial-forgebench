@@ -101,7 +101,6 @@ def test_benchmark_initialization():
             metrics={"dummy": DummyMetric(1.0)},
             weights={"dummy": 1.0},
             aggregation_method="weighted_mean",
-            normalize_values=False,
         ),
         "eval2": EvaluatorConfig(
             name="Evaluator 2",
@@ -109,7 +108,6 @@ def test_benchmark_initialization():
             metrics={"dummy1": DummyMetric(0.5), "dummy2": DummyMetric(0.8)},
             weights={"dummy1": 0.6, "dummy2": 0.4},
             aggregation_method="weighted_mean",
-            normalize_values=True,
         ),
     }
 
@@ -136,7 +134,6 @@ def test_benchmark_evaluation():
             metrics={"dummy": DummyMetric(0.7)},
             weights={"dummy": 1.0},
             aggregation_method="weighted_mean",
-            normalize_values=False,
         ),
         "eval2": EvaluatorConfig(
             name="Evaluator 2",
@@ -144,7 +141,6 @@ def test_benchmark_evaluation():
             metrics={"dummy": DummyMetric(0.9)},
             weights={"dummy": 1.0},
             aggregation_method="weighted_mean",
-            normalize_values=False,
         ),
     }
 
@@ -186,7 +182,6 @@ def test_benchmark_with_empty_structures():
             metrics={"dummy": DummyMetric(1.0)},
             weights={"dummy": 1.0},
             aggregation_method="weighted_mean",
-            normalize_values=False,
         )
     }
 
