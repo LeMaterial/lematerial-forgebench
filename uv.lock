@@ -833,7 +833,7 @@ requires-dist = [
     { name = "ase", specifier = ">=3.25.0" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "datasets", specifier = ">=3.5.0" },
-    { name = "material-hasher", git = "https://github.com/LeMaterial/lematerial-hasher.git" },
+    { name = "material-hasher", git = "https://github.com/LeMaterial/lematerial-hasher.git?rev=dev_bis" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pymatgen", specifier = ">=2025.4.20" },
     { name = "rich", specifier = ">=14.0.0" },
@@ -1018,7 +1018,7 @@ wheels = [
 [[package]]
 name = "material-hasher"
 version = "0.1.0"
-source = { git = "https://github.com/LeMaterial/lematerial-hasher.git#7f63534e7a22033ea02d694cc7fdf9f4e52450ee" }
+source = { git = "https://github.com/LeMaterial/lematerial-hasher.git?rev=dev_bis#9f48de01f5148b62bd9c7ca338f780e44bb078c0" }
 dependencies = [
     { name = "average-minimum-distance" },
     { name = "datasets" },
