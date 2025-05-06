@@ -45,7 +45,7 @@ dev-dependencies = [
 ]
 
 [tool.uv.sources]
-material-hasher = { git = "https://github.com/LeMaterial/lematerial-hasher.git" }
+material-hasher = { git = "https://github.com/LeMaterial/lematerial-hasher.git", rev = "dev_bis" }
 
 
 [tool.ruff.lint]
