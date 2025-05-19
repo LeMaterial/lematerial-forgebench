@@ -1,18 +1,9 @@
 """Tests for validity benchmark."""
 
-import numpy as np
-import pytest
-from pymatgen.core.structure import Lattice, Structure
+from pymatgen.core.structure import Structure
 from pymatgen.util.testing import PymatgenTest
 
 from lematerial_forgebench.benchmarks.validity_benchmark import ValidityBenchmark
-from lematerial_forgebench.evaluator import EvaluatorConfig
-from lematerial_forgebench.metrics.validity_metrics import (
-    ChargeNeutralityMetric,
-    CoordinationEnvironmentMetric,
-    MinimumInteratomicDistanceMetric,
-    PhysicalPlausibilityMetric,
-)
 
 
 class TestValidityBenchmark:

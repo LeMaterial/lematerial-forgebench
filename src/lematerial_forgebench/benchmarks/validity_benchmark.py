@@ -4,10 +4,7 @@ This module implements a benchmark that evaluates the validity of
 generated material structures using fundamental validity criteria.
 """
 
-from dataclasses import dataclass
 from typing import Any, Dict
-
-from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.benchmarks.base import BaseBenchmark
 from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig

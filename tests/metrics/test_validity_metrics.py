@@ -1,10 +1,9 @@
 """Tests for validity metrics implementation."""
 
-from typing import Any
 
 import numpy as np
 import pytest
-from pymatgen.core.structure import Lattice, Structure
+from pymatgen.core.structure import Structure
 from pymatgen.util.testing import PymatgenTest
 
 from lematerial_forgebench.metrics.validity_metrics import (
@@ -14,7 +13,6 @@ from lematerial_forgebench.metrics.validity_metrics import (
     MinimumInteratomicDistanceMetric,
     PhysicalPlausibilityMetric,
 )
-from lematerial_forgebench.utils.logging import logger
 
 
 @pytest.fixture

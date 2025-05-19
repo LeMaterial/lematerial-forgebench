@@ -6,7 +6,7 @@ structures are physically meaningful and chemically plausible.
 
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 
 import numpy as np
 from pymatgen.analysis.bond_valence import BVAnalyzer
@@ -309,7 +309,6 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
             return 0.5  # Partial validity because we can't fully check
 
         # For each pair of sites, compute the minimum allowed distance
-        min_allowed_distances = []
         valid_pairs = 0
         total_pairs = 0
 

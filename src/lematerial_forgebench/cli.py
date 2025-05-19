@@ -169,19 +169,19 @@ def main(input: str, config_name: str, output: str):
             coord_tolerance = coord_config.get("tolerance", 0.2)
 
             # Create custom metrics with configuration
-            charge_metric = ChargeNeutralityMetric(
+            ChargeNeutralityMetric(
                 tolerance=charge_tolerance, strict=charge_strict
             )
 
-            distance_metric = MinimumInteratomicDistanceMetric(
+            MinimumInteratomicDistanceMetric(
                 scaling_factor=distance_scaling
             )
 
-            coordination_metric = CoordinationEnvironmentMetric(
+            CoordinationEnvironmentMetric(
                 nn_method=coord_nn_method, tolerance=coord_tolerance
             )
 
-            plausibility_metric = PhysicalPlausibilityMetric()
+            PhysicalPlausibilityMetric()
 
             # Create benchmark with custom metrics
             benchmark = ValidityBenchmark(
