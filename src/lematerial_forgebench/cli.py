@@ -11,7 +11,14 @@ import click
 import yaml
 
 from lematerial_forgebench.benchmarks.example import ExampleBenchmark
+from lematerial_forgebench.benchmarks.validity_benchmark import ValidityBenchmark
 from lematerial_forgebench.data.structure import format_structures
+from lematerial_forgebench.metrics.validity_metrics import (
+    ChargeNeutralityMetric,
+    CoordinationEnvironmentMetric,
+    MinimumInteratomicDistanceMetric,
+    PhysicalPlausibilityMetric,
+)
 from lematerial_forgebench.utils.logging import logger
 
 CONFIGS_DIR = Path(__file__).parent.parent / "config"
@@ -33,16 +40,18 @@ def load_benchmark_config(config_name: str) -> dict:
     """
     # Ensure configs directory exists
     if not CONFIGS_DIR.exists():
-        CONFIGS_DIR.mkdir(parents=True)
+        CONFIGS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Add .yaml extension if not present
-    if not config_name.endswith(".yaml"):
-        config_name = f"{config_name}.yaml"
-
-    config_path = CONFIGS_DIR / config_name
+    # If config_name is a full path, use it directly
+    config_path = Path(config_name)
+    if not config_path.is_absolute():
+        # Add .yaml extension if not present
+        if not config_name.endswith(".yaml"):
+            config_name = f"{config_name}.yaml"
+        config_path = CONFIGS_DIR / config_name
 
     # If config doesn't exist but it's the example config, create it
-    if not config_path.exists() and config_name == "example.yaml":
+    if not config_path.exists() and config_path.name == "example.yaml":
         example_config = {
             "type": "example",
             "quality_weight": 0.4,
@@ -52,10 +61,32 @@ def load_benchmark_config(config_name: str) -> dict:
         with open(config_path, "w") as f:
             yaml.dump(example_config, f, default_flow_style=False)
 
+    # If config doesn't exist but it's the validity config, create it
+    if not config_path.exists() and config_path.name == "validity.yaml":
+        validity_config = {
+            "type": "validity",
+            "charge_weight": 0.25,
+            "distance_weight": 0.25,
+            "coordination_weight": 0.25,
+            "plausibility_weight": 0.25,
+            "description": "Fundamental Validity Benchmark for Materials Generation",
+            "version": "0.1.0",
+            "metric_configs": {
+                "charge_neutrality": {"tolerance": 0.1, "strict": False},
+                "interatomic_distance": {"scaling_factor": 0.5},
+                "coordination_environment": {
+                    "nn_method": "crystalnn",
+                    "tolerance": 0.2,
+                },
+            },
+        }
+        with open(config_path, "w") as f:
+            yaml.dump(validity_config, f, default_flow_style=False)
+
     if not config_path.exists():
         raise click.ClickException(
-            f"Config '{config_name}' not found in {CONFIGS_DIR}. "
-            "Available configs: "
+            f"Config '{config_path}' not found. "
+            "Available configs in standard directory: "
             + ", ".join(f.stem for f in CONFIGS_DIR.glob("*.yaml"))
         )
 
@@ -112,11 +143,58 @@ def main(input: str, config_name: str, output: str):
 
         # Initialization
         benchmark_type = config.get("type", "example")
+
         if benchmark_type == "example":
             benchmark = ExampleBenchmark(
                 quality_weight=config.get("quality_weight", 0.4),
                 diversity_weight=config.get("diversity_weight", 0.4),
                 novelty_weight=config.get("novelty_weight", 0.2),
+            )
+        elif benchmark_type == "validity":
+            # Get metric-specific configs if available
+            metric_configs = config.get("metric_configs", {})
+
+            # Extract charge neutrality config
+            charge_config = metric_configs.get("charge_neutrality", {})
+            charge_tolerance = charge_config.get("tolerance", 0.1)
+            charge_strict = charge_config.get("strict", False)
+
+            # Extract interatomic distance config
+            distance_config = metric_configs.get("interatomic_distance", {})
+            distance_scaling = distance_config.get("scaling_factor", 0.5)
+
+            # Extract coordination environment config
+            coord_config = metric_configs.get("coordination_environment", {})
+            coord_nn_method = coord_config.get("nn_method", "crystalnn")
+            coord_tolerance = coord_config.get("tolerance", 0.2)
+
+            # Create custom metrics with configuration
+            charge_metric = ChargeNeutralityMetric(
+                tolerance=charge_tolerance, strict=charge_strict
+            )
+
+            distance_metric = MinimumInteratomicDistanceMetric(
+                scaling_factor=distance_scaling
+            )
+
+            coordination_metric = CoordinationEnvironmentMetric(
+                nn_method=coord_nn_method, tolerance=coord_tolerance
+            )
+
+            plausibility_metric = PhysicalPlausibilityMetric()
+
+            # Create benchmark with custom metrics
+            benchmark = ValidityBenchmark(
+                charge_weight=config.get("charge_weight", 0.25),
+                distance_weight=config.get("distance_weight", 0.25),
+                coordination_weight=config.get("coordination_weight", 0.25),
+                plausibility_weight=config.get("plausibility_weight", 0.25),
+                name=config.get("name", "ValidityBenchmark"),
+                description=config.get("description"),
+                metadata={
+                    "version": config.get("version", "0.1.0"),
+                    "metric_configs": metric_configs,
+                },
             )
         else:
             raise ValueError(f"Unknown benchmark type: {benchmark_type}")

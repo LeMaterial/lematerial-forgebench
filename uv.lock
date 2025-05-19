@@ -1,5 +1,4 @@
 version = 1
-revision = 1
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.12' and sys_platform == 'win32'",
@@ -802,8 +801,10 @@ dependencies = [
     { name = "click" },
     { name = "datasets" },
     { name = "material-hasher" },
+    { name = "numpy" },
     { name = "pandas" },
     { name = "pymatgen" },
+    { name = "pytest" },
     { name = "rich" },
 ]
 
@@ -834,8 +835,10 @@ requires-dist = [
     { name = "click", specifier = ">=8.1.8" },
     { name = "datasets", specifier = ">=3.5.0" },
     { name = "material-hasher", git = "https://github.com/LeMaterial/lematerial-hasher.git" },
+    { name = "numpy", specifier = ">=2.2.5" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pymatgen", specifier = ">=2025.4.20" },
+    { name = "pytest", specifier = ">=8.3.5" },
     { name = "rich", specifier = ">=14.0.0" },
 ]
 

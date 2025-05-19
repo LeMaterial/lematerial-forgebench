@@ -11,8 +11,10 @@ dependencies = [
     "click>=8.1.8",
     "datasets>=3.5.0",
     "material-hasher",
+    "numpy>=2.2.5",
     "pandas>=2.2.3",
     "pymatgen>=2025.4.20",
+    "pytest>=8.3.5",
     "rich>=14.0.0",
 ]
 
