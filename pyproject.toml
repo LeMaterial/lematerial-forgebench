@@ -10,6 +10,7 @@ dependencies = [
     "ase>=3.25.0",
     "click>=8.1.8",
     "datasets>=3.5.0",
+    "mace-torch>=0.3.13",
     "material-hasher",
     "numpy>=2.2.5",
     "pandas>=2.2.3",
