@@ -5,6 +5,7 @@ from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from tqdm import tqdm
 from pymatgen.analysis.bond_valence import BVAnalyzer
 import numpy as np
+from func_timeout import func_timeout, FunctionTimedOut
 
 def get_inequivalent_site_info(structure):
     """Gets the symmetrically inequivalent sites as found by the
@@ -75,7 +76,7 @@ def map_space_group_to_crystal_system(
         raise ValueError 
     
 
-def process_item(item):
+def process_item_action(item):
 
     """
     as its currently written, this function extracts the density of a crystal 
@@ -105,6 +106,15 @@ def process_item(item):
 
     return [LeMatID, sites, species, valences_calculated]
 
+def process_item_wrapper(item):
+    LeMatID = item['immutable_id']
+    try:
+        result = func_timeout(15, process_item_action, [item])
+        return result
+    except FunctionTimedOut:
+        print("Function timed out and was skipped")
+        return [LeMatID, 1, 1, "TimedOut>15Sec"]
+
 def process_items_parallel(dataset, chunk_size=1000, num_workers=None):
     if num_workers is None:
         num_workers = cpu_count()
@@ -119,7 +129,7 @@ def process_items_parallel(dataset, chunk_size=1000, num_workers=None):
     with Pool(processes=num_workers) as pool:
         # Using imap instead of map for memory efficiency
         with tqdm(total=total_items, desc="Processing structures") as pbar:
-            for result in pool.imap(process_item, chunks(), chunksize=100):
+            for result in pool.imap(process_item_wrapper, chunks(), chunksize=100):
                 pbar.update(1)
                 yield result
 
@@ -128,12 +138,13 @@ if __name__ == '__main__':
     name = "compatible_pbe"
     split = "train"
     dataset = load_dataset(dataset_name, name=name, split=split, streaming=False)
-    for i in np.arange(0,6000000,1000000):
+    for i in np.arange(1700000,6000000,100000):
         if i == 5000000:
+            break
             dataset_temp = dataset.select(range(i, i+335299))
             print(dataset_temp[0])
         else:
-            dataset_temp = dataset.select(range(i, i+1000000))
+            dataset_temp = dataset.select(range(i, i+100000))
             print(dataset_temp[0])
         # Process and handle results as they come
         print(f"Processing {len(dataset_temp)} structures using {cpu_count()} workers...")
