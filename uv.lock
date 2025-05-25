@@ -874,13 +874,17 @@ dependencies = [
     { name = "ase" },
     { name = "click" },
     { name = "datasets" },
+    { name = "fsspec" },
     { name = "mace-torch" },
     { name = "material-hasher" },
     { name = "numpy" },
     { name = "pandas" },
+    { name = "pyarrow" },
     { name = "pymatgen" },
     { name = "pytest" },
+    { name = "requests" },
     { name = "rich" },
+    { name = "tqdm" },
 ]
 
 [package.dev-dependencies]
@@ -909,13 +913,17 @@ requires-dist = [
     { name = "ase", specifier = ">=3.25.0" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "datasets", specifier = ">=3.5.0" },
+    { name = "fsspec", specifier = ">=2024.12.0" },
     { name = "mace-torch", specifier = ">=0.3.13" },
-    { name = "material-hasher", git = "https://github.com/LeMaterial/lematerial-hasher.git" },
+    { name = "material-hasher", git = "https://github.com/lematerial/material-hasher.git" },
     { name = "numpy", specifier = ">=2.2.5" },
     { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pyarrow", specifier = ">=19.0.1" },
     { name = "pymatgen", specifier = ">=2025.4.20" },
     { name = "pytest", specifier = ">=8.3.5" },
+    { name = "requests", specifier = ">=2.32.3" },
     { name = "rich", specifier = ">=14.0.0" },
+    { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -1161,7 +1169,7 @@ wheels = [
 [[package]]
 name = "material-hasher"
 version = "0.1.0"
-source = { git = "https://github.com/LeMaterial/lematerial-hasher.git#7f63534e7a22033ea02d694cc7fdf9f4e52450ee" }
+source = { git = "https://github.com/lematerial/material-hasher.git#ac03b5a62083e49c07b0c1edee09ae15395d3684" }
 dependencies = [
     { name = "average-minimum-distance" },
     { name = "datasets" },
