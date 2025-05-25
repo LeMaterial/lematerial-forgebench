@@ -122,15 +122,14 @@ class ChargeNeutralityMetric(BaseMetric):
         """
         try:
             # Try to determine oxidation states - good first pass, if this can be done within pymatgen, it will likely be a structure that is charge balanced 
-            print(structure)
             structure_with_oxi = bv_analyzer.get_oxi_state_decorated_structure(
                 structure
             )
-            print(structure_with_oxi)
             charge_sum = sum(
                 site.specie.oxi_state for site in structure_with_oxi.sites
             )
-            print(abs(charge_sum))
+            print("Valid structure - charge balanced based on Pymatgen's get_oxi_state_decorated_structure function, which almost always returns " \
+            "reasonable oxidation states")
             return abs(charge_sum)
         except Exception as e:
             # get_oxi_state_decorated_structure is going to fail a lot, likely more often than not. It never returns zero oxidation states and fails for other 
@@ -150,6 +149,7 @@ class ChargeNeutralityMetric(BaseMetric):
                         pass
                     else:
                         raise ValueError
+                print("Valid structure - Metallic structure with a bond valence equal to zero for all atoms")
                 return 0.0
             except ValueError:
                 # this means the bv_sum calculation has predicted this structure is NOT metallic, meaning get_oxi_state_decorated_structure failed to calculate 
@@ -165,9 +165,8 @@ class ChargeNeutralityMetric(BaseMetric):
                 oxi_states_override = {}
                 for e in comp.elements: 
                     oxi_states_override[str(e)] = oxi_state_mapping[str(e)]
-                print(oxi_states_override)
                 output = compositional_oxi_state_guesses(comp, all_oxi_states=False, max_sites=-1, target_charge=0, oxi_states_override=oxi_states_override)
-                print(output)
+                print("Most valid oxidation state and score based on composition", output[1][0], output[2][0])
                 try:     
                     score = output[2][0]
                     if score > 0.01:

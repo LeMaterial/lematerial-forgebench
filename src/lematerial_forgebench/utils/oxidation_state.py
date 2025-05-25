@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from collections import defaultdict
 from itertools import combinations_with_replacement, product
-from pymatgen.core.periodic_table import Species
+from pymatgen.core.periodic_table import Species, Element
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 import numpy as np
 
