@@ -1,8 +1,10 @@
 import json
+from pathlib import Path
 from collections import defaultdict
 from itertools import combinations_with_replacement, product
 from pymatgen.core.periodic_table import Species
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+import numpy as np
 
 
 def compositional_oxi_state_guesses(
@@ -59,8 +61,11 @@ def compositional_oxi_state_guesses(
 
     # Load prior probabilities of oxidation states, used to rank solutions
 
-    with open("oxi_dict_probs.json", "r") as f:
+    here = Path(__file__).resolve().parent
+    three_up = here.parents[2]
+    with open(three_up / 'data' / 'oxi_dict_probs.json', "r") as f:
         loaded_dict = json.load(f)
+
     type(comp).oxi_prob = loaded_dict
     oxi_states_override = oxi_states_override or {}
     # Assert Composition only has integer amounts
@@ -112,7 +117,6 @@ def compositional_oxi_state_guesses(
     all_sols = []  # will contain all solutions
     all_oxid_combo = []  # will contain the best combination of oxidation states for each site
     all_scores = []  # will contain a score for each solution
-    print(el_sum_scores)
     for x in product(*el_sums):
         # Each x is a trial of one possible oxidation sum for each element
         if sum(x) == target_charge:  # charge balance condition
@@ -133,7 +137,6 @@ def compositional_oxi_state_guesses(
             all_oxid_combo.append(
                 {e: el_best_oxid_combo[idx][v] for idx, (e, v) in enumerate(zip(elements, x, strict=True))}
             )
-    print(all_scores)
     # Sort the solutions from highest to lowest score
     if all_scores:
         all_sols, all_oxid_combo = zip(
@@ -215,7 +218,6 @@ def build_sorted_oxi_dict(oxi_dict_sorted):
 def build_oxi_dict_probs(oxi_dict_sorted, oxi_dict_counts):
     oxi_dict_probs = oxi_dict_sorted
     for key in oxi_dict_probs.keys():
-        # print(key)
         try: 
             int(key[1])
             el = key[0]
@@ -239,8 +241,8 @@ def oxi_state_map(oxidation_state):
             ox = sign_to_int(oxidation_state[1])
             el = oxidation_state[0]
             return ox, el
-        elif key[2] in ["+", "-"]:
-            ox = sign_to_int(key[2])
+        elif oxidation_state[2] in ["+", "-"]:
+            ox = sign_to_int(oxidation_state[2])
             el = oxidation_state[0:2]
             return ox, el
         else:
@@ -251,9 +253,7 @@ def oxi_state_map(oxidation_state):
 def build_oxi_state_map(oxi_dict_sorted): 
     oxi_state_mapping = {}
     for key in oxi_dict_sorted.keys():
-        print(key)
         ox, el = oxi_state_map(key)
-        print(ox)
         if el in oxi_state_mapping:
             oxi_state_mapping[el].append(ox)
         else:

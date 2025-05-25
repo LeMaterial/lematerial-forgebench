@@ -109,7 +109,7 @@ def process_item_action(item):
 def process_item_wrapper(item):
     LeMatID = item['immutable_id']
     try:
-        result = func_timeout(15, process_item_action, [item])
+        result = func_timeout(15, process_item_action, [item]) # TODO This should not be hardcoded! 
         return result
     except FunctionTimedOut:
         print("Function timed out and was skipped")
@@ -138,8 +138,8 @@ if __name__ == '__main__':
     name = "compatible_pbe"
     split = "train"
     dataset = load_dataset(dataset_name, name=name, split=split, streaming=False)
-    for i in np.arange(1700000,6000000,100000):
-        if i == 5000000:
+    for i in np.arange(2400000,6000000,100000): # had to skip 1800000-1900000
+        if i == 5300000:
             break
             dataset_temp = dataset.select(range(i, i+335299))
             print(dataset_temp[0])
