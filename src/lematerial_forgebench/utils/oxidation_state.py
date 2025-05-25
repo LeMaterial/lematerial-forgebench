@@ -2,6 +2,8 @@ import json
 from collections import defaultdict
 from itertools import combinations_with_replacement, product
 from pymatgen.core.periodic_table import Species
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+
 
 def compositional_oxi_state_guesses(
     comp, 
@@ -146,3 +148,117 @@ def compositional_oxi_state_guesses(
             strict=True,
         )
     return tuple(all_sols), tuple(all_oxid_combo), tuple(sorted(all_scores, reverse = True))
+
+def get_inequivalent_site_info(structure):
+    """Gets the symmetrically inequivalent sites as found by the
+    SpacegroupAnalyzer class from Pymatgen.
+
+    Parameters
+    ----------
+    structure : pymatgen.core.structure.Structure
+        The Pymatgen structure of interest.
+
+    Returns
+    -------
+    dict
+        A dictionary containing three lists, one of the inequivalent sites, one
+        for the atom types they correspond to and the last for the multiplicity.
+    """
+
+    # Get the symmetrically inequivalent indexes
+    inequivalent_sites = (
+        SpacegroupAnalyzer(structure)
+        .get_symmetrized_structure()
+        .equivalent_indices
+    )
+
+    # Equivalent indexes must all share the same atom type
+    multiplicities = [len(xx) for xx in inequivalent_sites]
+    inequivalent_sites = [xx[0] for xx in inequivalent_sites]
+    species = [str(structure[xx].specie) for xx in inequivalent_sites]
+
+    return {
+        "sites": inequivalent_sites,
+        "species": species,
+        "multiplicities": multiplicities,}
+
+def build_oxi_dict(df):
+    oxi_dict = {}
+    for i in range(0, len(df)):
+        row = df.iloc[i]
+        if row.ValencesCalculated:
+            for key, value in np.asarray([row.Sites['species'], row.Sites['multiplicities']]).T:
+                if key in oxi_dict:
+                    oxi_dict[key] += int(value)
+                else:
+                    oxi_dict[key] = int(value)
+    return oxi_dict
+
+def build_sorted_oxi_dict(oxi_dict_sorted):
+    oxi_dict_counts = {}
+    for key in oxi_dict_sorted.keys():
+        try: 
+            int(key[1])
+            el = key[0]
+        except ValueError:
+            if key[1] in ["+", "-"]:
+                el = key[0]            
+            else:
+                el = key[0:2]
+
+        if el in oxi_dict_counts:
+            oxi_dict_counts[el] += int(oxi_dict_sorted[key])
+        else:
+            oxi_dict_counts[el] = int(oxi_dict_sorted[key])
+    return oxi_dict_counts
+
+def build_oxi_dict_probs(oxi_dict_sorted, oxi_dict_counts):
+    oxi_dict_probs = oxi_dict_sorted
+    for key in oxi_dict_probs.keys():
+        # print(key)
+        try: 
+            int(key[1])
+            el = key[0]
+        except ValueError:
+            if key[1] in ["+", "-"]:
+                el = key[0]            
+            else:
+                el = key[0:2]
+        denom = oxi_dict_counts[el]
+        oxi_dict_probs[key] = oxi_dict_probs[key]/denom
+    return oxi_dict_probs
+
+def oxi_state_map(oxidation_state):
+    try: 
+        int(oxidation_state[1])
+        el = oxidation_state[0]
+        ox = int(oxidation_state[1:3][::-1])
+        return ox, el
+    except ValueError:
+        if oxidation_state[1] in ["+", "-"]:
+            ox = sign_to_int(oxidation_state[1])
+            el = oxidation_state[0]
+            return ox, el
+        elif key[2] in ["+", "-"]:
+            ox = sign_to_int(key[2])
+            el = oxidation_state[0:2]
+            return ox, el
+        else:
+            ox = int(oxidation_state[2:4][::-1])
+            el = oxidation_state[0:2]
+            return ox, el
+
+def build_oxi_state_map(oxi_dict_sorted): 
+    oxi_state_mapping = {}
+    for key in oxi_dict_sorted.keys():
+        print(key)
+        ox, el = oxi_state_map(key)
+        print(ox)
+        if el in oxi_state_mapping:
+            oxi_state_mapping[el].append(ox)
+        else:
+            oxi_state_mapping[el] = [ox] 
+    return oxi_state_mapping
+
+def sign_to_int(char):
+    return {'+': 1, '-': -1}.get(char, 0)  # default to 0 if unexpected
