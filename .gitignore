@@ -6,6 +6,7 @@ multirun/
 __pycache__/
 *.py[cod]
 *$py.class
+.DS_Store
 
 # C extensions
 *.so
@@ -167,4 +168,5 @@ cython_debug/
 
 # PyTorch Lightning
 lightning_logs/
+src/lematerial_forgebench/.DS_Store
 
