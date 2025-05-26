@@ -138,7 +138,7 @@ if __name__ == '__main__':
     name = "compatible_pbe"
     split = "train"
     dataset = load_dataset(dataset_name, name=name, split=split, streaming=False)
-    for i in np.arange(0,6000000,100000): # TODO had to skip 1800000-1900000 and 2300000-2400000 due to unknown errors, interpreter seems to die for no reason and provide no error message
+    for i in np.arange(0,5400000,100000): # TODO had to skip 1800000-1900000 and 2300000-2400000 due to unknown errors, interpreter seems to die for no reason and provide no error message
         if i == 5300000:
             dataset_temp = dataset.select(range(i, i+35299))
             print(dataset_temp[0])
