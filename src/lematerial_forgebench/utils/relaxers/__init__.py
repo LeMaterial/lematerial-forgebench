@@ -6,7 +6,6 @@ when the package is used.
 
 # Import the registry functions
 # Import all implementations to trigger registration
-from . import relaxers
 from .registry import BaseRelaxer, RelaxationResult, get_relaxer, register_relaxer
 
 __all__ = [
