@@ -98,7 +98,8 @@ class DistributionMetric(BaseMetric):
         Parameters
         ----------
         structure : Structure
-            A pymatgen Structure object to evaluate.
+            A pymatgen Structure object to evaluate. TODO list of structures? may already 
+            be what this is primed to deal with? 
 
 
         Returns
@@ -107,24 +108,11 @@ class DistributionMetric(BaseMetric):
             The absolute deviation from charge neutrality.
             0.0 means perfectly neutral, larger values indicate charge imbalance.
         """
-        try:
-            # Try to determine oxidation states
-            structure_with_oxi = bv_analyzer.get_oxi_state_decorated_structure(
-                structure
-            )
-            charge_sum = sum(
-                site.species.oxi_state for site in structure_with_oxi.sites
-            )
-            return abs(charge_sum)
-        except Exception as e:
-            if strict:
-                # In strict mode, failing to determine oxidation states is a failure
-                logger.warning(f"Could not determine oxidation states: {str(e)}")
-                return float("inf")
-            else:
-                # In non-strict mode, we pass the structure if we can't determine oxidation states
-                logger.debug(f"Could not determine oxidation states: {str(e)}")
-                return 0.0
+        dist_metrics = {}
+        
+
+        
+        return dist_metrics 
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
