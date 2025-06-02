@@ -35,8 +35,9 @@ class BandgapPropertyTargetConfig(MetricConfig):
     """
 
     target_theory: str = "PBE"
-    target_bandgap: float = 1,
-    model: str = "MEGNet-MP-2019.4.1-BandGap-mfi",
+    target_bandgap: float = 1
+    model: str = "MEGNet-MP-2019.4.1-BandGap-mfi"
+    tolerance: float = 0.1
 
 class BandgapPropertyTargetMetric(BaseMetric):
     """
@@ -48,6 +49,7 @@ class BandgapPropertyTargetMetric(BaseMetric):
         target_theory: str = "PBE",
         target_bandgap: float = 1,
         model: str = "MEGNet-MP-2019.4.1-BandGap-mfi",
+        tolerance: float = 0.1, 
         lower_is_better: bool = True,
         name: str | None = None,
         description: str | None = None,
@@ -57,12 +59,14 @@ class BandgapPropertyTargetMetric(BaseMetric):
             name=name or "Bandgap",
             description=description
             or "Computes bandgap with selected model and compares to target bandgap " + model,
+            tolerance = 0.1, 
             lower_is_better = lower_is_better,
             n_jobs=n_jobs
         )
         self.config = BandgapPropertyTargetConfig(
             name=self.config.name,
             description=self.config.description,
+            tolerance=self.config.tolerance, 
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
             target_theory=target_theory,
@@ -72,12 +76,15 @@ class BandgapPropertyTargetMetric(BaseMetric):
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
         return {
-        "target_theory" : self.config.target_theory
+        "target_theory" : self.config.target_theory,
+        "target_bandgap": self.config.target_bandgap,
+        "model": self.config.model,
+        "tolerance": self.config.tolerance
         }
 
     @staticmethod
     def compute_structure(
-        structure: Structure, target_theory: str, target_bandgap: float,
+        structure: Structure, target_theory: str, target_bandgap: float, model: str, 
     ) -> float:
         """
         # density metric - sliding window??
@@ -86,7 +93,8 @@ class BandgapPropertyTargetMetric(BaseMetric):
         ----------
 
         """
-        band_gap_model = load_model("MEGNet-MP-2019.4.1-BandGap-mfi")
+        print(model)
+        band_gap_model = load_model(model)
         if target_theory == "PBE":
             graph_attrs = torch.tensor([0])
         elif target_theory == "HSE":
@@ -95,7 +103,7 @@ class BandgapPropertyTargetMetric(BaseMetric):
                 structure=structure, state_attr=graph_attrs
             )
        
-        return bandgap - target_bandgap # TODO should this be abs value? 
+        return np.abs(bandgap - target_bandgap) 
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -112,6 +120,7 @@ class BandgapPropertyTargetMetric(BaseMetric):
         """
         # Filter out NaN values
         valid_values = [v for v in values if not np.isnan(v)]
+        print(valid_values)
 
         if not valid_values:
             raise ValueError 
