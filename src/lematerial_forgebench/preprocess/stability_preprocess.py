@@ -4,7 +4,7 @@ This module implements metrics for evaluating the relaxation of
 material structures using various relaxation models and calculating
 energy above hull.
 """
-
+from datasets import load_dataset
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -33,13 +33,12 @@ from lematerial_forgebench.preprocess.reference_energies import (
 
 class OrbFormationEnergy():
     def __init__(self, temperature: float = 1.0):
-        print('init')
         self.temperature = temperature
-        self.orbff = pretrained.orb_v2(device="cpu", compile=False)
+        self.orbff = pretrained.orb_v3_conservative_inf_omat(compile=False, device="cpu",
+                                                             precision="float32-high",)
         self.calc = ORBCalculator(self.orbff, device="cpu")
 
     def __call__(self, structure) -> float:
-        print(structure)
         crystal_ase = AseAtomsAdaptor().get_atoms(structure)
         crystal_ase.calc = self.calc
 
@@ -50,7 +49,7 @@ class OrbFormationEnergy():
         )
         if formation_energy is None:
             return 0.0
-        print("formation energy ", str(formation_energy))
+        # print("formation energy ", str(formation_energy))
         return formation_energy / self.temperature
 
     def move_to_shared_memory(self):
@@ -58,6 +57,39 @@ class OrbFormationEnergy():
         for param in self.orbff.parameters():
             param.share_memory_()
 
+class EnergyAboveHull():
+    def __init__(self, temperature: float = 1, functional: str = "pbe"):
+        super().__init__()
+        self.temperature = temperature
+        self.orbff = pretrained.orb_v3_conservative_inf_omat(compile=False, device="cpu",
+                                                             precision="float32-high",)
+        self.calc = ORBCalculator(self.orbff, device="cpu")
+
+        self.ds = load_dataset("LeMaterial/LeMat-Bulk", f"compatible_{functional}")
+
+    def __call__(self, structure) -> float:
+
+
+
+        crystal_ase = AseAtomsAdaptor().get_atoms(structure)
+        crystal_ase.calc = self.calc
+
+        total_energy = crystal_ase.get_potential_energy()
+        energy_above_hull = get_energy_above_hull(total_energy, structure.composition, self.ds)
+        print(energy_above_hull)
+        if energy_above_hull is None:
+            return None
+        if energy_above_hull < 0:
+            return 0.0
+
+        print("energy_above_hull :", energy_above_hull)
+
+        return energy_above_hull
+
+    def move_to_shared_memory(self):
+        """Move ORB model parameters to shared memory."""
+        for param in self.orbff.parameters():
+            param.share_memory_()
 
 
 @dataclass
@@ -107,10 +139,6 @@ class StabilityPreprocessor(BasePreprocessor):
         self,
         relaxer_type: str = "orb",
         relaxer_config: Dict[str, Any] = {"fmax": 0.02, "steps": 500},
-        relax_structure: bool = False, 
-        mp_entries_file: Optional[
-            str
-        ] = "src/lematerial_forgebench/utils/relaxers/2023-02-07-ppd-mp.pkl.gz",
         name: str | None = None,
         description: str | None = None,
         n_jobs: int = 1,
@@ -126,63 +154,21 @@ class StabilityPreprocessor(BasePreprocessor):
             n_jobs=self.config.n_jobs,
             relaxer_type=relaxer_type,
             relaxer_config=relaxer_config,
-            relax_structure=relax_structure,
-            mp_entries_file=mp_entries_file,
         )
 
         # Initialize the relaxer
         self.relaxer = get_relaxer(relaxer_type, **relaxer_config)
 
-        # Load MP entries if file provided
-        self.mp_entries = None
-        # check if path exists
-        if mp_entries_file and Path(mp_entries_file).exists():
-            self.load_mp_entries(mp_entries_file)
-
-    def load_mp_entries(self, mp_entries_file: str) -> None:
-        """Load Materials Project entries for e_above_hull calculation.
-
-        Parameters
-        ----------
-        mp_entries_file : str
-            Path to the MP entries file.
-        """
-        self.mp_entries = get_patched_phase_diagram_mp(Path(mp_entries_file))
-        # import pandas as pd
-
-        # try:
-        #     df = pd.read_json(mp_entries_file)
-        #     df = df[df["entry"].apply(lambda x: "GGA" in x["entry_id"])]
-
-        #     mp_computed_entries = [
-        #         ComputedEntry.from_dict(x)
-        #         for x in df.entry
-        #         if "GGA" in x["parameters"]["run_type"]
-        #     ]
-        #     self.mp_entries = [
-        #         entry
-        #         for entry in mp_computed_entries
-        #         if not np.any(["R2SCAN" in a.name for a in entry.energy_adjustments])
-        #     ]
-        #     logger.info(f"Loaded {len(self.mp_entries)} MP entries")
-        # except Exception as e:
-        #     logger.error(f"Failed to load MP entries: {str(e)}")
-        #     self.mp_entries = None
-
     def _get_process_attributes(self) -> dict[str, Any]:
         """Get the attributes for the process_structure method."""
         return {
             "relaxer": self.relaxer,
-            "relax_structure": self.relax_structure, 
-            "mp_entries": self.mp_entries,
         }
 
     @staticmethod
     def process_structure(
         structure: Structure,
-        relax_structure: False, 
         relaxer: BaseRelaxer,
-        mp_entries: Optional[PatchedPhaseDiagram] = None,
     ) -> Structure:
         """Process a single structure by relaxing it and computing e_above_hull.
 
@@ -205,32 +191,43 @@ class StabilityPreprocessor(BasePreprocessor):
         Exception
             If relaxation fails or other processing errors occur.
         """
-        # Relax structure (conditional)
-        if relax_structure: 
-            relaxation_result = relaxer.relax(structure, relax=False)
-            if not relaxation_result.success:
-                raise RuntimeError(f"Relaxation failed: {relaxation_result.message}")
+        # Relax structure 
+        relaxation_result = relaxer.relax(structure, relax=True)
+        if not relaxation_result.success:
+            raise RuntimeError(f"Relaxation failed: {relaxation_result.message}")
 
-            processed_structure = relaxation_result.structure
-        else: 
-            processed_structure = structure 
+        processed_structure = relaxation_result.structure
+        processed_structure.raw_structure = None
 
-        # Calculate e_above_hull if MP entries are available
-        if mp_entries is not None:
-            try:
-                cse = generate_CSE(processed_structure, relaxation_result.energy)
-                e_above_hull = mp_entries.get_e_above_hull(cse, allow_negative=True)
-                processed_structure.properties["e_above_hull"] = e_above_hull
-                logger.debug(
-                    f"Computed e_above_hull: {e_above_hull:.3f} eV/atom for {processed_structure.formula}"
-                )
-            except Exception as e:
-                logger.warning(
-                    f"Failed to compute e_above_hull for {processed_structure.formula}: {str(e)}"
-                )
-                # Still return the relaxed structure even if e_above_hull calculation fails
+        e_above_hull_calc = EnergyAboveHull()
+        form_energy_calc = OrbFormationEnergy()
+        # Calculate e_above_hull using LeMatBulk
+        try:
+            e_above_hull = e_above_hull_calc(structure)
+            structure.properties["e_above_hull"] = e_above_hull
+            structure.properties["formation_energy"] = form_energy_calc(structure)
+            logger.debug(
+                f"Computed e_above_hull: {e_above_hull:.3f} eV/atom for unrelaxed {structure.formula}"
+            )
+        except Exception as e:
+            logger.warning(
+                f"Failed to compute e_above_hull for unrelaxed {structure.formula}: {str(e)}"
+            )
+            # Still return the relaxed structure even if e_above_hull calculation fails
 
+        try: 
+            e_above_hull_relaxed = e_above_hull_calc(processed_structure)
+            processed_structure.properties["e_above_hull"] = e_above_hull_relaxed
+            processed_structure.properties["formation_energy"] = form_energy_calc(processed_structure)
+            logger.debug(
+                f"Computed e_above_hull: {e_above_hull:.3f} eV/atom for relaxed {processed_structure.formula}"
+            )
+        except Exception as e:
+                    logger.warning(
+                        f"Failed to compute e_above_hull for relaxed {processed_structure.formula}: {str(e)}"
+                    )
         # Store additional processing metadata
         processed_structure.properties["relaxed_energy"] = relaxation_result.energy
+        processed_structure.properties["raw_structure"] = structure
 
         return processed_structure

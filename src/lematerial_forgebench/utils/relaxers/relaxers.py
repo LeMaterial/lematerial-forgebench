@@ -137,6 +137,7 @@ class ASERelaxerBase(BaseVASPRelaxer):
         RelaxationResult
             Result of the relaxation.
         """
+
         try:
             if structure is None or not structure.is_valid():
                 print("Skipping structure: Invalid crystal")
@@ -151,6 +152,7 @@ class ASERelaxerBase(BaseVASPRelaxer):
             atoms.calc = self.calc
 
             # Relax structure
+
             if relax:
                 dyn = FIRE(FrechetCellFilter(atoms), logfile=None)
                 dyn.run(fmax=self.fmax, steps=self.steps)
@@ -161,9 +163,9 @@ class ASERelaxerBase(BaseVASPRelaxer):
             final_structure = AseAtomsAdaptor.get_structure(atoms)
 
             # Clean up
-            gc.collect()
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
+            # gc.collect()
+            # if torch.cuda.is_available():
+            #     torch.cuda.empty_cache()
 
             return RelaxationResult(
                 success=True,
@@ -185,14 +187,17 @@ class OrbRelaxerImpl(ASERelaxerBase):
     def _setup_calculator(self):
         """Set up the Orb calculator."""
         device = "cpu" if self.cpu else "cuda"
+        print(device)
         if self.params.get("direct", False):
             orbff = pretrained.orb_v3_direct_inf_mpa(
                 device=device,
+                compile=False,
                 precision="float32-high",  # or "float32-highest" / "float64
             )
         else:
             orbff = pretrained.orb_v3_conservative_inf_mpa(
                 device=device,
+                compile=False,
                 precision="float32-high",  # or "float32-highest" / "float64
             )
         return ORBCalculator(orbff, device=device)
