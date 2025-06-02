@@ -23,6 +23,41 @@ from lematerial_forgebench.utils.relaxers import (
     get_relaxer,
     relaxers,
 )
+from pymatgen.io.ase import AseAtomsAdaptor
+from orb_models.forcefield import pretrained
+from orb_models.forcefield.calculator import ORBCalculator
+from lematerial_forgebench.preprocess.reference_energies import (
+    get_energy_above_hull,
+    get_formation_energy_from_composition_energy,
+)
+
+class OrbFormationEnergy():
+    def __init__(self, temperature: float = 1.0):
+        print('init')
+        self.temperature = temperature
+        self.orbff = pretrained.orb_v2(device="cpu", compile=False)
+        self.calc = ORBCalculator(self.orbff, device="cpu")
+
+    def __call__(self, structure) -> float:
+        print(structure)
+        crystal_ase = AseAtomsAdaptor().get_atoms(structure)
+        crystal_ase.calc = self.calc
+
+        total_energy = crystal_ase.get_potential_energy()
+
+        formation_energy = get_formation_energy_from_composition_energy(
+            total_energy, structure.composition
+        )
+        if formation_energy is None:
+            return 0.0
+        print("formation energy ", str(formation_energy))
+        return formation_energy / self.temperature
+
+    def move_to_shared_memory(self):
+        """Move ORB model parameters to shared memory."""
+        for param in self.orbff.parameters():
+            param.share_memory_()
+
 
 
 @dataclass
@@ -72,6 +107,7 @@ class StabilityPreprocessor(BasePreprocessor):
         self,
         relaxer_type: str = "orb",
         relaxer_config: Dict[str, Any] = {"fmax": 0.02, "steps": 500},
+        relax_structure: bool = False, 
         mp_entries_file: Optional[
             str
         ] = "src/lematerial_forgebench/utils/relaxers/2023-02-07-ppd-mp.pkl.gz",
@@ -90,6 +126,7 @@ class StabilityPreprocessor(BasePreprocessor):
             n_jobs=self.config.n_jobs,
             relaxer_type=relaxer_type,
             relaxer_config=relaxer_config,
+            relax_structure=relax_structure,
             mp_entries_file=mp_entries_file,
         )
 
@@ -136,12 +173,14 @@ class StabilityPreprocessor(BasePreprocessor):
         """Get the attributes for the process_structure method."""
         return {
             "relaxer": self.relaxer,
+            "relax_structure": self.relax_structure, 
             "mp_entries": self.mp_entries,
         }
 
     @staticmethod
     def process_structure(
         structure: Structure,
+        relax_structure: False, 
         relaxer: BaseRelaxer,
         mp_entries: Optional[PatchedPhaseDiagram] = None,
     ) -> Structure:
@@ -166,12 +205,15 @@ class StabilityPreprocessor(BasePreprocessor):
         Exception
             If relaxation fails or other processing errors occur.
         """
-        # Relax structure
-        relaxation_result = relaxer.relax(structure, relax=False)
-        if not relaxation_result.success:
-            raise RuntimeError(f"Relaxation failed: {relaxation_result.message}")
+        # Relax structure (conditional)
+        if relax_structure: 
+            relaxation_result = relaxer.relax(structure, relax=False)
+            if not relaxation_result.success:
+                raise RuntimeError(f"Relaxation failed: {relaxation_result.message}")
 
-        processed_structure = relaxation_result.structure
+            processed_structure = relaxation_result.structure
+        else: 
+            processed_structure = structure 
 
         # Calculate e_above_hull if MP entries are available
         if mp_entries is not None:
