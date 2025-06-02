@@ -11,6 +11,7 @@ import click
 import yaml
 
 from lematerial_forgebench.benchmarks.example import ExampleBenchmark
+from lematerial_forgebench.benchmarks.stability_benchmark import StabilityBenchmark
 from lematerial_forgebench.benchmarks.validity_benchmark import ValidityBenchmark
 from lematerial_forgebench.data.structure import format_structures
 from lematerial_forgebench.metrics.validity_metrics import (
@@ -18,6 +19,9 @@ from lematerial_forgebench.metrics.validity_metrics import (
     CoordinationEnvironmentMetric,
     MinimumInteratomicDistanceMetric,
     PhysicalPlausibilityMetric,
+)
+from lematerial_forgebench.preprocess.stability_preprocess import (
+    StabilityPreprocessor,
 )
 from lematerial_forgebench.utils.logging import logger
 
@@ -169,13 +173,9 @@ def main(input: str, config_name: str, output: str):
             coord_tolerance = coord_config.get("tolerance", 0.2)
 
             # Create custom metrics with configuration
-            ChargeNeutralityMetric(
-                tolerance=charge_tolerance, strict=charge_strict
-            )
+            ChargeNeutralityMetric(tolerance=charge_tolerance, strict=charge_strict)
 
-            MinimumInteratomicDistanceMetric(
-                scaling_factor=distance_scaling
-            )
+            MinimumInteratomicDistanceMetric(scaling_factor=distance_scaling)
 
             CoordinationEnvironmentMetric(
                 nn_method=coord_nn_method, tolerance=coord_tolerance
@@ -196,6 +196,14 @@ def main(input: str, config_name: str, output: str):
                     "metric_configs": metric_configs,
                 },
             )
+        elif benchmark_type == "stability":
+            # before running the benchmark, we need to preprocess the structures
+            stability_preprocessor = StabilityPreprocessor()
+            # Use the preprocessor to process structures
+            preprocessor_result = stability_preprocessor(structures)
+            structures = preprocessor_result.processed_structures
+
+            benchmark = StabilityBenchmark()
         else:
             raise ValueError(f"Unknown benchmark type: {benchmark_type}")
 

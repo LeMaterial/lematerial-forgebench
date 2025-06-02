@@ -38,7 +38,7 @@ class BaseRelaxer(ABC):
     """
 
     @abstractmethod
-    def relax(self, structure: Structure) -> RelaxationResult:
+    def relax(self, structure: Structure, relax: bool = False) -> RelaxationResult:
         """Relax a structure and return the result.
 
         Parameters

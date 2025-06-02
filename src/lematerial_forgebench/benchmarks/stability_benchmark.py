@@ -7,8 +7,11 @@ generated material structures using various relaxation methods.
 from typing import Any, Dict
 
 from lematerial_forgebench.benchmarks.base import BaseBenchmark
-from lematerial_forgebench.evaluator import EvaluatorConfig
-from lematerial_forgebench.metrics.stability_metrics import StabilityMetric
+from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
+from lematerial_forgebench.metrics.stability_metrics import (
+    MetastabilityMetric,
+    StabilityMetric,
+)
 
 
 class StabilityBenchmark(BaseBenchmark):
@@ -16,9 +19,6 @@ class StabilityBenchmark(BaseBenchmark):
 
     def __init__(
         self,
-        relaxer_type: str = "orb",
-        relaxer_config: Dict[str, Any] | None = None,
-        mp_entries_file: str = "src/lematerial_forgebench/utils/relaxers/2023-02-07-ppd-mp.pkl.gz",
         name: str = "StabilityBenchmark",
         description: str | None = None,
         metadata: Dict[str, Any] | None = None,
@@ -42,39 +42,37 @@ class StabilityBenchmark(BaseBenchmark):
         """
         if description is None:
             description = (
-                f"Evaluates the stability of crystal structures using {relaxer_type.upper()} "
-                "relaxation and energy above hull calculations."
+                "Evaluates the stability and metastability of crystal structures"
             )
 
-        # Set default relaxer config if not provided
-        if relaxer_config is None:
-            relaxer_config = {"steps": 500, "fmax": 0.02}
-
         # Initialize the stability metric
-        stability_metric = StabilityMetric(
-            relaxer_type=relaxer_type,
-            relaxer_config=relaxer_config,
-            mp_entries_file=mp_entries_file,
-        )
+        stability_metric = StabilityMetric()
 
-        # Set up evaluator config
+        # Set up evaluator configs
         evaluator_configs = {
             "stability": EvaluatorConfig(
-                name=f"{relaxer_type.upper()} Stability",
-                description=f"Evaluates structure stability using {relaxer_type.upper()}",
+                name="Stability",
+                description="Evaluates structure stability",
                 metrics={"stability": stability_metric},
                 weights={"stability": 1.0},
                 aggregation_method="weighted_mean",
             ),
         }
 
+        # Add metastability evaluator if requested
+        metastability_metric = MetastabilityMetric()
+        evaluator_configs["metastability"] = EvaluatorConfig(
+            name="Metastability Analysis",
+            description="Evaluates metastability from precomputed e_above_hull values",
+            metrics={"metastability": metastability_metric},
+            weights={"metastability": 1.0},
+            aggregation_method="weighted_mean",
+        )
+
         # Create benchmark metadata
         benchmark_metadata = {
             "version": "0.1.0",
             "category": "stability",
-            "relaxer_type": relaxer_type,
-            "relaxer_config": relaxer_config,
-            "mp_entries_file": mp_entries_file,
             **(metadata or {}),
         }
 
@@ -86,45 +84,64 @@ class StabilityBenchmark(BaseBenchmark):
         )
 
     def aggregate_evaluator_results(
-        self, evaluator_results: Dict[str, Dict[str, Any]]
+        self, evaluator_results: Dict[str, EvaluationResult]
     ) -> Dict[str, float]:
         """Aggregate results from multiple evaluators into final scores.
 
         Parameters
         ----------
-        evaluator_results : dict[str, dict[str, Any]]
-            Results from each evaluator, as structured by BaseBenchmark.evaluate.
-            Example: {"evaluator_name": {"combined_value": 0.X, "metric_name_value": 0.Y}}
+        evaluator_results : dict[str, EvaluationResult]
+            Results from each evaluator.
 
         Returns
         -------
         dict[str, float]
             Final aggregated scores.
         """
+        import math
+
+        def safe_float(value, default=0.0):
+            """Safely convert value to float, handling None and NaN."""
+            if value is None:
+                return default
+            try:
+                float_val = float(value)
+                if math.isnan(float_val):
+                    return default
+                return float_val
+            except (TypeError, ValueError):
+                return default
+
         final_scores = {
-            "stability_score": 0.0,
             "stable_ratio": 0.0,
-            "mean_e_above_hull": 0.0,
             "metastable_ratio": 0.0,
+            "mean_e_above_hull": 0.0,
         }
 
-        stability_eval_data: Dict[str, Any] | None = evaluator_results.get("stability")
-        print("stability_eval_data", stability_eval_data)
-        if stability_eval_data:
-            if stability_eval_data.get("combined_value") is not None:
-                final_scores["stability_score"] = stability_eval_data["combined_value"]
+        # Extract stability results
+        stability_results = evaluator_results.get("stability")
+        if stability_results:
+            # Main stability ratio
+            final_scores["stable_ratio"] = safe_float(
+                stability_results.get("combined_value")
+            )
 
-            if stability_eval_data.get("stability_value") is not None:
-                final_scores["stable_ratio"] = stability_eval_data["stability_value"]
+            # Extract individual metrics from stability metric
+            stability_metric_results = stability_results.get("metric_results", {}).get(
+                "stability", {}
+            )
+            stability_metrics = stability_metric_results.get("metrics", {})
 
-            if stability_eval_data.get("mean_e_above_hull") is not None:
-                final_scores["mean_e_above_hull"] = stability_eval_data[
-                    "mean_e_above_hull"
-                ]
+            final_scores["mean_e_above_hull"] = safe_float(
+                stability_metrics.get("mean_e_above_hull")
+            )
 
-            if stability_eval_data.get("metastable_ratio") is not None:
-                final_scores["metastable_ratio"] = stability_eval_data[
-                    "metastable_ratio"
-                ]
+        # Extract metastability results if available
+        metastability_results = evaluator_results.get("metastability")
+        if metastability_results:
+            # Main metastability score
+            final_scores["metastable_ratio"] = safe_float(
+                metastability_results.get("combined_value")
+            )
 
         return final_scores

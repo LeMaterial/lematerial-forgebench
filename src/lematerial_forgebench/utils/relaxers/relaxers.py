@@ -122,13 +122,15 @@ class ASERelaxerBase(BaseVASPRelaxer):
         """
         pass
 
-    def relax(self, structure: Structure) -> RelaxationResult:
+    def relax(self, structure: Structure, relax: bool = False) -> RelaxationResult:
         """Relax a structure using calculator.
 
         Parameters
         ----------
         structure : Structure
             Structure to relax.
+        relax : bool, default=False
+            Only relaxes the structure if True.
 
         Returns
         -------
@@ -149,8 +151,9 @@ class ASERelaxerBase(BaseVASPRelaxer):
             atoms.calc = self.calc
 
             # Relax structure
-            dyn = FIRE(FrechetCellFilter(atoms), logfile=None)
-            dyn.run(fmax=self.fmax, steps=self.steps)
+            if relax:
+                dyn = FIRE(FrechetCellFilter(atoms), logfile=None)
+                dyn.run(fmax=self.fmax, steps=self.steps)
 
             # Get results
             final_energy = atoms.get_potential_energy()
