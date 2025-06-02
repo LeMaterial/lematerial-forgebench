@@ -120,7 +120,6 @@ class BandgapPropertyTargetMetric(BaseMetric):
         """
         # Filter out NaN values
         valid_values = [v for v in values if not np.isnan(v)]
-        print(valid_values)
 
         if not valid_values:
             raise ValueError 
