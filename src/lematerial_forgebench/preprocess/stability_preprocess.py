@@ -9,10 +9,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-import numpy as np
 from pymatgen.analysis.phase_diagram import PatchedPhaseDiagram
 from pymatgen.core import Structure
-from pymatgen.entries.compatibility import MaterialsProject2020Compatibility
 
 from lematerial_forgebench.preprocess.base import BasePreprocessor, PreprocessorConfig
 from lematerial_forgebench.utils.e_above_hull import (

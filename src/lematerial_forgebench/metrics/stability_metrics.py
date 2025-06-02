@@ -1,20 +1,14 @@
 """Relaxation metrics for evaluating material structures.
 
-This module implements metrics for evaluating the relaxation of
-material structures using various relaxation models and calculating
-energy above hull.
+This module implements metrics for evaluating structure stability and metastability.
 """
 
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 import numpy as np
-from pymatgen.analysis.phase_diagram import PatchedPhaseDiagram
 from pymatgen.core import Structure
-from pymatgen.entries.compatibility import MaterialsProject2020Compatibility
 
-from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig
+from lematerial_forgebench.metrics.base import BaseMetric
 from lematerial_forgebench.utils.logging import logger
 
 

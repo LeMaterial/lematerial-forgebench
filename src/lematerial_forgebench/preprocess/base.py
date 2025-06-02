@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, List, Optional, TypeVar
 
-import numpy as np
 import pandas as pd
 from pymatgen.core.structure import Structure
 
@@ -236,6 +235,7 @@ class BasePreprocessor(ABC):
             structures[i : i + batch_size]
             for i in range(0, len(structures), batch_size)
         ]
+        return batches
 
     def _get_process_attributes(self) -> dict[str, Any]:
         """Get additional attributes/arguments for the process_structure method.
