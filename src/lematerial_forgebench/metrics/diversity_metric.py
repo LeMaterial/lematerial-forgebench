@@ -26,32 +26,25 @@ from dataclasses import dataclass
 from typing import Any, Dict
 
 import numpy as np
-from pymatgen.core import Structure, periodic_table
+from pymatgen.core import Structure
 
 from lematerial_forgebench.metrics import BaseMetric
 from lematerial_forgebench.metrics.base import MetricConfig
 from lematerial_forgebench.utils.logging import logger
 
 """
--------
-This script and class look to create a metric to quantify the diversity of a given dataset of materials.
--------
+-------------------------------------------------------------------------------
+Elemental Diversity
+-------------------------------------------------------------------------------
 """
 
 @dataclass
 class ElementComponentConfig(MetricConfig):
-    """Configuration for the DiversityScore metric.
+    """Configuration for the Elemental Diversity metric.
 
     This configuration extends the base MetricConfig to include
-    weights for evaluating different components of structural diversity.
-
-    Parameters
-    ----------
-    comparison_distribtuion: str , default="uniform"
-        Base Distribution to map metric to. Currently set to uniform. Future scalability should be to leMatBulk, MP, etc.
+    weights for evaluating Elemental components of structural diversity.
     """
-    comparison_distribtuion : str = "uniform"
-    
 
 class _ElementDiversity(BaseMetric):
     """
@@ -59,7 +52,6 @@ class _ElementDiversity(BaseMetric):
     """
     def __init__(
         self,
-        comparison_distribtuion: str = "uniform",
         name: str | None = "Element Diversity",
         description: str | None = None,
         lower_is_better: bool = False,
@@ -77,8 +69,7 @@ class _ElementDiversity(BaseMetric):
             description=self.config.description,
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
-            comparison_distribtuion=comparison_distribtuion,
-                    )
+            )
         
         # Initialize element Histogram
         self._init_element_histogram()
@@ -91,22 +82,6 @@ class _ElementDiversity(BaseMetric):
         """
 
         self.element_histogram = defaultdict(int)
-
-        if self.config.comparison_distribtuion.lower() == "uniform":
-            self.comparison_dict = self._init_uniform_element_dist()
-        else:
-            raise ValueError(
-                f"Unknown comparison distribution {self.config.comparison_distribtuion}. "
-                "Currently supported comparison distribution = uniform"
-            )
-        
-    def _init_uniform_element_dist(self):
-        """
-        Initialize a uniform distribution across the Periodic Element Space
-        Dictionary mapping is Element -> 1
-        """
-
-        self.baseline_histogram = {element.symbol: 1 for element in periodic_table.Element}
 
 
     def _compute_vendi_score_with_uncertainty(self) -> dict[str, float]:
@@ -232,102 +207,181 @@ class _ElementDiversity(BaseMetric):
             }
         }
 
+"""
+-------------------------------------------------------------------------------
+SpaceGroup Diversity
+-------------------------------------------------------------------------------
+"""
 
+@dataclass
+class SpaceGroupComponentConfig(MetricConfig):
+     """Configuration for the DiversityScore metric.
 
-# @dataclass
-# class DiversityConfig(MetricConfig):
-#     """Configuration for the DiversityScore metric.
+    This configuration extends the base MetricConfig to include
+    weights for evaluating different components of structural diversity.
 
-#     This configuration extends the base MetricConfig to include
-#     weights for evaluating different components of structural diversity.
+    """
 
-#     Parameters
-#     ----------
-#     elemental_diversity_weight : float, default=0.3
-#         Weight assigned to the elemental diversity component in the final score.
-#         Should be a value between 0 and 1. The total of all component weights
-#         should ideally sum to 1.0.
+class _SpaceGroupDiversity(BaseMetric):
+    """
+    Calculates a scalar score capturing Spacegroup Diversity across the structures
+    """
 
-#     symmetrical_diversity_weight : float, default=0.7
-#         Weight assigned to the symmetry (e.g., space group) diversity component
-#         in the final score. Higher values emphasize symmetry-based diversity more
-#         heavily.
-#     """
+    def __init__(
+        self,
+        name: str | None = "Space Group Diversity",
+        description: str | None = None,
+        lower_is_better: bool = False,
+        n_jobs: int = 1,
+    ):
+        super().__init__(
+            name=name or "Space Group Diversity",
+            description=description 
+            or "Scalar Score of Space Group Diversity in Generated Set",
+            lower_is_better=lower_is_better,
+            n_jobs=n_jobs,
+        )
+        self.config = SpaceGroupComponentConfig(
+            name=self.config.name,
+            description=self.config.description,
+            lower_is_better=self.config.lower_is_better,
+            n_jobs=self.config.n_jobs,
+            )
+        
+        self._init_spacegroup_histogram()
 
-#     elemental_diversity_weight: float = 0.3
-#     symmetrical_diversity_weight:float = 0.7
+    def _init_spacegroup_histogram(self):
+        """
+        Initialize an empty dictionary to function as a histogram counter for element.
+        Dictionary mapping is Element -> total count across all structure
+        Note: Before compute, Dictionary Values are normalized 
+        """
 
+        self.spacegroup_histogram = defaultdict(int)
+    
+    def _compute_vendi_score_with_uncertainty(self) -> dict[str, float]:
+        """
+        Compute the Vendi score (effective diversity) from the spacegroup distribution,
+        along with Shannon entropy, variance, and standard deviation.
 
-# class DiversityMetric(BaseMetric):
-    # """Metric that quantifies the diversity of a set of structures.
+        Parameters
+        ----------
+        spacegroup_distribution : dict[str, int]
+            A dictionary where keys are atomic numbers (or categories)
+            and values are counts or frequencies.
 
-    # This metric computes structure-level diversity of Elements and Symmetrical components and aggregates them into
-    # a single diversity score, based on configurable weights for elemental contribution and symmetrical contribution.
+        Returns
+        -------
+        dict[str, float]
+            Dictionary containing:
+            - vendi_score: Effective number of categories
+            - shannon_entropy: Raw entropy in nats
+            - entropy_variance: Estimated variance of entropy (multi-nomial approx.)
+            - entropy_std: Standard deviation (sqrt of variance)
+        
+        References
+        ----------
+        Friedman, D., & Dieng, A. B. (2023). 
+        The Vendi Score: A Diversity Evaluation Metric for Machine Learning. 
+        Transactions on Machine Learning Research. https://openreview.net/forum?id=aNVLfhU9pH
 
-    # Assuming the full dataset is on the scale of 10e6, this would lead to too much compute utilization,
-    # so we randomly sample ~10e4 to quickly calculate diversity. we can take 3 rounds of compute to get a good value.
+        """
+        values = np.array(list(self.spacegroup_histogram.values()), dtype=float)
+        total = np.sum(values)
 
-    # Diversity calculated across:
-    #     - Element Distribution
-    #     - Space Group Distribution
-    #     - Mean/Median Symmetry Quantification
-    #     - Number of Atoms in each strucuture
-    #     - Maybe the molecular weight (calculated from density and volume)
-    #     - Adapting Vendi Score
+        if total == 0:
+            return {
+                "vendi_score": 0.0,
+                "shannon_entropy": 0.0,
+                "entropy_variance": 0.0,
+                "entropy_std": 0.0,
+            }
 
-    # Parameters
-    # ----------
-    # name : str, optional
-    #     Custom name for the metric. If None, the class name will be used.
-    # description : str, optional
-    #     Description of what the metric measures.
-    # lower_is_better : bool, default=False
-    #     Whether lower values indicate better performance (typically False for diversity).
-    # n_jobs : int, default=1
-    #     Number of parallel jobs to run.
-    # element_div_weight : float, default=1.0
-    #     Weight applied to the aggregated Element diversity score.
-    # symm_div_weight : float, default=1.0
-    #     Weight applied to the aggregated Symmetry diversity score.
-    # """
+        # Normalize to probability distribution
+        probs = values / total
 
-    # def __init__(
-    #     self,
-    #     name: str | None = None,
-    #     description: str | None = "Measures the diversity of a set of structures.",
-    #     lower_is_better: bool = False,
-    #     n_jobs: int = 1,
-    #     element_div_weight: float = 0.7, # placeholder value
-    #     symm_div_weight: float = 0.3, # placeholder value
-    # ):
-    #     super().__init__(
-    #         name=name,
-    #         description=description,
-    #         lower_is_better=lower_is_better,
-    #         n_jobs=n_jobs,
-    #     )
-    #     self.config = DiversityConfig(
-    #         name=name or self.__class__.__name__,
-    #         description=description,
-    #         lower_is_better=lower_is_better,
-    #         n_jobs=n_jobs,
-    #         elemental_diversity_weight=element_div_weight,
-    #         symmetrical_diversity_weight=symm_div_weight,
-    #     )
+        # Shannon entropy (in nats)
+        entropy = -np.sum(probs * np.log(probs + 1e-12))  # add epsilon to avoid log(0)
 
-    # def compute_structure(structure: Structure) -> float:
-    #     """
-    #     Computes the pre-aggregate values relevant to the diversity of the strucutre.
-    #     These would include the density, lattice params, element type,
-    #     Parameters
-    #     ----------
-    #     strucutre: Structure
-    #         A Given structure
+        # Vendi score
+        vendi_score = np.exp(entropy)
 
-    #     Returns
-    #     -------
+        # Variance of entropy estimate (asymptotic approximation)
+        second_moment = np.sum(probs * (np.log(probs + 1e-12)) ** 2)
+        entropy_variance = (1 / total) * (second_moment - entropy ** 2)
+        entropy_std = np.sqrt(entropy_variance)
 
-    #     """
+        return {
+            "vendi_score": vendi_score,
+            "shannon_entropy": entropy,
+            "entropy_variance": entropy_variance,
+            "entropy_std": entropy_std,
+        }
 
+    def _get_compute_attributes(self) -> dict[str, Any]:
+        return {
+            "spacegroup_histogram" : self.spacegroup_histogram
+        }
+    
+    @staticmethod
+    def compute_structure(structure: Structure, spacegroup_histogram: Dict[str, int]) -> float:
+        """
+        Retrieves all elements present in Structure and adds count to internal elemental distribution
+        Parameters
+        ----------
+        structure: Structure
+            A pymatgen Structure object to evaluate.
+        elemental_histogram: dict[str:int]
+            Class variable for storing the current histogram/distribution of elements across all structures
 
+        Returns:
+        -------
+        float:
+            This value serves as a Binary Indicator representing if the structure was successfully evaluated or not. 
 
+        """
+        try:
+            spacegroup_symbol, spacegroup_number = structure.get_space_group_info()
+            spacegroup_histogram[spacegroup_symbol] += 1
+            return spacegroup_number/230
+    
+        except Exception as e:
+            logger.debug(f"Could not determine Spacegroup in {structure.formula} : {str(e)}")
+            return 0
+        
+    def aggregate_results(self, values: list[float]) -> dict[str, Any]:
+        """Aggregate results into final metric values.
+
+        Parameters
+        ----------
+        values : list[float]
+            the structure-wise symmetry score computed based off spacegroup number / 230. 
+            This normalized score gives a sense of low vs high symmetry
+
+        Returns
+        -------
+        dict
+            Dictionary with aggregated metrics.
+        """
+        mean_symmetry_rating = np.mean(values)
+        spacegroup_diversity_metric = self._compute_vendi_score_with_uncertainty()
+
+        return {
+            "metrics": {
+                "spacegroup_diversity_vendi_score": spacegroup_diversity_metric["vendi_score"],
+                "spacegroup_diversity_shannon_entropy": spacegroup_diversity_metric["shannon_entropy"],
+                "mean_symmetry_rating":mean_symmetry_rating,
+            },
+            "primary_metric": "spacegroup_diversity_vendi_score",
+            "uncertainties": {
+                "shannon_entropy_std" : spacegroup_diversity_metric["entropy_std"],
+                "shannon_entropy_variance": spacegroup_diversity_metric["entropy_variance"],
+            }
+        }
+
+        
+"""
+-------------------------------------------------------------------------------
+Density Diversity
+-------------------------------------------------------------------------------
+"""
