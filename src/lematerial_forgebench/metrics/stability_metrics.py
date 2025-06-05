@@ -12,8 +12,7 @@ from lematerial_forgebench.metrics.base import BaseMetric
 from lematerial_forgebench.utils.logging import logger
 
 class FormationEnergyMetric(BaseMetric):
-    """Evaluate formation energy of a structure using the Orb model. 
-    """
+    """Evaluate formation energy of a structure using an MLIP."""
 
     def __init__(
         self,
@@ -25,7 +24,7 @@ class FormationEnergyMetric(BaseMetric):
         super().__init__(
             name=name or "FormationEnergyMetric",
             description=description
-            or "Evaluates structure formation energy using the Orb model",
+            or "Evaluates structure formation energy using the specified MLIP",
             lower_is_better=lower_is_better,
             n_jobs=n_jobs,
         )
@@ -36,7 +35,7 @@ class FormationEnergyMetric(BaseMetric):
 
     @staticmethod
     def compute_structure(structure: Structure) -> float:
-        """Evaluates structure formation energy using the Orb model
+        """Evaluates structure formation energy using the specified MLIP
         
         Parameters
         ----------
@@ -109,7 +108,7 @@ class StabilityMetric(BaseMetric):
 
     This metric assumes that e_above_hull values have already been computed
     and stored in structure.properties['e_above_hull']. It calculates stability
-    statistics without performing any relaxation or recomputation.
+    statistics on the unrelaxed structure without performing additional recomputation.
     """
 
     def __init__(
@@ -210,7 +209,7 @@ class MetastabilityMetric(BaseMetric):
 
     This metric assumes that e_above_hull values have already been computed
     and stored in structure.properties['e_above_hull']. It calculates stability
-    statistics without performing any relaxation or recomputation.
+    statistics on the unrelaxed structure without performing additional recomputation.
     """
 
     def __init__(
@@ -300,10 +299,10 @@ class RelaxationStabilityMetric(BaseMetric):
     """Evaluate the RMSE between the atomic positions for the relaxed structure and 
     generatd structure.
 
-    This metric assumes that relaxed structures have already been computed. 
-    It takes in a processed_structure object which contains a relaxed structure and a
-    raw structure. It calculates stability statistics without performing any relaxation 
-    or recomputation.
+    This metric assumes that relaxed structures have already been computed and stored 
+    in the structure object at "structure.properties["relaxed_structure"]" 
+    It calculates relaxation stability statistics without performing any relaxation  
+    calculations.
     """
 
     def __init__(

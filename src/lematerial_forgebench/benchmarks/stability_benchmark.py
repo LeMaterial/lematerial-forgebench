@@ -11,10 +11,8 @@ from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
 from lematerial_forgebench.metrics.stability_metrics import (
     MetastabilityMetric,
     StabilityMetric,
-    FormationEnergyMetric, 
+    FormationEnergyMetric,
     RelaxationStabilityMetric,
-
-
 )
 
 
@@ -154,7 +152,10 @@ class StabilityBenchmark(BaseBenchmark):
             )
             # Extract individual metrics from stability metric
             final_scores["mean_e_above_hull"] = safe_float(
-                 stability_results["metric_results"]['stability'].metrics["mean_e_above_hull"])
+                stability_results["metric_results"]["stability"].metrics[
+                    "mean_e_above_hull"
+                ]
+            )
 
         # Extract metastability results if available
         metastability_results = evaluator_results.get("metastability")
@@ -171,7 +172,6 @@ class StabilityBenchmark(BaseBenchmark):
             final_scores["mean_formation_energy"] = safe_float(
                 formation_energy_results.get("combined_value")
             )
-
 
         # Extract relxation stability results if available
         relaxation_stability_results = evaluator_results.get("relaxation_stability")

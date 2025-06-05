@@ -4,6 +4,7 @@ This module implements metrics for evaluating the relaxation of
 material structures using various relaxation models and calculating
 energy above hull.
 """
+
 from datasets import load_dataset
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -31,11 +32,15 @@ from lematerial_forgebench.preprocess.reference_energies import (
     get_formation_energy_from_composition_energy,
 )
 
-class OrbFormationEnergy():
+
+class OrbFormationEnergy:
     def __init__(self, temperature: float = 1.0):
         self.temperature = temperature
-        self.orbff = pretrained.orb_v3_conservative_inf_omat(compile=False, device="cpu",
-                                                             precision="float32-high",)
+        self.orbff = pretrained.orb_v3_conservative_inf_omat(
+            compile=False,
+            device="cpu",
+            precision="float32-high",
+        )
         self.calc = ORBCalculator(self.orbff, device="cpu")
 
     def __call__(self, structure) -> float:
@@ -57,20 +62,21 @@ class OrbFormationEnergy():
         for param in self.orbff.parameters():
             param.share_memory_()
 
-class EnergyAboveHull():
+
+class EnergyAboveHull:
     def __init__(self, temperature: float = 1, functional: str = "pbe"):
         super().__init__()
         self.temperature = temperature
-        self.orbff = pretrained.orb_v3_conservative_inf_omat(compile=False, device="cpu",
-                                                             precision="float32-high",)
+        self.orbff = pretrained.orb_v3_conservative_inf_omat(
+            compile=False,
+            device="cpu",
+            precision="float32-high",
+        )
         self.calc = ORBCalculator(self.orbff, device="cpu")
 
         # self.ds = load_dataset("LeMaterial/LeMat-Bulk", f"compatible_{functional}")
 
     def __call__(self, structure) -> float:
-
-
-
         crystal_ase = AseAtomsAdaptor().get_atoms(structure)
         crystal_ase.calc = self.calc
 
@@ -178,8 +184,6 @@ class StabilityPreprocessor(BasePreprocessor):
             A pymatgen Structure object to process.
         relaxer : BaseRelaxer
             Relaxer object to use.
-        mp_entries : PatchedPhaseDiagram, optional
-            MP entries for e_above_hull calculation.
 
         Returns
         -------
@@ -191,7 +195,7 @@ class StabilityPreprocessor(BasePreprocessor):
         Exception
             If relaxation fails or other processing errors occur.
         """
-        # Relax structure 
+        # Relax structure
         relaxation_result = relaxer.relax(structure, relax=True)
         if not relaxation_result.success:
             raise RuntimeError(f"Relaxation failed: {relaxation_result.message}")
@@ -200,12 +204,10 @@ class StabilityPreprocessor(BasePreprocessor):
         structure.properties["relaxed_structure"] = processed_structure
 
         e_above_hull_calc = EnergyAboveHull()
-        form_energy_calc = OrbFormationEnergy()
+        form_energy_calc = OrbFormationEnergy() # currently using orb for formation energy calculation
         # Calculate e_above_hull using LeMatBulk
         try:
             e_above_hull = e_above_hull_calc(structure)
-            print(structure.composition)
-            print("energy_above_hull unrelaxed :", e_above_hull)
             structure.properties["e_above_hull"] = e_above_hull
             structure.properties["formation_energy"] = form_energy_calc(structure)
             logger.debug(
@@ -217,20 +219,22 @@ class StabilityPreprocessor(BasePreprocessor):
             )
             # Still return the relaxed structure even if e_above_hull calculation fails
 
-        try: 
+        try:
             e_above_hull_relaxed = e_above_hull_calc(processed_structure)
             print("energy_above_hull relaxed :", e_above_hull_relaxed)
 
             structure.properties["relaxed_e_above_hull"] = e_above_hull_relaxed
-            structure.properties["relaxed_formation_energy"] = form_energy_calc(processed_structure)
+            structure.properties["relaxed_formation_energy"] = form_energy_calc(
+                processed_structure
+            )
             logger.debug(
                 f"Computed e_above_hull: {e_above_hull_relaxed:.3f} eV/atom for relaxed {processed_structure.formula}"
             )
         except Exception as e:
-                    logger.warning(
-                        f"Failed to compute e_above_hull for relaxed {processed_structure.formula}: {str(e)}"
-                    )
+            logger.warning(
+                f"Failed to compute e_above_hull for relaxed {processed_structure.formula}: {str(e)}"
+            )
         # Store additional processing metadata
-        # processed_structure.properties["relaxed_potential_energy"] = relaxation_result.energy
+        structure.properties["MLIP"] = "Orb"
 
         return structure

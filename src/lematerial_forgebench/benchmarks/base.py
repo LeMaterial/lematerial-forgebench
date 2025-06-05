@@ -164,7 +164,6 @@ class BaseBenchmark(ABC):
                     f"{name}_value": res.value
                     for name, res in result.metric_results.items()
                 },
-
                 "metric_results": result.metric_results,
                 **{
                     f"{name}_value": res.value

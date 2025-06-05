@@ -83,6 +83,7 @@ def get_formation_energy_from_composition_energy(
         print("Error in get_formation_energy_from_composition_energy: ", e)
         return None
 
+
 def one_hot_encode_composition(elements):
     one_hot = np.zeros(118)
     for element in elements:
@@ -122,7 +123,6 @@ def filter_df(df, matrix, composition):
 def get_energy_above_hull(total_energy, composition):
     intersection_elements = filter_df(_retrieve_df(), _retrieve_matrix(), composition)
 
-
     # Create PDEntries from the filtered DataFrame
     pd_entries = [
         PDEntry(Composition(row["chemical_formula_descriptive"]), row["energy"])
@@ -136,7 +136,6 @@ def get_energy_above_hull(total_energy, composition):
 
     # Construct phase diagram
     pd = PhaseDiagram(pd_entries)
-
 
     # Compute energy above hull
     entry = PDEntry(composition, total_energy)
