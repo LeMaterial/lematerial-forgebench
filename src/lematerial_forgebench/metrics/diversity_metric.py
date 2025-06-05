@@ -21,17 +21,16 @@ high-performing solutions across different feature dimensions (e.g., different c
 or deformation resistance values)[Janmohamed et al., 2024
 
 """
-import numpy as np
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any, Dict
 
+import numpy as np
 from pymatgen.core import Structure, periodic_table
 
 from lematerial_forgebench.metrics import BaseMetric
-from lematerial_forgebench.metrics.base import MetricConfig, MetricResult
+from lematerial_forgebench.metrics.base import MetricConfig
 from lematerial_forgebench.utils.logging import logger
-
 
 """
 -------

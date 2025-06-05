@@ -3,17 +3,15 @@ Unit Test File for Diversity Metrics. File path at src/lematerial_forgebench/met
 Note: Diversity Assumes stable Materials, and ignores unstable or invalid materials
 """
 
-import pytest
-from pymatgen.core import Structure
-from pymatgen.io.cif import CifParser
 import csv
 from io import StringIO
 
-from lematerial_forgebench.metrics.diversity_metric import (
-    _ElementDiversity
-)
-from lematerial_forgebench.metrics.base import MetricResult
+import pytest
+from pymatgen.core import Structure
+from pymatgen.io.cif import CifParser
 
+from lematerial_forgebench.metrics.base import MetricResult
+from lematerial_forgebench.metrics.diversity_metric import _ElementDiversity
 
 trial_data_file_path = "trial_data/crystal_symmcd_mp20.csv"
 
