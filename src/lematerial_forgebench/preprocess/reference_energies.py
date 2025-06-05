@@ -9,7 +9,6 @@ import numpy as np
 import pandas as pd
 from pymatgen.analysis.phase_diagram import PDEntry, PhaseDiagram
 from pymatgen.core import Composition, Element
-from pymatgen.core.periodic_table import Element
 from tqdm import tqdm
 
 CURRENT_FOLDER = os.path.dirname(Path(__file__).resolve())
