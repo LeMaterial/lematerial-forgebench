@@ -65,7 +65,7 @@ class EnergyAboveHull():
                                                              precision="float32-high",)
         self.calc = ORBCalculator(self.orbff, device="cpu")
 
-        self.ds = load_dataset("LeMaterial/LeMat-Bulk", f"compatible_{functional}")
+        # self.ds = load_dataset("LeMaterial/LeMat-Bulk", f"compatible_{functional}")
 
     def __call__(self, structure) -> float:
 
@@ -75,7 +75,7 @@ class EnergyAboveHull():
         crystal_ase.calc = self.calc
 
         total_energy = crystal_ase.get_potential_energy()
-        energy_above_hull = get_energy_above_hull(total_energy, structure.composition, self.ds)
+        energy_above_hull = get_energy_above_hull(total_energy, structure.composition)
         print(energy_above_hull)
         if energy_above_hull is None:
             return None

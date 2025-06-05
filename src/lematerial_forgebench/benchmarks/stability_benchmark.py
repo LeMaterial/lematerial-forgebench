@@ -116,6 +116,8 @@ class StabilityBenchmark(BaseBenchmark):
             "stable_ratio": 0.0,
             "metastable_ratio": 0.0,
             "mean_e_above_hull": 0.0,
+            "mean_formation_energy": 0.0,
+            "mean_relaxation_RMSE": 0.0,
         }
 
         # Extract stability results

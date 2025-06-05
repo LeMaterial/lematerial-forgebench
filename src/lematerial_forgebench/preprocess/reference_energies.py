@@ -6,6 +6,16 @@ from pathlib import Path
 import pandas as pd
 from pymatgen.analysis.phase_diagram import PDEntry, PhaseDiagram
 from pymatgen.core import Composition
+import numpy as np
+
+from functools import lru_cache
+
+from pymatgen.core.periodic_table import Element
+
+import pickle
+
+from pymatgen.core import Element
+from tqdm import tqdm
 
 CURRENT_FOLDER = os.path.dirname(Path(__file__).resolve())
 
@@ -73,44 +83,64 @@ def get_formation_energy_from_composition_energy(
         print("Error in get_formation_energy_from_composition_energy: ", e)
         return None
 
+def one_hot_encode_composition(elements):
+    one_hot = np.zeros(118)
+    for element in elements:
+        one_hot[int(Element(element).number) - 1] = 1
+    return one_hot
 
-def get_energy_above_hull(total_energy, composition, ds):
-    chemical_system_set = tuple(sorted({el.symbol for el in composition.elements}))
 
-    relevant_entries = {
-        "composition": [
-            Composition(x)
-            for x in ds["train"]["chemical_formula_descriptive"]
-            if Composition(x).chemical_system_set.issubset(chemical_system_set)
-        ],
-        "energy": [
-            y
-            for x, y in zip(
-                ds["train"]["chemical_formula_descriptive"],
-                ds["train"]["energy"],
-            )
-            if Composition(x).chemical_system_set.issubset(chemical_system_set)
-        ],
-    }
+def process_chunk(chunk):
+    one_hot_compositions = []
+    for elements in tqdm(chunk):
+        one_hot_compositions.append(one_hot_encode_composition(elements))
+    return one_hot_compositions
 
-    pd_entries = []
 
-    for composition, energy in zip(
-        relevant_entries["composition"], relevant_entries["energy"]
-    ):
-        pd_entries.append(
-            PDEntry(
-                composition,
-                energy,
-            )
+@lru_cache(maxsize=None)
+def _retrieve_df():
+    csv_path = "dataset_filtered.csv"
+    return pd.read_csv(csv_path)
+
+
+@lru_cache(maxsize=None)
+def _retrieve_matrix():
+    npy_path = "all_compositions.npy"
+    return np.load(npy_path)
+
+
+def filter_df(df, matrix, composition):
+    structure_vector = one_hot_encode_composition(composition.elements).reshape(-1, 1)
+    forbidden_elements = 1 - structure_vector
+    intersection_elements = df.loc[(matrix @ forbidden_elements) == 0]
+
+    # print(intersection_elements)
+
+    return intersection_elements
+
+
+def get_energy_above_hull(total_energy, composition):
+    intersection_elements = filter_df(_retrieve_df(), _retrieve_matrix(), composition)
+
+
+    # Create PDEntries from the filtered DataFrame
+    pd_entries = [
+        PDEntry(Composition(row["chemical_formula_descriptive"]), row["energy"])
+        for _, row in intersection_elements.iterrows()
+    ]
+
+    if not pd_entries:
+        raise ValueError(
+            f"No entries found in dataset containing any of the elements in: {composition.elements}"
         )
+
+    # Construct phase diagram
     pd = PhaseDiagram(pd_entries)
 
-    energy_above_hull = pd.get_decomp_and_e_above_hull(
-        PDEntry(
-            composition,
-            total_energy,
-        ),
-        allow_negative=True,
-    )[1]
-    return energy_above_hull
+
+    # Compute energy above hull
+    entry = PDEntry(composition, total_energy)
+    e_above_hull = pd.get_decomp_and_e_above_hull(entry, allow_negative=True)[1]
+
+    print(e_above_hull)
+    return e_above_hull
