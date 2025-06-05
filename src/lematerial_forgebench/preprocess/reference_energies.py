@@ -142,5 +142,5 @@ def get_energy_above_hull(total_energy, composition):
     entry = PDEntry(composition, total_energy)
     e_above_hull = pd.get_decomp_and_e_above_hull(entry, allow_negative=True)[1]
 
-    print(e_above_hull)
+    # print(e_above_hull)
     return e_above_hull

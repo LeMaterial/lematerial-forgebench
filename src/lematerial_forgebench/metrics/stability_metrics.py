@@ -51,6 +51,8 @@ class FormationEnergyMetric(BaseMetric):
         try:
             # Extract formation_energy from structure properties
             formation_energy = structure.properties.get("formation_energy", None)
+            print(str(structure.composition) + " Formation Energy :", formation_energy)
+
 
             if formation_energy is None:
                 logger.warning(
@@ -145,7 +147,9 @@ class StabilityMetric(BaseMetric):
         """
         try:
             # Extract e_above_hull from structure properties
+
             e_above_hull = structure.properties.get("e_above_hull", None)
+            
 
             if e_above_hull is None:
                 logger.warning(
@@ -335,18 +339,18 @@ class RelaxationStabilityMetric(BaseMetric):
         float
             The RMSE between the raw and relaxed structures.
         """
-        structure = structure.raw_structure 
-        relaxed_structure = structure
+        relaxed_structure = structure.properties["relaxed_structure"]
+
 
         try:
             MSE = 0
             for site_index in range(0, len(structure)):
                 strut_site = structure[site_index]
                 relaxed_strut_site = relaxed_structure[site_index]
-                MSE += np.linalg.norm(strut_site - relaxed_strut_site)**2
+                MSE += np.linalg.norm(strut_site.coords - relaxed_strut_site.coords)**2
             MSE = MSE/len(structure)
             RMSE = np.sqrt(MSE)
-
+            print(str(structure.composition) +" Relaxation Stability RMSE :", RMSE)
             return RMSE
 
         except Exception as e:

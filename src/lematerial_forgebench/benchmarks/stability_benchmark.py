@@ -11,6 +11,10 @@ from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
 from lematerial_forgebench.metrics.stability_metrics import (
     MetastabilityMetric,
     StabilityMetric,
+    FormationEnergyMetric, 
+    RelaxationStabilityMetric,
+
+
 )
 
 
@@ -69,6 +73,26 @@ class StabilityBenchmark(BaseBenchmark):
             aggregation_method="weighted_mean",
         )
 
+        # Add formation energy evaluator if requested
+        formation_energy_metric = FormationEnergyMetric()
+        evaluator_configs["formation_energy"] = EvaluatorConfig(
+            name="Formation Energy Analysis",
+            description="Evaluates formation energy from precomputed values",
+            metrics={"formation_energy": formation_energy_metric},
+            weights={"formation_energy": 1.0},
+            aggregation_method="weighted_mean",
+        )
+
+        # Add relxation stability evaluator if requested
+        relaxation_stability_metric = RelaxationStabilityMetric()
+        evaluator_configs["relaxation_stability"] = EvaluatorConfig(
+            name="Relaxation Stability Analysis",
+            description="Evaluates relaxation stability from precomputed relaxed structure",
+            metrics={"relaxation_stability": relaxation_stability_metric},
+            weights={"relaxation_stability": 1.0},
+            aggregation_method="weighted_mean",
+        )
+
         # Create benchmark metadata
         benchmark_metadata = {
             "version": "0.1.0",
@@ -122,21 +146,15 @@ class StabilityBenchmark(BaseBenchmark):
 
         # Extract stability results
         stability_results = evaluator_results.get("stability")
+
         if stability_results:
             # Main stability ratio
             final_scores["stable_ratio"] = safe_float(
                 stability_results.get("combined_value")
             )
-
             # Extract individual metrics from stability metric
-            stability_metric_results = stability_results.get("metric_results", {}).get(
-                "stability", {}
-            )
-            stability_metrics = stability_metric_results.get("metrics", {})
-
             final_scores["mean_e_above_hull"] = safe_float(
-                stability_metrics.get("mean_e_above_hull")
-            )
+                 stability_results["metric_results"]['stability'].metrics["mean_e_above_hull"])
 
         # Extract metastability results if available
         metastability_results = evaluator_results.get("metastability")
@@ -145,5 +163,24 @@ class StabilityBenchmark(BaseBenchmark):
             final_scores["metastable_ratio"] = safe_float(
                 metastability_results.get("combined_value")
             )
+
+        # Extract formation energy results if available
+        formation_energy_results = evaluator_results.get("formation_energy")
+        if formation_energy_results:
+            # Main metastability score
+            final_scores["mean_formation_energy"] = safe_float(
+                formation_energy_results.get("combined_value")
+            )
+
+
+        # Extract relxation stability results if available
+        relaxation_stability_results = evaluator_results.get("relaxation_stability")
+        if relaxation_stability_results:
+            # Main metastability score
+            final_scores["mean_relaxation_RMSE"] = safe_float(
+                relaxation_stability_results.get("combined_value")
+            )
+
+        print(final_scores)
 
         return final_scores
