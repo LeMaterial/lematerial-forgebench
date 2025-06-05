@@ -76,13 +76,13 @@ class EnergyAboveHull():
 
         total_energy = crystal_ase.get_potential_energy()
         energy_above_hull = get_energy_above_hull(total_energy, structure.composition)
-        print(energy_above_hull)
+        # print("energy_above_hull :", energy_above_hull)
         if energy_above_hull is None:
             return None
         if energy_above_hull < 0:
             return 0.0
 
-        print("energy_above_hull :", energy_above_hull)
+        # print("energy_above_hull :", energy_above_hull)
 
         return energy_above_hull
 
@@ -197,13 +197,14 @@ class StabilityPreprocessor(BasePreprocessor):
             raise RuntimeError(f"Relaxation failed: {relaxation_result.message}")
 
         processed_structure = relaxation_result.structure
-        processed_structure.raw_structure = None
+        structure.properties["relaxed_structure"] = processed_structure
 
         e_above_hull_calc = EnergyAboveHull()
         form_energy_calc = OrbFormationEnergy()
         # Calculate e_above_hull using LeMatBulk
         try:
             e_above_hull = e_above_hull_calc(structure)
+            print("energy_above_hull unrelaxed :", e_above_hull)
             structure.properties["e_above_hull"] = e_above_hull
             structure.properties["formation_energy"] = form_energy_calc(structure)
             logger.debug(
@@ -217,17 +218,18 @@ class StabilityPreprocessor(BasePreprocessor):
 
         try: 
             e_above_hull_relaxed = e_above_hull_calc(processed_structure)
-            processed_structure.properties["e_above_hull"] = e_above_hull_relaxed
-            processed_structure.properties["formation_energy"] = form_energy_calc(processed_structure)
+            print("energy_above_hull relaxed :", e_above_hull_relaxed)
+
+            structure.properties["relaxed_e_above_hull"] = e_above_hull_relaxed
+            structure.properties["relaxed_formation_energy"] = form_energy_calc(processed_structure)
             logger.debug(
-                f"Computed e_above_hull: {e_above_hull:.3f} eV/atom for relaxed {processed_structure.formula}"
+                f"Computed e_above_hull: {e_above_hull_relaxed:.3f} eV/atom for relaxed {processed_structure.formula}"
             )
         except Exception as e:
                     logger.warning(
                         f"Failed to compute e_above_hull for relaxed {processed_structure.formula}: {str(e)}"
                     )
         # Store additional processing metadata
-        processed_structure.properties["relaxed_energy"] = relaxation_result.energy
-        processed_structure.properties["raw_structure"] = structure
+        # processed_structure.properties["relaxed_potential_energy"] = relaxation_result.energy
 
-        return processed_structure
+        return structure
