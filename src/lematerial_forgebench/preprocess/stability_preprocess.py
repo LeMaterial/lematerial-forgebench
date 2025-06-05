@@ -5,15 +5,22 @@ material structures using various relaxation models and calculating
 energy above hull.
 """
 
-from datasets import load_dataset
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from datasets import load_dataset
+from orb_models.forcefield import pretrained
+from orb_models.forcefield.calculator import ORBCalculator
 from pymatgen.analysis.phase_diagram import PatchedPhaseDiagram
 from pymatgen.core import Structure
+from pymatgen.io.ase import AseAtomsAdaptor
 
 from lematerial_forgebench.preprocess.base import BasePreprocessor, PreprocessorConfig
+from lematerial_forgebench.preprocess.reference_energies import (
+    get_energy_above_hull,
+    get_formation_energy_from_composition_energy,
+)
 from lematerial_forgebench.utils.e_above_hull import (
     generate_CSE,
     get_patched_phase_diagram_mp,
@@ -23,13 +30,6 @@ from lematerial_forgebench.utils.relaxers import (
     BaseRelaxer,
     get_relaxer,
     relaxers,
-)
-from pymatgen.io.ase import AseAtomsAdaptor
-from orb_models.forcefield import pretrained
-from orb_models.forcefield.calculator import ORBCalculator
-from lematerial_forgebench.preprocess.reference_energies import (
-    get_energy_above_hull,
-    get_formation_energy_from_composition_energy,
 )
 
 

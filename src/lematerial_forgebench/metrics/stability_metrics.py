@@ -11,6 +11,7 @@ from pymatgen.core import Structure
 from lematerial_forgebench.metrics.base import BaseMetric
 from lematerial_forgebench.utils.logging import logger
 
+
 class FormationEnergyMetric(BaseMetric):
     """Evaluate formation energy of a structure using an MLIP."""
 

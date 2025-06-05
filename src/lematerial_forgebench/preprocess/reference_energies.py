@@ -1,20 +1,15 @@
 import json
 import os
+import pickle
 from collections import Counter
+from functools import lru_cache
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from pymatgen.analysis.phase_diagram import PDEntry, PhaseDiagram
-from pymatgen.core import Composition
-import numpy as np
-
-from functools import lru_cache
-
+from pymatgen.core import Composition, Element
 from pymatgen.core.periodic_table import Element
-
-import pickle
-
-from pymatgen.core import Element
 from tqdm import tqdm
 
 CURRENT_FOLDER = os.path.dirname(Path(__file__).resolve())
