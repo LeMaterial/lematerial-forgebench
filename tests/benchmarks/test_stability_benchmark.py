@@ -65,6 +65,8 @@ class TestStabilityBenchmark:
         assert isinstance(result.final_scores["stable_ratio"], (int, float))
         assert isinstance(result.final_scores["metastable_ratio"], (int, float))
         assert isinstance(result.final_scores["mean_e_above_hull"], (int, float))
+        assert isinstance(result.final_scores["mean_formation_energy"], (int, float))
+        assert isinstance(result.final_scores["mean_relaxation_RMSE"], (int, float))
 
     def test_empty_structures(self):
         """Test behavior with empty structure list."""
@@ -77,6 +79,8 @@ class TestStabilityBenchmark:
         assert result.final_scores["stable_ratio"] == 0.0
         assert result.final_scores["metastable_ratio"] == 0.0
         assert result.final_scores["mean_e_above_hull"] == 0.0
+        assert result.final_scores["mean_formation_energy"] == 0.0
+        assert result.final_scores["mean_relaxation_RMSE"] == 0.0
 
     def test_aggregate_evaluator_results(self):
         """Test result aggregation logic."""
@@ -93,6 +97,8 @@ class TestStabilityBenchmark:
                         "metrics": {
                             "stable_ratio": 0.75,
                             "mean_e_above_hull": 0.1,
+                            "mean_formation_energy": -6.7, 
+                            "mean_relaxation_RMSE": 0.01,
                         }
                     }
                 },
@@ -113,6 +119,8 @@ class TestStabilityBenchmark:
         assert scores["stable_ratio"] == 0.75
         assert scores["metastable_ratio"] == 0.85
         assert scores["mean_e_above_hull"] == 0.1
+        assert scores["mean_formation_energy"] == -6.7
+        assert scores["mean_relaxation_RMSE"] == 0.01
 
     def test_benchmark_metadata(self):
         """Test benchmark metadata structure."""
