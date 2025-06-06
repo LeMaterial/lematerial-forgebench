@@ -57,3 +57,4 @@ material-hasher = { git = "https://github.com/lematerial/material-hasher.git" }
 
 [tool.ruff.lint]
 extend-select = ["I"]
+ignore = ["F401"]
