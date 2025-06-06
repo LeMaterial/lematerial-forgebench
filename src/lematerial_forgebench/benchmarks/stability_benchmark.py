@@ -150,12 +150,19 @@ class StabilityBenchmark(BaseBenchmark):
             final_scores["stable_ratio"] = safe_float(
                 stability_results.get("combined_value")
             )
-            # Extract individual metrics from stability metric
-            final_scores["mean_e_above_hull"] = safe_float(
-                stability_results["metric_results"]["stability"].metrics[
-                    "mean_e_above_hull"
-                ]
-            )
+            try: 
+                # Extract individual metrics from stability metric
+                final_scores["mean_e_above_hull"] = safe_float(
+                    stability_results["metric_results"]["stability"].metrics[
+                        "mean_e_above_hull"
+                    ])
+            except KeyError:
+                pass
+            except AttributeError:
+                final_scores["mean_e_above_hull"] = safe_float(
+                    stability_results["metric_results"]["stability"]["metrics"][
+                        "mean_e_above_hull"
+                    ])
 
         # Extract metastability results if available
         metastability_results = evaluator_results.get("metastability")

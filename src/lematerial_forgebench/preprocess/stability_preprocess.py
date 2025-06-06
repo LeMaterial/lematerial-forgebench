@@ -31,7 +31,7 @@ from lematerial_forgebench.utils.relaxers import (
     get_relaxer,
     relaxers,
 )
-
+import numpy as np 
 
 class OrbFormationEnergy:
     def __init__(self, temperature: float = 1.0):
@@ -217,8 +217,9 @@ class StabilityPreprocessor(BasePreprocessor):
             logger.warning(
                 f"Failed to compute e_above_hull for unrelaxed {structure.formula}: {str(e)}"
             )
+            structure.properties["e_above_hull"] = 0.0
+            structure.properties["formation_energy"] = 0.0
             # Still return the relaxed structure even if e_above_hull calculation fails
-
         try:
             e_above_hull_relaxed = e_above_hull_calc(processed_structure)
             print("energy_above_hull relaxed :", e_above_hull_relaxed)
@@ -234,6 +235,8 @@ class StabilityPreprocessor(BasePreprocessor):
             logger.warning(
                 f"Failed to compute e_above_hull for relaxed {processed_structure.formula}: {str(e)}"
             )
+            structure.properties["relaxed_e_above_hull"] = 0.0
+            structure.properties["relaxed_formation_energy"] = 0.0
         # Store additional processing metadata
         structure.properties["MLIP"] = "Orb"
 

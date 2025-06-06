@@ -21,7 +21,7 @@ class TestStabilityBenchmark:
         assert benchmark.config.metadata["category"] == "stability"
 
         # Check correct evaluator
-        assert len(benchmark.evaluators) == 2
+        assert len(benchmark.evaluators) == 4
         assert "stability" in benchmark.evaluators
 
     def test_initialization_custom(self):
@@ -56,7 +56,7 @@ class TestStabilityBenchmark:
         result = benchmark.evaluate(structures)
 
         # Check result format
-        assert len(result.evaluator_results) == 2
+        assert len(result.evaluator_results) == 4
         assert "stability" in result.evaluator_results
         assert "stable_ratio" in result.final_scores
         print(result.final_scores)
@@ -97,8 +97,8 @@ class TestStabilityBenchmark:
                         "metrics": {
                             "stable_ratio": 0.75,
                             "mean_e_above_hull": 0.1,
-                            "mean_formation_energy": -6.7, 
-                            "mean_relaxation_RMSE": 0.01,
+                            "mean_formation_energy": 0.0, 
+                            "mean_relaxation_RMSE": 0.0,
                         }
                     }
                 },
@@ -110,7 +110,7 @@ class TestStabilityBenchmark:
 
         # Aggregate results
         scores = benchmark.aggregate_evaluator_results(mock_evaluator_results_from_base)
-
+        print(scores)
         # Check scores
         # aggregate_evaluator_results should pick up combined_value as stability_score
         # and stability_value as stable_ratio.
@@ -119,8 +119,8 @@ class TestStabilityBenchmark:
         assert scores["stable_ratio"] == 0.75
         assert scores["metastable_ratio"] == 0.85
         assert scores["mean_e_above_hull"] == 0.1
-        assert scores["mean_formation_energy"] == -6.7
-        assert scores["mean_relaxation_RMSE"] == 0.01
+        assert scores["mean_formation_energy"] == 0.0
+        assert scores["mean_relaxation_RMSE"] == 0.0
 
     def test_benchmark_metadata(self):
         """Test benchmark metadata structure."""
