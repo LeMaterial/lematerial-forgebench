@@ -1,21 +1,15 @@
 """Tests for stability benchmark."""
 
-from pymatgen.util.testing import PymatgenTest
 import numpy as np
+from pymatgen.util.testing import PymatgenTest
+
 from lematerial_forgebench.benchmarks.stability_benchmark import StabilityBenchmark
 from lematerial_forgebench.preprocess.stability_preprocess import (
     StabilityPreprocessor,
 )
-
 
 """Tests for stability benchmark."""
 
-from pymatgen.util.testing import PymatgenTest
-import numpy as np
-from lematerial_forgebench.benchmarks.stability_benchmark import StabilityBenchmark
-from lematerial_forgebench.preprocess.stability_preprocess import (
-    StabilityPreprocessor,
-)
 
 
 class TestStabilityBenchmark:

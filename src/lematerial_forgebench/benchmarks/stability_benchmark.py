@@ -5,15 +5,17 @@ generated material structures using various relaxation methods.
 """
 
 from typing import Any, Dict
+
 import numpy as np
+
 from lematerial_forgebench.benchmarks.base import BaseBenchmark
 from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
 from lematerial_forgebench.metrics.stability_metrics import (
+    E_HullMetric,
     FormationEnergyMetric,
     MetastabilityMetric,
     RelaxationStabilityMetric,
     StabilityMetric,
-    E_HullMetric
 )
 
 

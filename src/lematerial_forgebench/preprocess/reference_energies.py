@@ -7,12 +7,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from datasets import load_dataset
 from pymatgen.analysis.phase_diagram import PDEntry, PhaseDiagram
 from pymatgen.core import Composition, Element
 from tqdm import tqdm
-
-from datasets import load_dataset
-
 
 CURRENT_FOLDER = os.path.dirname(Path(__file__).resolve())
 
