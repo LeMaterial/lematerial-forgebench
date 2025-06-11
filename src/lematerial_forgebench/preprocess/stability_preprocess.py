@@ -209,6 +209,7 @@ class StabilityPreprocessor(BasePreprocessor):
         # Calculate e_above_hull using LeMatBulk
         try:
             e_above_hull = e_above_hull_calc(structure)
+            print("energy_above_hull :", e_above_hull)
             structure.properties["e_above_hull"] = e_above_hull
             structure.properties["formation_energy"] = form_energy_calc(structure)
             logger.debug(

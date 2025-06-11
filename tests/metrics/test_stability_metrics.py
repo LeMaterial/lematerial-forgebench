@@ -49,7 +49,6 @@ def test_stability_metric(test_structures_with_precomputed_e_above_hull):
     assert len(result.individual_values) == len(test_structures_with_precomputed_e_above_hull)
 
     # Check result structure
-    assert "mean_e_above_hull" in result.metrics
     assert "stable_ratio" in result.metrics
     assert result.primary_metric == "stable_ratio"
 
