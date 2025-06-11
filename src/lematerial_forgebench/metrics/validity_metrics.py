@@ -8,20 +8,15 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List
 
-import json
-from pathlib import Path
 import numpy as np
 from pymatgen.analysis.bond_valence import BVAnalyzer
 from pymatgen.analysis.local_env import CrystalNN, VoronoiNN
 from pymatgen.core.periodic_table import Element
 from pymatgen.core.structure import Structure
-from pymatgen.core import Composition
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
 from lematerial_forgebench.utils.logging import logger
-from lematerial_forgebench.utils.oxidation_state import compositional_oxi_state_guesses, get_inequivalent_site_info
-from pymatgen.analysis.bond_valence import calculate_bv_sum
-from pymatgen.analysis.local_env import get_neighbors_of_site_with_index
+
 
 @dataclass
 class ChargeNeutralityConfig(MetricConfig):
@@ -121,60 +116,23 @@ class ChargeNeutralityMetric(BaseMetric):
             0.0 means perfectly neutral, larger values indicate charge imbalance.
         """
         try:
-            # Try to determine oxidation states - good first pass, if this can be done within pymatgen, it will likely be a structure that is charge balanced 
+            # Try to determine oxidation states
             structure_with_oxi = bv_analyzer.get_oxi_state_decorated_structure(
                 structure
             )
             charge_sum = sum(
-                site.specie.oxi_state for site in structure_with_oxi.sites
+                site.species.oxi_state for site in structure_with_oxi.sites
             )
-            print("Valid structure - charge balanced based on Pymatgen's get_oxi_state_decorated_structure function, which almost always returns " \
-            "reasonable oxidation states")
             return abs(charge_sum)
         except Exception as e:
-            # get_oxi_state_decorated_structure is going to fail a lot, likely more often than not. It never returns zero oxidation states and fails for other 
-            # reasons too when structures and compositions are outside the distribution of the Materials Project 
-            logger.warning(f"Could not determine oxidation states using get_oxi_state_decorated_structure: {str(e)}")
-            sites = get_inequivalent_site_info(structure)
-            bvs = []
-            count = 0
-            for site_index in sites['sites']:
-                nn_list = get_neighbors_of_site_with_index(structure, site_index)
-                bvs.append([sites['species'][count], calculate_bv_sum(structure[site_index], nn_list), sites['multiplicities'][count]])
-                count +=1
-            
-            try: 
-                for bv in bvs:
-                    if np.abs(bv[1]) < 10**-15: 
-                        pass
-                    else:
-                        raise ValueError
-                print("Valid structure - Metallic structure with a bond valence equal to zero for all atoms")
+            if strict:
+                # In strict mode, failing to determine oxidation states is a failure
+                logger.warning(f"Could not determine oxidation states: {str(e)}")
+                return float("inf")
+            else:
+                # In non-strict mode, we pass the structure if we can't determine oxidation states
+                logger.debug(f"Could not determine oxidation states: {str(e)}")
                 return 0.0
-            except ValueError:
-                # this means the bv_sum calculation has predicted this structure is NOT metallic, meaning get_oxi_state_decorated_structure failed to calculate 
-                # oxidation states and it was not because this function does not return zero valent structures. We will now need to determine if this composition 
-                # has the ability to be charged balanced using a reasonable combination of oxidation states. 
-                logger.warning(f"the bond valence sum calculation yielded values that were not zero meaning this is not predicted to be a metallic structure: {str(e)}")
-
-                comp = Composition(structure.composition)
-                here = Path(__file__).resolve().parent
-                three_up = here.parents[2]
-                with open(three_up / 'data' / 'oxi_state_mapping.json', "r") as f:
-                    oxi_state_mapping = json.load(f)
-                oxi_states_override = {}
-                for e in comp.elements: 
-                    oxi_states_override[str(e)] = oxi_state_mapping[str(e)]
-                output = compositional_oxi_state_guesses(comp, all_oxi_states=False, max_sites=-1, target_charge=0, oxi_states_override=oxi_states_override)
-                print("Most valid oxidation state and score based on composition", output[1][0], output[2][0])
-                try:     
-                    score = output[2][0]
-                    if score > 0.01:
-                        return 0.0 
-                    else:
-                        return float("inf") # TODO decide on a function to make this continuous based on LeMatBulk statistics (and scale with other metrics!)
-                except IndexError:
-                    return float("inf")
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.

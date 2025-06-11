@@ -155,8 +155,16 @@ class BaseBenchmark(ABC):
             result = evaluator.evaluate(
                 structures=structures,
             )
+            # print(result.metric_results)
+            # print(result.combined_value)
+            # print(type(result))
             evaluator_results[name] = {
                 "combined_value": result.combined_value,
+                **{
+                    f"{name}_value": res.value
+                    for name, res in result.metric_results.items()
+                },
+                "metric_results": result.metric_results,
                 **{
                     f"{name}_value": res.value
                     for name, res in result.metric_results.items()

@@ -11,6 +11,10 @@ import click
 import yaml
 
 from lematerial_forgebench.benchmarks.example import ExampleBenchmark
+<<<<<<< HEAD
+=======
+from lematerial_forgebench.benchmarks.stability_benchmark import StabilityBenchmark
+>>>>>>> a063224269cc246bc9d75ee3be2b6906e37a7d18
 from lematerial_forgebench.benchmarks.validity_benchmark import ValidityBenchmark
 from lematerial_forgebench.data.structure import format_structures
 from lematerial_forgebench.metrics.validity_metrics import (
@@ -19,6 +23,12 @@ from lematerial_forgebench.metrics.validity_metrics import (
     MinimumInteratomicDistanceMetric,
     PhysicalPlausibilityMetric,
 )
+<<<<<<< HEAD
+=======
+from lematerial_forgebench.preprocess.stability_preprocess import (
+    StabilityPreprocessor,
+)
+>>>>>>> a063224269cc246bc9d75ee3be2b6906e37a7d18
 from lematerial_forgebench.utils.logging import logger
 
 CONFIGS_DIR = Path(__file__).parent.parent / "config"
@@ -169,6 +179,7 @@ def main(input: str, config_name: str, output: str):
             coord_tolerance = coord_config.get("tolerance", 0.2)
 
             # Create custom metrics with configuration
+<<<<<<< HEAD
             ChargeNeutralityMetric(
                 tolerance=charge_tolerance, strict=charge_strict
             )
@@ -176,6 +187,11 @@ def main(input: str, config_name: str, output: str):
             MinimumInteratomicDistanceMetric(
                 scaling_factor=distance_scaling
             )
+=======
+            ChargeNeutralityMetric(tolerance=charge_tolerance, strict=charge_strict)
+
+            MinimumInteratomicDistanceMetric(scaling_factor=distance_scaling)
+>>>>>>> a063224269cc246bc9d75ee3be2b6906e37a7d18
 
             CoordinationEnvironmentMetric(
                 nn_method=coord_nn_method, tolerance=coord_tolerance
@@ -196,6 +212,17 @@ def main(input: str, config_name: str, output: str):
                     "metric_configs": metric_configs,
                 },
             )
+<<<<<<< HEAD
+=======
+        elif benchmark_type == "stability":
+            # before running the benchmark, we need to preprocess the structures
+            stability_preprocessor = StabilityPreprocessor()
+            # Use the preprocessor to process structures
+            preprocessor_result = stability_preprocessor(structures)
+            structures = preprocessor_result.processed_structures
+
+            benchmark = StabilityBenchmark()
+>>>>>>> a063224269cc246bc9d75ee3be2b6906e37a7d18
         else:
             raise ValueError(f"Unknown benchmark type: {benchmark_type}")
 

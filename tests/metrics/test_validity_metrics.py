@@ -1,6 +1,9 @@
 """Tests for validity metrics implementation."""
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a063224269cc246bc9d75ee3be2b6906e37a7d18
 import numpy as np
 import pytest
 from pymatgen.core.structure import Structure
