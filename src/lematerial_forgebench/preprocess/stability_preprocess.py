@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+import numpy as np
 from datasets import load_dataset
 from orb_models.forcefield import pretrained
 from orb_models.forcefield.calculator import ORBCalculator
@@ -31,7 +32,7 @@ from lematerial_forgebench.utils.relaxers import (
     get_relaxer,
     relaxers,
 )
-import numpy as np 
+
 
 class OrbFormationEnergy:
     def __init__(self, temperature: float = 1.0):
