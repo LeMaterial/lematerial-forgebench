@@ -11,24 +11,18 @@ dependencies = [
     "click>=8.1.8",
     "datasets>=3.5.0",
     "fsspec>=2024.12.0",
+    "func-timeout>=4.3.5",
     "mace-torch>=0.3.13",
     "material-hasher",
     "numpy>=2.2.5",
-<<<<<<< HEAD
-=======
     "orb-models==0.5.4",
->>>>>>> a063224269cc246bc9d75ee3be2b6906e37a7d18
     "pandas>=2.2.3",
     "pyarrow>=19.0.1",
     "pymatgen>=2025.4.20",
     "pytest>=8.3.5",
-<<<<<<< HEAD
-    "rich>=14.0.0",
-=======
     "requests>=2.32.3",
     "rich==13.9.4",
     "tqdm>=4.67.1",
->>>>>>> a063224269cc246bc9d75ee3be2b6906e37a7d18
 ]
 
 [project.scripts]
