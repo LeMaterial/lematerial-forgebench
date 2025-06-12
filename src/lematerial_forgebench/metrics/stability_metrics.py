@@ -19,7 +19,7 @@ class FormationEnergyMetric(BaseMetric):
         self,
         name: str | None = None,
         description: str | None = None,
-        lower_is_better: bool = False,
+        lower_is_better: bool = True,
         n_jobs: int = 1,
     ):
         super().__init__(
@@ -218,7 +218,7 @@ class MetastabilityMetric(BaseMetric):
         self,
         name: str | None = None,
         description: str | None = None,
-        lower_is_better: bool = True,
+        lower_is_better: bool = False,
         n_jobs: int = 1,
     ):
         super().__init__(
