@@ -27,6 +27,7 @@ from typing import Any, Dict
 
 import numpy as np
 from pymatgen.core import Structure
+from scipy.special import rel_entr
 
 from lematerial_forgebench.metrics import BaseMetric
 from lematerial_forgebench.metrics.base import MetricConfig
@@ -83,7 +84,7 @@ class _ElementDiversity(BaseMetric):
 
         self.element_histogram = defaultdict(int)
 
-
+    # TODO: Add in Coverage
     def _compute_vendi_score_with_uncertainty(self) -> dict[str, float]:
         """
         Compute the Vendi score (effective diversity) from an elemental distribution,
@@ -259,6 +260,8 @@ class _SpaceGroupDiversity(BaseMetric):
 
         self.spacegroup_histogram = defaultdict(int)
     
+        # TODO: Add in Coverage
+
     def _compute_vendi_score_with_uncertainty(self) -> dict[str, float]:
         """
         Compute the Vendi score (effective diversity) from the spacegroup distribution,
@@ -385,3 +388,233 @@ class _SpaceGroupDiversity(BaseMetric):
 Density Diversity
 -------------------------------------------------------------------------------
 """
+
+@dataclass
+class DensityComponentConfig(MetricConfig):
+    """Configuration for the Density sub-component of Diversity metric.
+
+    This configuration extends the base MetricConfig to include
+    weights for evaluating different components of structural diversity.
+    Parameters
+    ----------
+        bin_size : Float
+            Float value for bin size and effective precision
+
+    """
+    bin_size: float = 0.5
+
+class _DensityComponentMetric(BaseMetric):
+    """
+    Calculates a scalar score capturing Density Diversity across the structures
+    """
+
+    def __init__(
+        self,
+        name: str | None = "Density Diversity",
+        description: str | None = None,
+        lower_is_better: bool = False,
+        n_jobs: int = 1,
+        bin_size = 0.5
+    ):
+        super().__init__(
+            name=name or "Density Diversity",
+            description=description 
+            or "Scalar Score of Density Diversity in Generated Set",
+            lower_is_better=lower_is_better,
+            n_jobs=n_jobs,
+        )
+        self.config = DensityComponentConfig(
+            name=self.config.name,
+            description=self.config.description,
+            lower_is_better=self.config.lower_is_better,
+            n_jobs=self.config.n_jobs,
+            bin_size = bin_size,
+            )
+
+
+        self._init_density_histogram(
+            smallest_density_bucket=0.5,
+            largest_density_bucket=25.0,
+            )
+        self._init_reference_histogram(
+            smallest_density_bucket=0.5,
+            largest_density_bucket=25.0,
+        )
+
+    def _init_density_histogram(
+            self,
+            smallest_density_bucket:float = 0.5,
+            largest_density_bucket:float = 25.0,
+            ):
+        """
+        Instantiates a bucket-based histogram capturing diversity and corresponding frequency
+        of materials in the generated set.
+        Parameters
+        ----------
+        smallest_density_bucket: Float
+            Float value for the smallest sized bucket to capture
+        largest_density_bucket: Float
+            Float value for the largest sized bucket to capture
+        bin_size : Float
+            Float value for bin size and effective precision
+        """
+
+        bins = np.arange(smallest_density_bucket, largest_density_bucket, self.config.bin_size )
+        bucket_dict = {lower_ceiling :0 for lower_ceiling in bins }
+        self.density_histogram = bucket_dict
+
+
+    def _init_reference_histogram(
+            self,
+            smallest_density_bucket:float = 0.5,
+            largest_density_bucket:float = 25.0,
+            ):
+        """
+        Instantiates a bucket-based histogram capturing diversity and corresponding frequency
+        of materials in the generated set.
+        Parameters
+        ----------
+        smallest_density_bucket: Float
+            Float value for the smallest sized bucket to capture
+        largest_density_bucket: Float
+            Float value for the largest sized bucket to capture
+        """
+
+        bins = np.arange(smallest_density_bucket, largest_density_bucket, self.config.bin_size )
+        bucket_dict = {lower_ceiling :1 for lower_ceiling in bins } # setting this as a uniform dist 
+        self.reference_histogram = bucket_dict
+    
+
+    def _compute_density_diversity_with_kl(
+            
+        self,
+    ) -> dict[str, float]:
+        """
+        Compute Shannon entropy and KL divergence between the structure density
+        distribution of the current dataset and a reference distribution.
+
+        Assumes both distributions are defined over the same bins, and are class objects
+
+        Returns
+        -------
+        dict[str, float]
+            Dictionary containing:
+            - shannon_entropy: Entropy of the current dataset
+            - entropy_variance: Multinomial variance estimate of entropy
+            - entropy_std: Standard deviation of entropy
+            - kl_divergence: D_KL(P || Q) from current to reference
+
+        References
+        ----------
+        - Shannon, C. E. (1948). 
+        *A Mathematical Theory of Communication*.  
+        [https://ieeexplore.ieee.org/document/6773024](https://ieeexplore.ieee.org/document/6773024)
+
+        - Kullback, S., & Leibler, R. A. (1951). 
+        *On Information and Sufficiency*.  
+        [https://projecteuclid.org/euclid.aoms/1177729694](https://projecteuclid.org/euclid.aoms/1177729694)
+        """
+        values = np.array(list(self.density_histogram.values()), dtype=float)
+        ref_values = np.array([self.reference_histogram.get(k, 1) for k in self.density_histogram], dtype=float)
+
+        total = np.sum(values)
+        ref_total = np.sum(ref_values)
+
+        if total == 0 or ref_total == 0:
+            return {
+                "shannon_entropy": 0.0,
+                "entropy_variance": 0.0,
+                "entropy_std": 0.0,
+                "kl_divergence": 0.0,
+            }
+
+        p = values / total
+        q = ref_values / ref_total
+
+        # Add small epsilon to avoid log(0)
+        epsilon = 1e-12
+        p = np.clip(p, epsilon, 1)
+        q = np.clip(q, epsilon, 1)
+
+        entropy = -np.sum(p * np.log(p))
+        second_moment = np.sum(p * (np.log(p)) ** 2)
+        entropy_variance = (1 / total) * (second_moment - entropy**2)
+        entropy_std = np.sqrt(entropy_variance)
+
+        kl_divergence = np.sum(rel_entr(p, q))  # D_KL(P || Q)
+
+        return {
+            "shannon_entropy": entropy,
+            "entropy_variance": entropy_variance,
+            "entropy_std": entropy_std,
+            "kl_divergence": kl_divergence,
+        }
+
+    def _get_compute_attributes(self) -> dict[str, Any]:
+        return {
+            "density_histogram" : self.density_histogram,
+            "reference_histogram" : self.reference_histogram,
+            "bin_size": self.config.bin_size,
+        }
+    
+    @staticmethod
+    def compute_structure(
+        structure: Structure,
+        density_histogram: Dict[float, int],
+        reference_histogram: Dict[float, int],
+        bin_size: float
+        ) -> float:
+        """
+        Retrieves all elements present in Structure and adds count to internal elemental distribution
+        Parameters
+        ----------
+        structure: Structure
+            A pymatgen Structure object to evaluate.
+        density_histogram: dict[float:int]
+            a bucket-based histogram capturing diversity and corresponding frequency of materials
+            in the generated set.
+        reference_histogram: dict[float:int]
+            a bucket-based reference histogram capturing diversity and corresponding frequency of materials
+            in the generated set.
+        Returns:
+        -------
+        float:
+            This value serves as a Binary Indicator representing if the structure was successfully evaluated or not. 
+
+        """
+        try:
+            density = structure.density
+            bin_index = int(density // bin_size)
+            density_histogram[bin_index] += 1
+            return 1
+    
+        except Exception as e:
+            logger.debug(f"Could not determine Density in {structure.formula} : {str(e)}")
+            return 0  
+     
+    def aggregate_results(self, values: list[float]) -> dict[str, Any]:
+        """Aggregate results into final metric values.
+
+        Parameters
+        ----------
+        values : list[float]
+            Binary indicator to indicate if the density is correctly  the value was correctly 
+
+        Returns
+        -------
+        dict
+            Dictionary with aggregated metrics.
+        """
+        density_metrics = self._compute_density_diversity_with_kl()
+
+        return {
+            "metrics": {
+                "density_diversity_shannon_entropy": density_metrics["shannon_entropy"],
+                "density_diversity_kl_divergence_from_uniform": density_metrics["kl_divergence"],
+            },
+            "primary_metric": "density_diversity_kl_divergence_from_uniform",
+            "uncertainties": {
+                "shannon_entropy_std" : density_metrics["entropy_std"],
+                "shannon_entropy_variance": density_metrics["entropy_variance"],
+            }
+        }

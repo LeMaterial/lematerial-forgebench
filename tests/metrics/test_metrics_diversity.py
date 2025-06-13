@@ -14,6 +14,7 @@ from lematerial_forgebench.metrics.base import MetricResult
 from lematerial_forgebench.metrics.diversity_metric import (
     _ElementDiversity,
     _SpaceGroupDiversity,
+    _DensityComponentMetric,
     )
 
 trial_data_file_path = "trial_data/crystal_symmcd_mp20.csv"
@@ -138,6 +139,44 @@ class TestSpaceGroupDiversityMetric:
         # Check Value Range
         assert 0.0 <= metric_score.metrics[metric_score.primary_metric] <= 230.0
         assert 0.0 <= metric_score.metrics["mean_symmetry_rating"] <= 1.0
+
+        
+        #Check Uncertainty Sanity
+        assert isinstance(metric_score.uncertainties["shannon_entropy_std"], float)
+        assert isinstance(metric_score.uncertainties["shannon_entropy_variance"], float)
+
+
+class TestDensityDiversityMetrics:
+    """ Tests the Density Diversity Metric Component of the overall Diversity Metrics"""
+
+    def test_diversity_metrics_initialization(self):
+        metric = _DensityComponentMetric()
+        assert metric.name == "Density Diversity"
+
+    def test_element_diversity_score(self, fetch_sample_from_trial_data):
+        """Runs a Sanity check on the elemental diversity score
+        
+            Parameters
+            ----------
+            fetch_sample_from_trial_data : pytest.fixture
+                PyTest Fixture which locally initializes a list of 10 structures from the trial data
+        """
+
+        metric = _DensityComponentMetric()
+        metric_score = metric.compute(fetch_sample_from_trial_data)
+        
+        # Sanity Checks
+        assert isinstance(metric_score, MetricResult)
+        assert len(metric_score.failed_indices) == 0
+
+        # Check Result Structure
+        assert "density_diversity_shannon_entropy" in metric_score.metrics
+        assert "density_diversity_kl_divergence_from_uniform" in metric_score.metrics
+
+        assert metric_score.primary_metric == "density_diversity_kl_divergence_from_uniform"
+
+        # Check Value Range
+        assert 0.0 <= metric_score.metrics[metric_score.primary_metric] <= 25.0
 
         
         #Check Uncertainty Sanity
