@@ -136,7 +136,7 @@ class ChargeNeutralityMetric(BaseMetric):
                 else:
                     raise ValueError
             print("Valid structure - Metallic structure with a bond valence equal to zero for all atoms")
-            return 0.0
+            return 1.0
         except ValueError:
             # this means the bv_sum calculation has predicted this structure is NOT metallic. Therefore, we can try and assign oxidation states using PMG's 
             # oxidation state functions, which do not return oxidation states for metallic structuers. 
@@ -152,7 +152,10 @@ class ChargeNeutralityMetric(BaseMetric):
                 )
                 print("Valid structure - charge balanced based on Pymatgen's get_oxi_state_decorated_structure function, which almost always returns " \
                 "reasonable oxidation states")
-                return abs(charge_sum)
+                if charge_sum == 0.0:
+                    return 1.0
+                else:
+                    return 0.0
             except ValueError:
                 # get_oxi_state_decorated_structure fails when structures and compositions are outside the distribution of the Materials Project.
                 # We will now need to determine if this composition has the ability to be charged balanced using a reasonable combination of oxidation states. 
@@ -171,11 +174,11 @@ class ChargeNeutralityMetric(BaseMetric):
                 try:     
                     score = output[2][0]
                     if score > 0.001:
-                        return 0.0 
+                        return 1.0 
                     else:
-                        return float(1.0) # TODO decide on a function to make this continuous based on LeMatBulk statistics (and scale with other metrics!)
+                        return float(0.0) # TODO decide on a function to make this continuous based on LeMatBulk statistics (and scale with other metrics!)
                 except IndexError:
-                    return float(1.0)
+                    return float(0.0)
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -341,7 +344,7 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
 
         # No distances to check (single atom structure)
         if len(distances_to_check) == 0:
-            return 1.0
+            return 0.0
 
         # Check if we have radius data for all elements in the structure
         elements_in_structure = {str(site.specie) for site in structure}
@@ -349,7 +352,7 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
 
         if missing_elements:
             logger.warning(f"Missing radius data for elements: {missing_elements}")
-            return 0.5  # Partial validity because we can't fully check
+            return 0.0  # Invalid because we can't fully check
 
         # For each pair of sites, compute the minimum allowed distance
         valid_pairs = 0
@@ -363,9 +366,11 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
 
                 # Sum of atomic radii
                 min_dist = (
-                    element_radii[element_i] + element_radii[element_j]
+                    0.7 + element_radii[element_i] + element_radii[element_j]
                 ) * scaling_factor
                 actual_dist = all_distances[i, j]
+
+                # print(min_dist) 
 
                 if actual_dist >= min_dist:
                     valid_pairs += 1
@@ -376,8 +381,11 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
                     )
 
         # Return the ratio of valid pairs
-        return valid_pairs / total_pairs if total_pairs > 0 else 1.0
-
+        if valid_pairs / total_pairs == 1.0:
+            return 1.0
+        else:
+            return 0.0
+        
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
 
@@ -704,7 +712,10 @@ class CoordinationEnvironmentMetric(BaseMetric):
                 )
 
         # Return the ratio of valid sites
-        return valid_sites / total_sites_checked if total_sites_checked > 0 else 0.0
+        if valid_sites / total_sites_checked == 1.0:
+            return 1.0 
+        else:
+            return 0.0
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -874,11 +885,13 @@ class PhysicalPlausibilityMetric(BaseMetric):
             if density_valid:
                 checks_passed += 1
             else:
+                print('density failed')
                 logger.debug(
                     f"Density check failed: {density:.3f} g/cm³ "
                     f"(not in range [{min_density}, {max_density}])"
                 )
         except Exception as e:
+            print('density failed')
             logger.debug(f"Could not compute density: {str(e)}")
 
         # Check 2: Valid lattice (not collapsed, not excessively large)
@@ -905,47 +918,58 @@ class PhysicalPlausibilityMetric(BaseMetric):
             ):
                 checks_passed += 1
             else:
+                print('lattice failed')
                 logger.debug(
                     f"Lattice check failed: a={a:.3f}, b={b:.3f}, c={c:.3f}, "
                     f"angles={angles}, volume={volume:.3f}"
                 )
         except Exception as e:
+            print('lattice failed')
             logger.debug(f"Could not validate lattice: {str(e)}")
 
         # Check 3: Format representation check
         if check_format:
             total_checks += 1
-            try:
+            # try:
                 # Try to convert to CIF format and back
-                import io
+            import io
 
-                from pymatgen.io.cif import CifParser, CifWriter
+            from pymatgen.io.cif import CifParser, CifWriter
 
-                # Write to CIF
-                cif_writer = CifWriter(structure)
-                cif_string = io.StringIO()
-                cif_writer.write_file(cif_string)
-                cif_string.seek(0)
+            # Write to CIF
+            cif_writer = CifWriter(structure)
+            cif_string = 'temp.cif'
+            # cif_string = io.StringIO()
+            cif_writer.write_file(cif_string)
+            # cif_string.seek(0)
 
-                # Parse back from CIF
-                parser = CifParser(cif_string)
-                recovered_structure = parser.get_structures()[0]
+            # Parse back from CIF
+            parser = CifParser(cif_string)
+            recovered_structure = parser.get_structures()[0]
 
-                # Check if recovered structure is similar to original
-                # by comparing composition and number of sites
-                if (
-                    structure.composition.reduced_formula
-                    == recovered_structure.composition.reduced_formula
-                    and len(structure) == len(recovered_structure)
-                ):
-                    checks_passed += 1
-                else:
-                    logger.debug(
-                        f"Format check failed: original={structure.composition}, "
-                        f"recovered={recovered_structure.composition}"
-                    )
-            except Exception as e:
-                logger.debug(f"Format check failed: {str(e)}")
+            # Check if recovered structure is similar to original
+            # by comparing composition and number of sites
+
+            # IMPORTANT NOTE - CIF files will sometimes load primitive cells and sometimes conventional cells. 
+            # This is assuming the initial file is a conventional cell. If this IS NOT THE CASE, amend the input structure 
+            # to be a conventional cell. 
+
+            if (
+                structure.composition.reduced_formula
+                == recovered_structure.composition.reduced_formula
+                and len(structure) == len(recovered_structure.to_conventional())
+            ):
+                checks_passed += 1
+            else:
+                print('Format failed')
+
+                logger.debug(
+                    f"Format check failed: original={structure.composition}, "
+                    f"recovered={recovered_structure.composition}"
+                )
+            # except Exception as e:
+            #     print('Format failed')
+            #     logger.debug(f"Format check failed: {str(e)}")
 
         # Check 4: Symmetry check
         if check_symmetry:
@@ -961,13 +985,22 @@ class PhysicalPlausibilityMetric(BaseMetric):
                 if 0 < spacegroup <= 230:
                     checks_passed += 1
                 else:
+                    print('Symmetry failed')
                     logger.debug(f"Symmetry check failed: spacegroup={spacegroup}")
             except Exception as e:
+                print('Symmetry failed')
                 logger.debug(f"Symmetry check failed: {str(e)}")
 
         # Return the ratio of passed checks
-        return checks_passed / total_checks if total_checks > 0 else 0.0
+        # print(checks_passed)
+        # print(total_checks)
+        # print(checks_passed/total_checks)
 
+        if checks_passed / total_checks == 1.0: 
+            return 1.0
+        else:
+            return 0.0
+        
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
 
