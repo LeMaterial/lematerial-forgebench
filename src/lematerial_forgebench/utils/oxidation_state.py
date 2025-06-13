@@ -102,7 +102,7 @@ def compositional_oxi_state_guesses(
             scores = []
             for o in oxid_combo: 
                 scores.append(type(comp).oxi_prob[str(Species(el, o))])
-            score = min(scores) 
+            score = np.mean(scores) 
             # If it is the most probable combo for a certain sum,
             # store the combination
             if oxid_sum not in el_sum_scores[idx] or score > el_sum_scores[idx].get(oxid_sum, 0):
@@ -132,7 +132,7 @@ def compositional_oxi_state_guesses(
                 scores.append(el_sum_scores[idx][v])
             # the score is the minimum of the scores of each of the oxidation states in the composition - the goal is to find a charge 
             # balanced oxidation state which limits the occurance of very uncommon oxidation states
-            all_scores.append(min(scores))
+            all_scores.append(np.mean(scores))
             # Collect the combination of oxidation states for each site
             all_oxid_combo.append(
                 {e: el_best_oxid_combo[idx][v] for idx, (e, v) in enumerate(zip(elements, x, strict=True))}
