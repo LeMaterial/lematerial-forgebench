@@ -169,6 +169,7 @@ class ValidityBenchmark(BaseBenchmark):
         overall_validity_ratio = overall_validity_ratio.get("metrics", {})
         overall_validity_ratio = overall_validity_ratio.get(
             "valid_structures_ratio", 0.0
+        )
 
 
         return {

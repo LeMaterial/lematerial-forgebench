@@ -87,18 +87,18 @@ def process_item_action(item):
     sites = None
     species = None
 
+    # try:
     try:
-        try:
-            strut = bv.get_oxi_state_decorated_structure(strut)
-            valences_calculated = True
-        except ValueError:
-            pass
-
-        species = strut.species
-        sites = get_inequivalent_site_info(strut)
-
-    except:
+        strut = bv.get_oxi_state_decorated_structure(strut)
+        valences_calculated = True
+    except ValueError:
         pass
+
+    species = strut.species
+    sites = get_inequivalent_site_info(strut)
+
+    # except:
+        # pass
 
     return [LeMatID, sites, species, valences_calculated]
 

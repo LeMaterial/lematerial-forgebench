@@ -10,7 +10,7 @@ from pathlib import Path
 import click
 import yaml
 
-from lematerial_forgebench.benchmarks.example import ExampleBenchmark
+# from lematerial_forgebench.benchmarks.example import ExampleBenchmark
 from lematerial_forgebench.benchmarks.stability_benchmark import StabilityBenchmark
 from lematerial_forgebench.benchmarks.validity_benchmark import ValidityBenchmark
 from lematerial_forgebench.data.structure import format_structures
@@ -22,7 +22,7 @@ from lematerial_forgebench.metrics.validity_metrics import (
 )
 from lematerial_forgebench.preprocess.stability_preprocess import (
     StabilityPreprocessor,
-
+)
 from lematerial_forgebench.utils.logging import logger
 
 CONFIGS_DIR = Path(__file__).parent.parent / "config"
