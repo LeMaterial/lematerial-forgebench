@@ -170,3 +170,5 @@ cython_debug/
 lightning_logs/
 src/lematerial_forgebench/.DS_Store
 
+# Ignore .gz
+*.gz
