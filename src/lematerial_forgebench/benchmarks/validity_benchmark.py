@@ -166,7 +166,7 @@ class ValidityBenchmark(BaseBenchmark):
         overall_validity_ratio = evaluator_results.get("overall_validity", {})
         overall_validity_ratio = overall_validity_ratio.get("metric_results", {})
         overall_validity_ratio = overall_validity_ratio.get("composite", {})
-        if type(overall_validity_ratio) == dict:
+        if isinstance(overall_validity_ratio, dict):
             overall_validity_ratio = overall_validity_ratio.get("metrics", {})
         else:
             overall_validity_ratio = overall_validity_ratio.metrics 
