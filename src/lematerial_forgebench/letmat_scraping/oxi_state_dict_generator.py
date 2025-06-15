@@ -1,6 +1,12 @@
-import pandas as pd 
+import pandas as pd
 import json
-from lematerial_forgebench.utils.oxidation_state import build_oxi_dict, build_sorted_oxi_dict, build_oxi_dict_probs, oxi_state_map, build_oxi_state_map
+from lematerial_forgebench.utils.oxidation_state import (
+    build_oxi_dict,
+    build_sorted_oxi_dict,
+    build_oxi_dict_probs,
+    oxi_state_map,
+    build_oxi_state_map,
+)
 
 loaded_df = pd.read_pickle("data\lematbulk_oxi_no_strut.pkl")
 oxi_dict = build_oxi_dict(loaded_df)

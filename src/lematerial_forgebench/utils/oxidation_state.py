@@ -8,7 +8,7 @@ import numpy as np
 
 
 def compositional_oxi_state_guesses(
-    comp, 
+    comp,
     all_oxi_states: bool,
     max_sites: int | None,
     oxi_states_override: dict[str, list] | None,
@@ -20,7 +20,7 @@ def compositional_oxi_state_guesses(
     calculation of the most likely oxidation states
 
     Args:
-        comp: A Pymatgen composition object. 
+        comp: A Pymatgen composition object.
         oxi_states_override (dict): dict of str->list to override an element's common oxidation states, e.g.
             {"V": [2,3,4,5]}.
         target_charge (float): the desired total charge on the structure. Default is 0 signifying charge balance.
@@ -49,7 +49,9 @@ def compositional_oxi_state_guesses(
         comp = comp.reduced_composition
 
         if max_sites < -1 and comp.num_atoms > abs(max_sites):
-            raise ValueError(f"Composition {comp} cannot accommodate max_sites setting!")
+            raise ValueError(
+                f"Composition {comp} cannot accommodate max_sites setting!"
+            )
 
     elif max_sites and comp.num_atoms > max_sites:
         reduced_comp, reduced_factor = comp.get_reduced_composition_and_factor()
@@ -57,20 +59,24 @@ def compositional_oxi_state_guesses(
             reduced_comp *= max(1, int(max_sites / reduced_comp.num_atoms))
             comp = reduced_comp  # as close to max_sites as possible
         if comp.num_atoms > max_sites:
-            raise ValueError(f"Composition {comp} cannot accommodate max_sites setting!")
+            raise ValueError(
+                f"Composition {comp} cannot accommodate max_sites setting!"
+            )
 
     # Load prior probabilities of oxidation states, used to rank solutions
 
     here = Path(__file__).resolve().parent
     three_up = here.parents[2]
-    with open(three_up / 'data' / 'oxi_dict_probs.json', "r") as f:
+    with open(three_up / "data" / "oxi_dict_probs.json", "r") as f:
         loaded_dict = json.load(f)
 
     type(comp).oxi_prob = loaded_dict
     oxi_states_override = oxi_states_override or {}
     # Assert Composition only has integer amounts
     if not all(amt == int(amt) for amt in comp.values()):
-        raise ValueError("Charge balance analysis requires integer values in Composition!")
+        raise ValueError(
+            "Charge balance analysis requires integer values in Composition!"
+        )
 
     # For each element, determine all possible sum of oxidations
     # (taking into account nsites for that particular element)
@@ -88,7 +94,9 @@ def compositional_oxi_state_guesses(
         elif all_oxi_states:
             oxids = Element(el).oxidation_states
         else:
-            oxids = Element(el).icsd_oxidation_states or Element(el).common_oxidation_states
+            oxids = (
+                Element(el).icsd_oxidation_states or Element(el).common_oxidation_states
+            )
 
         # Get all possible combinations of oxidation states
         # and sum each combination
@@ -100,13 +108,15 @@ def compositional_oxi_state_guesses(
 
             # Determine how probable is this combo?
             scores = []
-            for o in oxid_combo: 
+            for o in oxid_combo:
                 scores.append(type(comp).oxi_prob[str(Species(el, o))])
-            score = np.mean(scores) 
+            score = np.mean(scores)
             # If it is the most probable combo for a certain sum,
             # store the combination
-            if oxid_sum not in el_sum_scores[idx] or score > el_sum_scores[idx].get(oxid_sum, 0):
-                if max(oxid_combo) - min(oxid_combo) > 1: 
+            if oxid_sum not in el_sum_scores[idx] or score > el_sum_scores[idx].get(
+                oxid_sum, 0
+            ):
+                if max(oxid_combo) - min(oxid_combo) > 1:
                     pass
                 else:
                     el_sum_scores[idx][oxid_sum] = score
@@ -130,12 +140,15 @@ def compositional_oxi_state_guesses(
             scores = []
             for idx, v in enumerate(x):
                 scores.append(el_sum_scores[idx][v])
-            # the score is the minimum of the scores of each of the oxidation states in the composition - the goal is to find a charge 
+            # the score is the minimum of the scores of each of the oxidation states in the composition - the goal is to find a charge
             # balanced oxidation state which limits the occurance of very uncommon oxidation states
             all_scores.append(np.mean(scores))
             # Collect the combination of oxidation states for each site
             all_oxid_combo.append(
-                {e: el_best_oxid_combo[idx][v] for idx, (e, v) in enumerate(zip(elements, x, strict=True))}
+                {
+                    e: el_best_oxid_combo[idx][v]
+                    for idx, (e, v) in enumerate(zip(elements, x, strict=True))
+                }
             )
     # Sort the solutions from highest to lowest score
     if all_scores:
@@ -150,7 +163,12 @@ def compositional_oxi_state_guesses(
             ),
             strict=True,
         )
-    return tuple(all_sols), tuple(all_oxid_combo), tuple(sorted(all_scores, reverse = True))
+    return (
+        tuple(all_sols),
+        tuple(all_oxid_combo),
+        tuple(sorted(all_scores, reverse=True)),
+    )
+
 
 def get_inequivalent_site_info(structure):
     """Gets the symmetrically inequivalent sites as found by the
@@ -170,9 +188,7 @@ def get_inequivalent_site_info(structure):
 
     # Get the symmetrically inequivalent indexes
     inequivalent_sites = (
-        SpacegroupAnalyzer(structure)
-        .get_symmetrized_structure()
-        .equivalent_indices
+        SpacegroupAnalyzer(structure).get_symmetrized_structure().equivalent_indices
     )
 
     # Equivalent indexes must all share the same atom type
@@ -183,29 +199,34 @@ def get_inequivalent_site_info(structure):
     return {
         "sites": inequivalent_sites,
         "species": species,
-        "multiplicities": multiplicities,}
+        "multiplicities": multiplicities,
+    }
+
 
 def build_oxi_dict(df):
     oxi_dict = {}
     for i in range(0, len(df)):
         row = df.iloc[i]
         if row.ValencesCalculated:
-            for key, value in np.asarray([row.Sites['species'], row.Sites['multiplicities']]).T:
+            for key, value in np.asarray(
+                [row.Sites["species"], row.Sites["multiplicities"]]
+            ).T:
                 if key in oxi_dict:
                     oxi_dict[key] += int(value)
                 else:
                     oxi_dict[key] = int(value)
     return oxi_dict
 
+
 def build_sorted_oxi_dict(oxi_dict_sorted):
     oxi_dict_counts = {}
     for key in oxi_dict_sorted.keys():
-        try: 
+        try:
             int(key[1])
             el = key[0]
         except ValueError:
             if key[1] in ["+", "-"]:
-                el = key[0]            
+                el = key[0]
             else:
                 el = key[0:2]
 
@@ -215,23 +236,25 @@ def build_sorted_oxi_dict(oxi_dict_sorted):
             oxi_dict_counts[el] = int(oxi_dict_sorted[key])
     return oxi_dict_counts
 
+
 def build_oxi_dict_probs(oxi_dict_sorted, oxi_dict_counts):
     oxi_dict_probs = oxi_dict_sorted
     for key in oxi_dict_probs.keys():
-        try: 
+        try:
             int(key[1])
             el = key[0]
         except ValueError:
             if key[1] in ["+", "-"]:
-                el = key[0]            
+                el = key[0]
             else:
                 el = key[0:2]
         denom = oxi_dict_counts[el]
-        oxi_dict_probs[key] = oxi_dict_probs[key]/denom
+        oxi_dict_probs[key] = oxi_dict_probs[key] / denom
     return oxi_dict_probs
 
+
 def oxi_state_map(oxidation_state):
-    try: 
+    try:
         int(oxidation_state[1])
         el = oxidation_state[0]
         ox = int(oxidation_state[1:3][::-1])
@@ -250,15 +273,17 @@ def oxi_state_map(oxidation_state):
             el = oxidation_state[0:2]
             return ox, el
 
-def build_oxi_state_map(oxi_dict_sorted): 
+
+def build_oxi_state_map(oxi_dict_sorted):
     oxi_state_mapping = {}
     for key in oxi_dict_sorted.keys():
         ox, el = oxi_state_map(key)
         if el in oxi_state_mapping:
             oxi_state_mapping[el].append(ox)
         else:
-            oxi_state_mapping[el] = [ox] 
+            oxi_state_mapping[el] = [ox]
     return oxi_state_mapping
 
+
 def sign_to_int(char):
-    return {'+': 1, '-': -1}.get(char, 0)  # default to 0 if unexpected
+    return {"+": 1, "-": -1}.get(char, 0)  # default to 0 if unexpected

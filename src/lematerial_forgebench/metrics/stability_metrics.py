@@ -37,7 +37,7 @@ class FormationEnergyMetric(BaseMetric):
     @staticmethod
     def compute_structure(structure: Structure) -> float:
         """Evaluates structure formation energy using the specified MLIP
-        
+
         Parameters
         ----------
         structure : Structure
@@ -52,7 +52,6 @@ class FormationEnergyMetric(BaseMetric):
             # Extract formation_energy from structure properties
             formation_energy = structure.properties.get("formation_energy", None)
             print(str(structure.composition) + " Formation Energy :", formation_energy)
-
 
             if formation_energy is None:
                 logger.warning(
@@ -150,7 +149,6 @@ class StabilityMetric(BaseMetric):
             # Extract e_above_hull from structure properties
 
             e_above_hull = structure.properties.get("e_above_hull", None)
-            
 
             if e_above_hull is None:
                 logger.warning(
@@ -246,7 +244,6 @@ class E_HullMetric(BaseMetric):
             # Extract e_above_hull from structure properties
 
             e_above_hull = structure.properties.get("e_above_hull", None)
-            
 
             if e_above_hull is None:
                 logger.warning(
@@ -297,7 +294,6 @@ class E_HullMetric(BaseMetric):
                 "e_above_hull_std": {"std": e_above_hull_std},
             },
         }
-
 
 
 class MetastabilityMetric(BaseMetric):
@@ -391,13 +387,14 @@ class MetastabilityMetric(BaseMetric):
             "uncertainties": {},
         }
 
+
 class RelaxationStabilityMetric(BaseMetric):
-    """Evaluate the RMSE between the atomic positions for the relaxed structure and 
+    """Evaluate the RMSE between the atomic positions for the relaxed structure and
     generatd structure.
 
-    This metric assumes that relaxed structures have already been computed and stored 
-    in the structure object at "structure.properties["relaxed_structure"]" 
-    It calculates relaxation stability statistics without performing any relaxation  
+    This metric assumes that relaxed structures have already been computed and stored
+    in the structure object at "structure.properties["relaxed_structure"]"
+    It calculates relaxation stability statistics without performing any relaxation
     calculations.
     """
 
@@ -421,7 +418,9 @@ class RelaxationStabilityMetric(BaseMetric):
         return {}
 
     @staticmethod
-    def compute_structure(structure: Structure,) -> float:
+    def compute_structure(
+        structure: Structure,
+    ) -> float:
         """Extract precomputed relaxed structure from structure object.
 
         Parameters
@@ -436,16 +435,17 @@ class RelaxationStabilityMetric(BaseMetric):
         """
         relaxed_structure = structure.properties["relaxed_structure"]
 
-
         try:
             MSE = 0
             for site_index in range(0, len(structure)):
                 strut_site = structure[site_index]
                 relaxed_strut_site = relaxed_structure[site_index]
-                MSE += np.linalg.norm(strut_site.coords - relaxed_strut_site.coords)**2
-            MSE = MSE/len(structure)
+                MSE += (
+                    np.linalg.norm(strut_site.coords - relaxed_strut_site.coords) ** 2
+                )
+            MSE = MSE / len(structure)
             RMSE = np.sqrt(MSE)
-            print(str(structure.composition) +" Relaxation Stability RMSE :", RMSE)
+            print(str(structure.composition) + " Relaxation Stability RMSE :", RMSE)
             return RMSE
 
         except Exception as e:
@@ -484,5 +484,5 @@ class RelaxationStabilityMetric(BaseMetric):
                 "mean_RMSE_values": mean_RMSE_values,
             },
             "primary_metric": "mean_RMSE_values",
-            "uncertainties": {"std":std_RMSE_values},
+            "uncertainties": {"std": std_RMSE_values},
         }

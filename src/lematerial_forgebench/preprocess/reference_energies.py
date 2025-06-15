@@ -96,7 +96,7 @@ def process_chunk(chunk):
 @lru_cache(maxsize=None)
 def _retrieve_df():
     dataset = load_dataset("Entalpic/LeMaterial-Above-Hull-dataset")
-    dataset = pd.DataFrame(dataset['dataset'])
+    dataset = pd.DataFrame(dataset["dataset"])
     return dataset
 
 
@@ -107,7 +107,7 @@ def _retrieve_matrix():
     )
     composition_matrix = composition_matrix["composition_matrix"]
     composition_df = composition_matrix.to_pandas()
-    composition_df.drop("Unnamed: 0", axis = 1, inplace = True)
+    composition_df.drop("Unnamed: 0", axis=1, inplace=True)
     composition_array = composition_df.to_numpy()
     return composition_array
 

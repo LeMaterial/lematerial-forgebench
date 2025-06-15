@@ -46,7 +46,9 @@ def test_stability_metric(test_structures_with_precomputed_e_above_hull):
     result = metric(test_structures_with_precomputed_e_above_hull)
 
     # Check that computation ran (may have failed indices due to no MP entries)
-    assert len(result.individual_values) == len(test_structures_with_precomputed_e_above_hull)
+    assert len(result.individual_values) == len(
+        test_structures_with_precomputed_e_above_hull
+    )
 
     # Check result structure
     assert "stable_ratio" in result.metrics

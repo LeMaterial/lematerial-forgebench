@@ -21,7 +21,10 @@ from pymatgen.core import Composition
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
 from lematerial_forgebench.utils.logging import logger
-from lematerial_forgebench.utils.oxidation_state import compositional_oxi_state_guesses, get_inequivalent_site_info
+from lematerial_forgebench.utils.oxidation_state import (
+    compositional_oxi_state_guesses,
+    get_inequivalent_site_info,
+)
 from pymatgen.analysis.bond_valence import calculate_bv_sum
 from pymatgen.analysis.local_env import get_neighbors_of_site_with_index
 
@@ -127,62 +130,87 @@ class ChargeNeutralityMetric(BaseMetric):
         sites = get_inequivalent_site_info(structure)
         bvs = []
         count = 0
-        for site_index in sites['sites']:
+        for site_index in sites["sites"]:
             nn_list = get_neighbors_of_site_with_index(structure, site_index)
-            bvs.append([sites['species'][count], calculate_bv_sum(structure[site_index], nn_list), sites['multiplicities'][count]])
-            count +=1
-        
-        try: 
+            bvs.append(
+                [
+                    sites["species"][count],
+                    calculate_bv_sum(structure[site_index], nn_list),
+                    sites["multiplicities"][count],
+                ]
+            )
+            count += 1
+
+        try:
             for bv in bvs:
-                if np.abs(bv[1]) < 10**-15: 
+                if np.abs(bv[1]) < 10**-15:
                     pass
                 else:
                     raise ValueError
-            print("Valid structure - Metallic structure with a bond valence equal to zero for all atoms")
+            print(
+                "Valid structure - Metallic structure with a bond valence equal to zero for all atoms"
+            )
             return 1.0
         except ValueError:
-            # this means the bv_sum calculation has predicted this structure is NOT metallic. Therefore, we can try and assign oxidation states using PMG's 
-            # oxidation state functions, which do not return oxidation states for metallic structuers. 
-            logger.warning(f"the bond valence sum calculation yielded values that were not zero meaning this is not predicted to be a metallic structure")        
+            # this means the bv_sum calculation has predicted this structure is NOT metallic. Therefore, we can try and assign oxidation states using PMG's
+            # oxidation state functions, which do not return oxidation states for metallic structuers.
+            logger.warning(
+                f"the bond valence sum calculation yielded values that were not zero meaning this is not predicted to be a metallic structure"
+            )
 
             try:
-                # Try to determine oxidation states - good first pass, if this can be done within pymatgen, it will almost certianly be a structure that is charge balanced 
+                # Try to determine oxidation states - good first pass, if this can be done within pymatgen, it will almost certianly be a structure that is charge balanced
                 structure_with_oxi = bv_analyzer.get_oxi_state_decorated_structure(
                     structure
                 )
                 charge_sum = sum(
                     site.specie.oxi_state for site in structure_with_oxi.sites
                 )
-                print("Valid structure - charge balanced based on Pymatgen's get_oxi_state_decorated_structure function, which almost always returns " \
-                "reasonable oxidation states")
+                print(
+                    "Valid structure - charge balanced based on Pymatgen's get_oxi_state_decorated_structure function, which almost always returns "
+                    "reasonable oxidation states"
+                )
                 if charge_sum == 0.0:
                     return 1.0
                 else:
                     return 0.0
             except ValueError:
                 # get_oxi_state_decorated_structure fails when structures and compositions are outside the distribution of the Materials Project.
-                # We will now need to determine if this composition has the ability to be charged balanced using a reasonable combination of oxidation states. 
-                logger.warning(f"Could not determine oxidation states using get_oxi_state_decorated_structure")
+                # We will now need to determine if this composition has the ability to be charged balanced using a reasonable combination of oxidation states.
+                logger.warning(
+                    f"Could not determine oxidation states using get_oxi_state_decorated_structure"
+                )
 
                 comp = Composition(structure.composition)
                 here = Path(__file__).resolve().parent
                 three_up = here.parents[2]
-                with open(three_up / 'data' / 'oxi_state_mapping.json', "r") as f:
+                with open(three_up / "data" / "oxi_state_mapping.json", "r") as f:
                     oxi_state_mapping = json.load(f)
                 oxi_states_override = {}
-                for e in comp.elements: 
+                for e in comp.elements:
                     oxi_states_override[str(e)] = oxi_state_mapping[str(e)]
-                output = compositional_oxi_state_guesses(comp, all_oxi_states=False, max_sites=-1, target_charge=0, oxi_states_override=oxi_states_override)
-                print("Most valid oxidation state and score based on composition", output[1][0], output[2][0])
-                try:     
+                output = compositional_oxi_state_guesses(
+                    comp,
+                    all_oxi_states=False,
+                    max_sites=-1,
+                    target_charge=0,
+                    oxi_states_override=oxi_states_override,
+                )
+                print(
+                    "Most valid oxidation state and score based on composition",
+                    output[1][0],
+                    output[2][0],
+                )
+                try:
                     score = output[2][0]
                     if score > 0.001:
-                        return 1.0 
+                        return 1.0
                     else:
-                        return float(0.0) # TODO decide on a function to make this continuous based on LeMatBulk statistics (and scale with other metrics!)
+                        return float(
+                            0.0
+                        )  # TODO decide on a function to make this continuous based on LeMatBulk statistics (and scale with other metrics!)
                 except IndexError:
                     return float(0.0)
-
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -358,7 +386,6 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
             logger.warning(f"Missing radius data for elements: {missing_elements}")
             return 0.0  # Invalid because we can't fully check
 
-
         # For each pair of sites, compute the minimum allowed distance
         valid_pairs = 0
         total_pairs = 0
@@ -375,8 +402,7 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
                 ) * scaling_factor
                 actual_dist = all_distances[i, j]
 
-                # print(min_dist) 
-
+                # print(min_dist)
 
                 if actual_dist >= min_dist:
                     valid_pairs += 1
@@ -391,7 +417,6 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
             return 1.0
         else:
             return 0.0
-        
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -720,10 +745,9 @@ class CoordinationEnvironmentMetric(BaseMetric):
 
         # Return the ratio of valid sites
         if valid_sites / total_sites_checked == 1.0:
-            return 1.0 
+            return 1.0
         else:
             return 0.0
-
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -935,14 +959,14 @@ class PhysicalPlausibilityMetric(BaseMetric):
         if check_format:
             total_checks += 1
             # try:
-                # Try to convert to CIF format and back
+            # Try to convert to CIF format and back
             import io
 
             from pymatgen.io.cif import CifParser, CifWriter
 
             # Write to CIF
             cif_writer = CifWriter(structure)
-            cif_string = 'temp.cif'
+            cif_string = "temp.cif"
             # cif_string = io.StringIO()
             cif_writer.write_file(cif_string)
             # cif_string.seek(0)
@@ -954,9 +978,9 @@ class PhysicalPlausibilityMetric(BaseMetric):
             # Check if recovered structure is similar to original
             # by comparing composition and number of sites
 
-            # IMPORTANT NOTE - CIF files will sometimes load primitive cells and sometimes conventional cells. 
-            # This is assuming the initial file is a conventional cell. If this IS NOT THE CASE, amend the input structure 
-            # to be a conventional cell. 
+            # IMPORTANT NOTE - CIF files will sometimes load primitive cells and sometimes conventional cells.
+            # This is assuming the initial file is a conventional cell. If this IS NOT THE CASE, amend the input structure
+            # to be a conventional cell.
 
             if (
                 structure.composition.reduced_formula
@@ -975,7 +999,6 @@ class PhysicalPlausibilityMetric(BaseMetric):
             #     print('Format failed')
             #     logger.debug(f"Format check failed: {str(e)}")
 
-
         # Check 4: Symmetry check
         if check_symmetry:
             total_checks += 1
@@ -993,7 +1016,7 @@ class PhysicalPlausibilityMetric(BaseMetric):
                     # print('Symmetry failed')
                     logger.debug(f"Symmetry check failed: spacegroup={spacegroup}")
             except Exception as e:
-                print('Symmetry failed')
+                print("Symmetry failed")
                 logger.debug(f"Symmetry check failed: {str(e)}")
 
         # Return the ratio of passed checks
@@ -1001,11 +1024,10 @@ class PhysicalPlausibilityMetric(BaseMetric):
         # print(total_checks)
         # print(checks_passed/total_checks)
 
-        if checks_passed / total_checks == 1.0: 
+        if checks_passed / total_checks == 1.0:
             return 1.0
         else:
             return 0.0
-        
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
