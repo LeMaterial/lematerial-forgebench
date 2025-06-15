@@ -1,5 +1,4 @@
 version = 1
-revision = 1
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.13' and sys_platform == 'win32'",
@@ -1086,6 +1085,7 @@ dependencies = [
     { name = "pymatgen" },
     { name = "pytest" },
     { name = "rich" },
+    { name = "torch" },
 ]
 
 [package.dev-dependencies]
@@ -1125,6 +1125,7 @@ requires-dist = [
     { name = "pymatgen", specifier = ">=2025.4.20" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "rich", specifier = "==13.9.4" },
+    { name = "torch", specifier = ">=2.7.1" },
 ]
 
 [package.metadata.requires-dev]
