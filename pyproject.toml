@@ -10,13 +10,18 @@ dependencies = [
     "ase>=3.25.0",
     "click>=8.1.8",
     "datasets>=3.5.0",
+    "fsspec>=2024.12.0",
+    "mace-torch>=0.3.13",
     "material-hasher",
     "numpy>=2.2.5",
+
+    "orb-models==0.5.4",
     "pandas>=2.2.3",
+    "pyarrow>=19.0.1",
     "pymatgen>=2025.4.20",
     "pytest>=8.3.5",
     "rich>=14.0.0",
-]
+
 
 [project.scripts]
 lematerial-forgebench = "lematerial_forgebench.cli:main"
@@ -47,8 +52,9 @@ dev-dependencies = [
 ]
 
 [tool.uv.sources]
-material-hasher = { git = "https://github.com/LeMaterial/lematerial-hasher.git" }
+material-hasher = { git = "https://github.com/lematerial/material-hasher.git" }
 
 
 [tool.ruff.lint]
 extend-select = ["I"]
+ignore = ["F401"]

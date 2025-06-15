@@ -10,11 +10,13 @@ from typing import Any, Dict, List
 
 import json
 from pathlib import Path
+
 import numpy as np
 from pymatgen.analysis.bond_valence import BVAnalyzer
 from pymatgen.analysis.local_env import CrystalNN, VoronoiNN
 from pymatgen.core.periodic_table import Element
 from pymatgen.core.structure import Structure
+
 from pymatgen.core import Composition
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
@@ -22,6 +24,7 @@ from lematerial_forgebench.utils.logging import logger
 from lematerial_forgebench.utils.oxidation_state import compositional_oxi_state_guesses, get_inequivalent_site_info
 from pymatgen.analysis.bond_valence import calculate_bv_sum
 from pymatgen.analysis.local_env import get_neighbors_of_site_with_index
+
 
 @dataclass
 class ChargeNeutralityConfig(MetricConfig):
@@ -179,6 +182,7 @@ class ChargeNeutralityMetric(BaseMetric):
                         return float(0.0) # TODO decide on a function to make this continuous based on LeMatBulk statistics (and scale with other metrics!)
                 except IndexError:
                     return float(0.0)
+
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -354,6 +358,7 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
             logger.warning(f"Missing radius data for elements: {missing_elements}")
             return 0.0  # Invalid because we can't fully check
 
+
         # For each pair of sites, compute the minimum allowed distance
         valid_pairs = 0
         total_pairs = 0
@@ -372,6 +377,7 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
 
                 # print(min_dist) 
 
+
                 if actual_dist >= min_dist:
                     valid_pairs += 1
                 else:
@@ -386,6 +392,7 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
         else:
             return 0.0
         
+
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
 
@@ -717,6 +724,7 @@ class CoordinationEnvironmentMetric(BaseMetric):
         else:
             return 0.0
 
+
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
 
@@ -885,13 +893,11 @@ class PhysicalPlausibilityMetric(BaseMetric):
             if density_valid:
                 checks_passed += 1
             else:
-                print('density failed')
                 logger.debug(
                     f"Density check failed: {density:.3f} g/cm³ "
                     f"(not in range [{min_density}, {max_density}])"
                 )
         except Exception as e:
-            print('density failed')
             logger.debug(f"Could not compute density: {str(e)}")
 
         # Check 2: Valid lattice (not collapsed, not excessively large)
@@ -918,13 +924,11 @@ class PhysicalPlausibilityMetric(BaseMetric):
             ):
                 checks_passed += 1
             else:
-                print('lattice failed')
                 logger.debug(
                     f"Lattice check failed: a={a:.3f}, b={b:.3f}, c={c:.3f}, "
                     f"angles={angles}, volume={volume:.3f}"
                 )
         except Exception as e:
-            print('lattice failed')
             logger.debug(f"Could not validate lattice: {str(e)}")
 
         # Check 3: Format representation check
@@ -961,7 +965,7 @@ class PhysicalPlausibilityMetric(BaseMetric):
             ):
                 checks_passed += 1
             else:
-                print('Format failed')
+                # print('Format failed')
 
                 logger.debug(
                     f"Format check failed: original={structure.composition}, "
@@ -970,6 +974,7 @@ class PhysicalPlausibilityMetric(BaseMetric):
             # except Exception as e:
             #     print('Format failed')
             #     logger.debug(f"Format check failed: {str(e)}")
+
 
         # Check 4: Symmetry check
         if check_symmetry:
@@ -985,7 +990,7 @@ class PhysicalPlausibilityMetric(BaseMetric):
                 if 0 < spacegroup <= 230:
                     checks_passed += 1
                 else:
-                    print('Symmetry failed')
+                    # print('Symmetry failed')
                     logger.debug(f"Symmetry check failed: spacegroup={spacegroup}")
             except Exception as e:
                 print('Symmetry failed')
@@ -1001,6 +1006,7 @@ class PhysicalPlausibilityMetric(BaseMetric):
         else:
             return 0.0
         
+
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
 
