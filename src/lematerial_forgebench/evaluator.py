@@ -193,6 +193,7 @@ class MetricEvaluator:
                 result = metric.compute(
                     structures=structures,
                 )
+                print(metric.compute)
                 metric_results[metric_name] = result
 
             except Exception as e:

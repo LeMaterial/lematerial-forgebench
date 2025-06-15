@@ -152,6 +152,7 @@ class BaseBenchmark(ABC):
         """
         evaluator_results = {}
         for name, evaluator in self.evaluators.items():
+            print(evaluator.evaluate)
             result = evaluator.evaluate(
                 structures=structures,
             )
@@ -172,7 +173,7 @@ class BaseBenchmark(ABC):
             }
 
         final_scores = self.aggregate_evaluator_results(evaluator_results)
-        print(final_scores)
+        # print(final_scores)
         result_metadata = {
             "benchmark_name": self.config.name,
             "benchmark_description": self.config.description,
