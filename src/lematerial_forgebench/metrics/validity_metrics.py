@@ -4,20 +4,22 @@ This module implements fundamental validity metrics that ensure generated
 structures are physically meaningful and chemically plausible.
 """
 
+import json
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Dict, List
 
-import json
-from pathlib import Path
-
 import numpy as np
-from pymatgen.analysis.bond_valence import BVAnalyzer
-from pymatgen.analysis.local_env import CrystalNN, VoronoiNN
+from pymatgen.analysis.bond_valence import BVAnalyzer, calculate_bv_sum
+from pymatgen.analysis.local_env import (
+    CrystalNN,
+    VoronoiNN,
+    get_neighbors_of_site_with_index,
+)
+from pymatgen.core import Composition
 from pymatgen.core.periodic_table import Element
 from pymatgen.core.structure import Structure
-
-from pymatgen.core import Composition
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
 from lematerial_forgebench.utils.logging import logger
@@ -25,8 +27,6 @@ from lematerial_forgebench.utils.oxidation_state import (
     compositional_oxi_state_guesses,
     get_inequivalent_site_info,
 )
-from pymatgen.analysis.bond_valence import calculate_bv_sum
-from pymatgen.analysis.local_env import get_neighbors_of_site_with_index
 
 
 @dataclass
@@ -155,7 +155,7 @@ class ChargeNeutralityMetric(BaseMetric):
             # this means the bv_sum calculation has predicted this structure is NOT metallic. Therefore, we can try and assign oxidation states using PMG's
             # oxidation state functions, which do not return oxidation states for metallic structuers.
             logger.warning(
-                f"the bond valence sum calculation yielded values that were not zero meaning this is not predicted to be a metallic structure"
+                "the bond valence sum calculation yielded values that were not zero meaning this is not predicted to be a metallic structure"
             )
 
             try:
@@ -178,7 +178,7 @@ class ChargeNeutralityMetric(BaseMetric):
                 # get_oxi_state_decorated_structure fails when structures and compositions are outside the distribution of the Materials Project.
                 # We will now need to determine if this composition has the ability to be charged balanced using a reasonable combination of oxidation states.
                 logger.warning(
-                    f"Could not determine oxidation states using get_oxi_state_decorated_structure"
+                    "Could not determine oxidation states using get_oxi_state_decorated_structure"
                 )
 
                 comp = Composition(structure.composition)

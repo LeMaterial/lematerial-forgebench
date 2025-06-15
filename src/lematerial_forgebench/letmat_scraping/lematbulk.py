@@ -1,11 +1,12 @@
 from multiprocessing import Pool, cpu_count
+
+import numpy as np
 from datasets import load_dataset
+from func_timeout import FunctionTimedOut, func_timeout
+from pymatgen.analysis.bond_valence import BVAnalyzer
 from pymatgen.core import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from tqdm import tqdm
-from pymatgen.analysis.bond_valence import BVAnalyzer
-import numpy as np
-from func_timeout import func_timeout, FunctionTimedOut
 
 
 def get_inequivalent_site_info(structure):

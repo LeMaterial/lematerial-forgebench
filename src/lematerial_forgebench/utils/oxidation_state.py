@@ -1,10 +1,11 @@
 import json
-from pathlib import Path
 from collections import defaultdict
 from itertools import combinations_with_replacement, product
-from pymatgen.core.periodic_table import Species, Element
-from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+from pathlib import Path
+
 import numpy as np
+from pymatgen.core.periodic_table import Element, Species
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 
 def compositional_oxi_state_guesses(
