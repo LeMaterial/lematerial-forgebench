@@ -1,11 +1,15 @@
 """Tests for stability benchmark."""
 
+import numpy as np
 from pymatgen.util.testing import PymatgenTest
 
 from lematerial_forgebench.benchmarks.stability_benchmark import StabilityBenchmark
 from lematerial_forgebench.preprocess.stability_preprocess import (
     StabilityPreprocessor,
 )
+
+"""Tests for stability benchmark."""
+
 
 
 class TestStabilityBenchmark:
@@ -21,7 +25,7 @@ class TestStabilityBenchmark:
         assert benchmark.config.metadata["category"] == "stability"
 
         # Check correct evaluator
-        assert len(benchmark.evaluators) == 4
+        assert len(benchmark.evaluators) == 5
         assert "stability" in benchmark.evaluators
 
     def test_initialization_custom(self):
@@ -50,16 +54,14 @@ class TestStabilityBenchmark:
         stability_preprocessor = StabilityPreprocessor()
         preprocessor_result = stability_preprocessor(structures)
         structures = preprocessor_result.processed_structures
-        print(structures[0].properties)
 
         # Run benchmark
         result = benchmark.evaluate(structures)
 
         # Check result format
-        assert len(result.evaluator_results) == 4
+        assert len(result.evaluator_results) == 5
         assert "stability" in result.evaluator_results
         assert "stable_ratio" in result.final_scores
-        print(result.final_scores)
 
         # Check score types
         assert isinstance(result.final_scores["stable_ratio"], (int, float))
@@ -75,12 +77,12 @@ class TestStabilityBenchmark:
         # Test behavior with no structures - should not raise error
         result = benchmark.evaluate([])
 
-        # Should get default values
-        assert result.final_scores["stable_ratio"] == 0.0
-        assert result.final_scores["metastable_ratio"] == 0.0
-        assert result.final_scores["mean_e_above_hull"] == 0.0
-        assert result.final_scores["mean_formation_energy"] == 0.0
-        assert result.final_scores["mean_relaxation_RMSE"] == 0.0
+        # Should get default values        
+        assert result.final_scores["stable_ratio"] is None
+        assert result.final_scores["metastable_ratio"] is None
+        assert result.final_scores["mean_e_above_hull"] is None
+        assert result.final_scores["mean_formation_energy"] is None
+        assert result.final_scores["mean_relaxation_RMSE"] is None
 
     def test_aggregate_evaluator_results(self):
         """Test result aggregation logic."""
@@ -92,25 +94,13 @@ class TestStabilityBenchmark:
         mock_evaluator_results_from_base = {
             "stability": {  # Name of the evaluator
                 "combined_value": 0.75,  # Evaluator's combined score
-                "metric_results": {
-                    "stability": {
-                        "metrics": {
-                            "stable_ratio": 0.75,
-                            "mean_e_above_hull": 0.1,
-                            "mean_formation_energy": 0.0, 
-                            "mean_relaxation_RMSE": 0.0,
-                        }
-                    }
-                },
-            },
-            "metastability": {
-                "combined_value": 0.85,
-            },
-        }
-
+                "metric_results": {"stability": {"metrics": {"stable_ratio": 0.75}}}},
+            "metastability": {"combined_value": 0.85},
+            "formation_energy": {"combined_value": -6.7},
+            "mean_e_above_hull": {"combined_value": 0.1},
+            "relaxation_stability": {"combined_value": 0.01}}
         # Aggregate results
         scores = benchmark.aggregate_evaluator_results(mock_evaluator_results_from_base)
-        print(scores)
         # Check scores
         # aggregate_evaluator_results should pick up combined_value as stability_score
         # and stability_value as stable_ratio.
@@ -119,8 +109,8 @@ class TestStabilityBenchmark:
         assert scores["stable_ratio"] == 0.75
         assert scores["metastable_ratio"] == 0.85
         assert scores["mean_e_above_hull"] == 0.1
-        assert scores["mean_formation_energy"] == 0.0
-        assert scores["mean_relaxation_RMSE"] == 0.0
+        assert scores["mean_formation_energy"] == -6.7
+        assert scores["mean_relaxation_RMSE"] == 0.01
 
     def test_benchmark_metadata(self):
         """Test benchmark metadata structure."""
@@ -139,7 +129,8 @@ def test_evaluator_configuration():
 
     # Check evaluator configuration
     stability_evaluator = benchmark.evaluators["stability"]
-    print(stability_evaluator)
+    # print(stability_evaluator)
     assert stability_evaluator.config.name == "stability"
     assert stability_evaluator.config.weights == {"stability": 1.0}
     assert stability_evaluator.config.aggregation_method == "weighted_mean"
+

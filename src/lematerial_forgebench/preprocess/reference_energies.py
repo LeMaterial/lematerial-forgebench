@@ -7,6 +7,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from datasets import load_dataset
 from pymatgen.analysis.phase_diagram import PDEntry, PhaseDiagram
 from pymatgen.core import Composition, Element
 from tqdm import tqdm
@@ -94,14 +95,21 @@ def process_chunk(chunk):
 
 @lru_cache(maxsize=None)
 def _retrieve_df():
-    csv_path = "dataset_filtered.csv"
-    return pd.read_csv(csv_path)
+    dataset = load_dataset("Entalpic/LeMaterial-Above-Hull-dataset")
+    dataset = pd.DataFrame(dataset['dataset'])
+    return dataset
 
 
 @lru_cache(maxsize=None)
 def _retrieve_matrix():
-    npy_path = "all_compositions.npy"
-    return np.load(npy_path)
+    composition_matrix = load_dataset(
+        "Entalpic/LeMaterial-Above-Hull-composition_matrix"
+    )
+    composition_matrix = composition_matrix["composition_matrix"]
+    composition_df = composition_matrix.to_pandas()
+    composition_df.drop("Unnamed: 0", axis = 1, inplace = True)
+    composition_array = composition_df.to_numpy()
+    return composition_array
 
 
 def filter_df(df, matrix, composition):

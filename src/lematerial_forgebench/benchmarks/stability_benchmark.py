@@ -6,9 +6,12 @@ generated material structures using various relaxation methods.
 
 from typing import Any, Dict
 
+import numpy as np
+
 from lematerial_forgebench.benchmarks.base import BaseBenchmark
 from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
 from lematerial_forgebench.metrics.stability_metrics import (
+    E_HullMetric,
     FormationEnergyMetric,
     MetastabilityMetric,
     RelaxationStabilityMetric,
@@ -60,6 +63,16 @@ class StabilityBenchmark(BaseBenchmark):
                 aggregation_method="weighted_mean",
             ),
         }
+
+        # Add e_hull evaluator if requested
+        E_hull_metric = E_HullMetric()
+        evaluator_configs["mean_e_above_hull"] = EvaluatorConfig(
+            name="mean_e_above_hull Analysis",
+            description="Evaluates mean_e_above_hull from precomputed e_above_hull values",
+            metrics={"mean_e_above_hull": E_hull_metric},
+            weights={"mean_e_above_hull": 1.0},
+            aggregation_method="weighted_mean",
+        )
 
         # Add metastability evaluator if requested
         metastability_metric = MetastabilityMetric()
@@ -122,47 +135,32 @@ class StabilityBenchmark(BaseBenchmark):
         """
         import math
 
-        def safe_float(value, default=0.0):
+        def safe_float(value):
             """Safely convert value to float, handling None and NaN."""
-            if value is None:
-                return default
-            try:
-                float_val = float(value)
-                if math.isnan(float_val):
-                    return default
-                return float_val
-            except (TypeError, ValueError):
-                return default
+            return value 
+            # if value is None:
+            #     raise ValueError
+
+            # float_val = float(value)
+            # if math.isnan(float_val):
+            #     raise ValueError
+            # return float_val
 
         final_scores = {
-            "stable_ratio": 0.0,
-            "metastable_ratio": 0.0,
-            "mean_e_above_hull": 0.0,
-            "mean_formation_energy": 0.0,
-            "mean_relaxation_RMSE": 0.0,
+            "stable_ratio": np.nan,
+            "metastable_ratio": np.nan,
+            "mean_e_above_hull": np.nan,
+            "mean_formation_energy": np.nan,
+            "mean_relaxation_RMSE": np.nan,
         }
 
         # Extract stability results
         stability_results = evaluator_results.get("stability")
-
         if stability_results:
             # Main stability ratio
             final_scores["stable_ratio"] = safe_float(
                 stability_results.get("combined_value")
             )
-            try: 
-                # Extract individual metrics from stability metric
-                final_scores["mean_e_above_hull"] = safe_float(
-                    stability_results["metric_results"]["stability"].metrics[
-                        "mean_e_above_hull"
-                    ])
-            except KeyError:
-                pass
-            except AttributeError:
-                final_scores["mean_e_above_hull"] = safe_float(
-                    stability_results["metric_results"]["stability"]["metrics"][
-                        "mean_e_above_hull"
-                    ])
 
         # Extract metastability results if available
         metastability_results = evaluator_results.get("metastability")
@@ -172,10 +170,17 @@ class StabilityBenchmark(BaseBenchmark):
                 metastability_results.get("combined_value")
             )
 
+        # Extract E_Hull results if available
+        e_hull_results = evaluator_results.get("mean_e_above_hull")
+        if e_hull_results:
+            # E_hull score
+            final_scores["mean_e_above_hull"] = safe_float(
+                e_hull_results.get("combined_value")
+            )
         # Extract formation energy results if available
         formation_energy_results = evaluator_results.get("formation_energy")
         if formation_energy_results:
-            # Main metastability score
+            # Main formation energy score
             final_scores["mean_formation_energy"] = safe_float(
                 formation_energy_results.get("combined_value")
             )
@@ -188,6 +193,5 @@ class StabilityBenchmark(BaseBenchmark):
                 relaxation_stability_results.get("combined_value")
             )
 
-        print(final_scores)
 
         return final_scores
