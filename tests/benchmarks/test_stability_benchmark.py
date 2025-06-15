@@ -11,7 +11,6 @@ from lematerial_forgebench.preprocess.stability_preprocess import (
 """Tests for stability benchmark."""
 
 
-
 class TestStabilityBenchmark:
     """Test suite for StabilityBenchmark class."""
 
@@ -77,7 +76,7 @@ class TestStabilityBenchmark:
         # Test behavior with no structures - should not raise error
         result = benchmark.evaluate([])
 
-        # Should get default values        
+        # Should get default values
         assert result.final_scores["stable_ratio"] is None
         assert result.final_scores["metastable_ratio"] is None
         assert result.final_scores["mean_e_above_hull"] is None
@@ -94,11 +93,13 @@ class TestStabilityBenchmark:
         mock_evaluator_results_from_base = {
             "stability": {  # Name of the evaluator
                 "combined_value": 0.75,  # Evaluator's combined score
-                "metric_results": {"stability": {"metrics": {"stable_ratio": 0.75}}}},
+                "metric_results": {"stability": {"metrics": {"stable_ratio": 0.75}}},
+            },
             "metastability": {"combined_value": 0.85},
             "formation_energy": {"combined_value": -6.7},
             "mean_e_above_hull": {"combined_value": 0.1},
-            "relaxation_stability": {"combined_value": 0.01}}
+            "relaxation_stability": {"combined_value": 0.01},
+        }
         # Aggregate results
         scores = benchmark.aggregate_evaluator_results(mock_evaluator_results_from_base)
         # Check scores
@@ -133,4 +134,3 @@ def test_evaluator_configuration():
     assert stability_evaluator.config.name == "stability"
     assert stability_evaluator.config.weights == {"stability": 1.0}
     assert stability_evaluator.config.aggregation_method == "weighted_mean"
-

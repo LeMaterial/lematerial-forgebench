@@ -143,8 +143,6 @@ class ValidityBenchmark(BaseBenchmark):
         dict[str, float]
             Final aggregated scores.
         """
-        # print(evaluator_results)
-
         # Extract overall validity score
         overall_score = evaluator_results.get("overall_validity", {}).get(
             "combined_value", 0.0
@@ -165,21 +163,14 @@ class ValidityBenchmark(BaseBenchmark):
         )
 
         # Get the number of structures with perfect validity
-
         overall_validity_ratio = evaluator_results.get("overall_validity", {})
         overall_validity_ratio = overall_validity_ratio.get("metric_results", {})
         overall_validity_ratio = overall_validity_ratio.get("composite", {})
-        try: 
-            overall_validity_ratio = overall_validity_ratio.get("metrics", {})
-        except AttributeError: 
-            overall_validity_ratio = overall_validity_ratio.metrics # TODO sometimes the 
-            # dataclass is changing here - not sure why (flips between dict and MetricResult)
-
-         #TODO the get method doesn't work here, not sure why 
+        overall_validity_ratio = overall_validity_ratio.get("metrics", {})
         overall_validity_ratio = overall_validity_ratio.get(
             "valid_structures_ratio", 0.0
         )
-        print(overall_validity_ratio)
+
 
         return {
             "overall_validity_score": overall_score,

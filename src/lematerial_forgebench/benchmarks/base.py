@@ -170,7 +170,7 @@ class BaseBenchmark(ABC):
                     for name, res in result.metric_results.items()
                 },
             }
-        
+
         final_scores = self.aggregate_evaluator_results(evaluator_results)
         print(final_scores)
         result_metadata = {

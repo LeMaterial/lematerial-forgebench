@@ -205,7 +205,9 @@ class StabilityPreprocessor(BasePreprocessor):
         structure.properties["relaxed_structure"] = processed_structure
 
         e_above_hull_calc = EnergyAboveHull()
-        form_energy_calc = OrbFormationEnergy() # currently using orb for formation energy calculation
+        form_energy_calc = (
+            OrbFormationEnergy()
+        )  # currently using orb for formation energy calculation
         # Calculate e_above_hull using LeMatBulk
         try:
             e_above_hull = e_above_hull_calc(structure)

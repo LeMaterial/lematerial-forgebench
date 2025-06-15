@@ -10,7 +10,7 @@ from pathlib import Path
 import click
 import yaml
 
-from lematerial_forgebench.benchmarks.example import ExampleBenchmark
+# from lematerial_forgebench.benchmarks.example import ExampleBenchmark
 from lematerial_forgebench.benchmarks.stability_benchmark import StabilityBenchmark
 from lematerial_forgebench.benchmarks.validity_benchmark import ValidityBenchmark
 from lematerial_forgebench.data.structure import format_structures
@@ -148,13 +148,13 @@ def main(input: str, config_name: str, output: str):
         # Initialization
         benchmark_type = config.get("type", "example")
 
-        if benchmark_type == "example":
-            benchmark = ExampleBenchmark(
-                quality_weight=config.get("quality_weight", 0.4),
-                diversity_weight=config.get("diversity_weight", 0.4),
-                novelty_weight=config.get("novelty_weight", 0.2),
-            )
-        elif benchmark_type == "validity":
+        # if benchmark_type == "example":
+        #     benchmark = ExampleBenchmark(
+        #         quality_weight=config.get("quality_weight", 0.4),
+        #         diversity_weight=config.get("diversity_weight", 0.4),
+        #         novelty_weight=config.get("novelty_weight", 0.2),
+        #     )
+        if benchmark_type == "validity":
             # Get metric-specific configs if available
             metric_configs = config.get("metric_configs", {})
 
@@ -173,9 +173,14 @@ def main(input: str, config_name: str, output: str):
             coord_tolerance = coord_config.get("tolerance", 0.2)
 
             # Create custom metrics with configuration
-            ChargeNeutralityMetric(tolerance=charge_tolerance, strict=charge_strict)
+            ChargeNeutralityMetric(
+                tolerance=charge_tolerance, strict=charge_strict
+            )
 
-            MinimumInteratomicDistanceMetric(scaling_factor=distance_scaling)
+            MinimumInteratomicDistanceMetric(
+                scaling_factor=distance_scaling
+            )
+
 
             CoordinationEnvironmentMetric(
                 nn_method=coord_nn_method, tolerance=coord_tolerance
@@ -196,6 +201,7 @@ def main(input: str, config_name: str, output: str):
                     "metric_configs": metric_configs,
                 },
             )
+
         elif benchmark_type == "stability":
             # before running the benchmark, we need to preprocess the structures
             stability_preprocessor = StabilityPreprocessor()

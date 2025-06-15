@@ -137,7 +137,7 @@ class StabilityBenchmark(BaseBenchmark):
 
         def safe_float(value):
             """Safely convert value to float, handling None and NaN."""
-            return value 
+            return value
             # if value is None:
             #     raise ValueError
 
@@ -192,6 +192,5 @@ class StabilityBenchmark(BaseBenchmark):
             final_scores["mean_relaxation_RMSE"] = safe_float(
                 relaxation_stability_results.get("combined_value")
             )
-
 
         return final_scores
