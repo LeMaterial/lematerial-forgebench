@@ -653,6 +653,12 @@ http = [
 ]
 
 [[package]]
+name = "func-timeout"
+version = "4.3.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/0d/bf0567477f7281d9a3926c582bfef21bff7498fc0ffd3e9de21811896a0b/func_timeout-4.3.5.tar.gz", hash = "sha256:74cd3c428ec94f4edfba81f9b2f14904846d5ffccc27c92433b8b5939b5575dd", size = 44264 }
+
+[[package]]
 name = "gemmi"
 version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1070,6 +1076,7 @@ dependencies = [
     { name = "click" },
     { name = "datasets" },
     { name = "fsspec" },
+    { name = "func-timeout" },
     { name = "mace-torch" },
     { name = "material-hasher" },
     { name = "numpy" },
@@ -1108,6 +1115,7 @@ requires-dist = [
     { name = "click", specifier = ">=8.1.8" },
     { name = "datasets", specifier = ">=3.5.0" },
     { name = "fsspec", specifier = ">=2024.12.0" },
+    { name = "func-timeout", specifier = ">=4.3.5" },
     { name = "mace-torch", specifier = ">=0.3.13" },
     { name = "material-hasher", git = "https://github.com/lematerial/material-hasher.git" },
     { name = "numpy", specifier = ">=2.2.5" },

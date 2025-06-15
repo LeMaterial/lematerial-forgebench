@@ -148,13 +148,13 @@ def main(input: str, config_name: str, output: str):
         # Initialization
         benchmark_type = config.get("type", "example")
 
-        if benchmark_type == "example":
-            benchmark = ExampleBenchmark(
-                quality_weight=config.get("quality_weight", 0.4),
-                diversity_weight=config.get("diversity_weight", 0.4),
-                novelty_weight=config.get("novelty_weight", 0.2),
-            )
-        elif benchmark_type == "validity":
+        # if benchmark_type == "example":
+        #     benchmark = ExampleBenchmark(
+        #         quality_weight=config.get("quality_weight", 0.4),
+        #         diversity_weight=config.get("diversity_weight", 0.4),
+        #         novelty_weight=config.get("novelty_weight", 0.2),
+        #     )
+        if benchmark_type == "validity":
             # Get metric-specific configs if available
             metric_configs = config.get("metric_configs", {})
 
