@@ -45,16 +45,19 @@ class MACECalculator(BaseMLIPCalculator):
     def _setup_model(self, **kwargs):
         """Initialize the MACE model."""
         try:
+            # Convert torch.device back to string for MACE compatibility
+            device_str = str(self.device) if hasattr(self.device, 'type') else self.device
+            
             if self.model_type == "mp":
                 # Materials Project foundation model
-                self.ase_calc = mace_mp(device=self.device, **kwargs)
+                self.ase_calc = mace_mp(device=device_str, **kwargs)
             elif self.model_type == "off":
                 # Off-the-shelf models
-                self.ase_calc = mace_off(device=self.device, **kwargs)
+                self.ase_calc = mace_off(device=device_str, **kwargs)
             elif self.model_path:
                 # Custom model from file
                 self.ase_calc = MACEASECalculator(
-                    model_paths=self.model_path, device=self.device, **kwargs
+                    model_paths=self.model_path, device=device_str, **kwargs
                 )
             else:
                 raise ValueError(

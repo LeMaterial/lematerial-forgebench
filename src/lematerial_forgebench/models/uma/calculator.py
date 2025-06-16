@@ -49,11 +49,16 @@ class UMACalculator(BaseMLIPCalculator):
     def _setup_model(self, **kwargs):
         """Initialize the UMA model."""
         try:
-            # Load the UMA predictor
+            # Convert torch.device back to string for UMA compatibility
+            device_str = (
+                str(self.device) if hasattr(self.device, "type") else self.device
+            )
+
+            # Load the UMA predictor - UMA doesn't accept precision parameter
             self.predictor = pretrained_mlip.get_predict_unit(
                 self.model_name,
-                device=self.device,
-                precision=self.precision,
+                device=device_str,
+                # Note: UMA doesn't support precision parameter
             )
 
             # Get the underlying model for embeddings
@@ -178,6 +183,8 @@ def create_uma_calculator(
     UMACalculator
         Configured UMA calculator
     """
+    # Remove precision from kwargs if present, as UMA doesn't support it
+    kwargs.pop("precision", None)
     return UMACalculator(model_name=model_name, task=task, device=device, **kwargs)
 
 

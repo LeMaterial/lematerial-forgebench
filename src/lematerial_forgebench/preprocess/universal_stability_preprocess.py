@@ -6,13 +6,48 @@ from typing import Any, Dict
 import numpy as np
 from pymatgen.core import Structure
 
-from lematerial_forgebench.models.registry import get_calculator
+from lematerial_forgebench.models.registry import list_available_models
 from lematerial_forgebench.preprocess.base import BasePreprocessor, PreprocessorConfig
 from lematerial_forgebench.utils.logging import logger
 from lematerial_forgebench.utils.relaxers import (
     BaseRelaxer,
     get_relaxer,
 )
+
+# Import factory functions directly
+try:
+    from lematerial_forgebench.models.orb.calculator import create_orb_calculator
+
+    ORB_AVAILABLE = True
+except ImportError:
+    ORB_AVAILABLE = False
+    create_orb_calculator = None
+
+try:
+    from lematerial_forgebench.models.mace.calculator import create_mace_calculator
+
+    MACE_AVAILABLE = True
+except ImportError:
+    MACE_AVAILABLE = False
+    create_mace_calculator = None
+
+try:
+    from lematerial_forgebench.models.uma.calculator import create_uma_calculator
+
+    UMA_AVAILABLE = True
+except ImportError:
+    UMA_AVAILABLE = False
+    create_uma_calculator = None
+
+try:
+    from lematerial_forgebench.models.equiformer.calculator import (
+        create_equiformer_calculator,
+    )
+
+    EQUIFORMER_AVAILABLE = True
+except ImportError:
+    EQUIFORMER_AVAILABLE = False
+    create_equiformer_calculator = None
 
 
 @dataclass
@@ -101,8 +136,88 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
             calculate_energy_above_hull=calculate_energy_above_hull,
         )
 
-        # Initialize the calculator
-        self.calculator = get_calculator(model_type, **self.config.model_config)
+        # Extract model-specific parameters from model_config
+        model_specific_config = dict(self.config.model_config)  # Make a copy
+
+        if model_type == "orb":
+            if not ORB_AVAILABLE or create_orb_calculator is None:
+                raise ImportError("ORB not available")
+
+            # Extract parameters for ORB
+            orb_model_type = model_specific_config.get(
+                "model_type", "orb_v3_conservative_inf_omat"
+            )
+            device = model_specific_config.get("device", "cpu")
+            precision = model_specific_config.get("precision", "float32-high")
+
+            # Call factory function directly
+            self.calculator = create_orb_calculator(
+                model_type=orb_model_type, device=device, precision=precision
+            )
+
+        elif model_type == "mace":
+            if not MACE_AVAILABLE or create_mace_calculator is None:
+                raise ImportError("MACE not available")
+
+            # Extract parameters for MACE
+            mace_model_type = model_specific_config.get("model_type", "mp")
+            device = model_specific_config.get("device", "cpu")
+            model_path = model_specific_config.get("model_path", None)
+
+            # Call factory function directly
+            self.calculator = create_mace_calculator(
+                model_type=mace_model_type, device=device, model_path=model_path
+            )
+
+        elif model_type == "uma":
+            if not UMA_AVAILABLE or create_uma_calculator is None:
+                raise ImportError("UMA not available")
+
+            # Extract parameters for UMA
+            model_name = model_specific_config.get("model_name", "uma-s-1")
+            task = model_specific_config.get("task", "omat")
+            device = model_specific_config.get("device", "cpu")
+            precision = model_specific_config.get("precision", "float32")
+
+            # Call factory function directly
+            self.calculator = create_uma_calculator(
+                model_name=model_name, task=task, device=device, precision=precision
+            )
+
+        elif model_type == "equiformer":
+            if not EQUIFORMER_AVAILABLE or create_equiformer_calculator is None:
+                raise ImportError("Equiformer v2 not available")
+
+            # Extract parameters for Equiformer
+            model_path = model_specific_config.get("model_path", None)
+            if model_path is None:
+                raise ValueError("model_path is required for Equiformer models")
+
+            device = model_specific_config.get("device", "cpu")
+            max_neigh = model_specific_config.get("max_neigh", 50)
+            radius = model_specific_config.get("radius", 6.0)
+
+            # Call factory function directly
+            self.calculator = create_equiformer_calculator(
+                model_path=model_path, device=device, max_neigh=max_neigh, radius=radius
+            )
+
+        else:
+            # Fallback - this shouldn't happen if we validate model types
+            available_models = []
+            if ORB_AVAILABLE:
+                available_models.append("orb")
+            if MACE_AVAILABLE:
+                available_models.append("mace")
+            if UMA_AVAILABLE:
+                available_models.append("uma")
+            if EQUIFORMER_AVAILABLE:
+                available_models.append("equiformer")
+
+            raise ValueError(
+                f"Model type '{model_type}' not supported. "
+                f"Available models: {available_models}"
+            )
 
     def _get_process_attributes(self) -> dict[str, Any]:
         """Get the attributes for the process_structure method."""
@@ -313,6 +428,7 @@ class StabilityPreprocessor(BasePreprocessor):
             description=description or "Preprocesses structures for stability analysis",
             n_jobs=n_jobs,
         )
+
         self.config = StabilityPreprocessorConfig(
             name=self.config.name,
             description=self.config.description,
@@ -436,7 +552,7 @@ def _calculate_rmse(original: Structure, relaxed: Structure) -> float:
 
 # Factory functions for different models
 def create_orb_stability_preprocessor(
-    model_type: str = "orb_v3_conservative_inf_omat",
+    orb_model_type: str = "orb_v3_conservative_inf_omat",
     device: str = "cpu",
     relax_structures: bool = True,
     **kwargs,
@@ -445,7 +561,7 @@ def create_orb_stability_preprocessor(
 
     Parameters
     ----------
-    model_type : str
+    orb_model_type : str
         ORB model variant
     device : str
         Device for computation
@@ -459,21 +575,23 @@ def create_orb_stability_preprocessor(
     UniversalStabilityPreprocessor
         Configured preprocessor
     """
-    model_config = {"model_type": model_type, "device": device, **kwargs}
-
+    model_config = {"model_type": orb_model_type, "device": device, **kwargs}
     return UniversalStabilityPreprocessor(
         model_type="orb", model_config=model_config, relax_structures=relax_structures
     )
 
 
 def create_mace_stability_preprocessor(
-    model_type: str = "mp", device: str = "cpu", relax_structures: bool = True, **kwargs
+    mace_model_type: str = "mp",
+    device: str = "cpu",
+    relax_structures: bool = True,
+    **kwargs,
 ) -> UniversalStabilityPreprocessor:
     """Create stability preprocessor using MACE.
 
     Parameters
     ----------
-    model_type : str
+    mace_model_type : str
         MACE model type ("mp" or "off")
     device : str
         Device for computation
@@ -487,8 +605,7 @@ def create_mace_stability_preprocessor(
     UniversalStabilityPreprocessor
         Configured preprocessor
     """
-    model_config = {"model_type": model_type, "device": device, **kwargs}
-
+    model_config = {"model_type": mace_model_type, "device": device, **kwargs}
     return UniversalStabilityPreprocessor(
         model_type="mace", model_config=model_config, relax_structures=relax_structures
     )
@@ -522,7 +639,6 @@ def create_uma_stability_preprocessor(
         Configured preprocessor
     """
     model_config = {"model_name": model_name, "task": task, "device": device, **kwargs}
-
     return UniversalStabilityPreprocessor(
         model_type="uma", model_config=model_config, relax_structures=relax_structures
     )
@@ -550,7 +666,6 @@ def create_equiformer_stability_preprocessor(
         Configured preprocessor
     """
     model_config = {"model_path": model_path, "device": device, **kwargs}
-
     return UniversalStabilityPreprocessor(
         model_type="equiformer",
         model_config=model_config,

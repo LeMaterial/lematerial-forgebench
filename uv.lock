@@ -1,26 +1,99 @@
 version = 1
-revision = 1
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version == '3.12.*' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version >= '3.13' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version == '3.12.*' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version >= '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version < '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
+    "python_version < '0'",
     "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 conflicts = [[
@@ -157,14 +230,30 @@ version = "3.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "matplotlib" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "scipy" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e8/a1/5735ced2f159979f5b27c4083126b7796a5750cee6f027864e59818a5b76/ase-3.25.0.tar.gz", hash = "sha256:374cf8ca9fe588f05d6e856da3c9c17ef262dc968027b231d449334140c962c2", size = 2400055 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/07/f5/007d993fcf3b051acb304d5402e0bd103fd20816b47dee9531bdbfb3aa0c/ase-3.25.0-py3-none-any.whl", hash = "sha256:f9a5295e1154da355af04726d001fa76a311c076616d98e49cd9f34fc3afe188", size = 2951559 },
+]
+
+[[package]]
+name = "ase-db-backends"
+version = "0.10.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "ase" },
+    { name = "cryptography" },
+    { name = "lmdb" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
+    { name = "psycopg2-binary" },
+    { name = "pymysql" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/35/67/fd728ceb06a4a0d8ed1d9179fe49ceff00b3400fb673375ce73658a775ff/ase_db_backends-0.10.0.tar.gz", hash = "sha256:fef98a88f47b8075c1f5aa068205009acdacbfa446e508077c2c477dc105079a", size = 34068 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/32/63/0c2e7d0ff2ad640ffd41c9d61939c9d268163562211717d4753329545bbd/ase_db_backends-0.10.0-py3-none-any.whl", hash = "sha256:429d6f1ef0d84dab628f2dba3d22eb6239e7527d8453c54085c190277a9a6bbd", size = 42868 },
 ]
 
 [[package]]
@@ -202,9 +291,8 @@ dependencies = [
     { name = "gemmi" },
     { name = "joblib" },
     { name = "numba" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "pandas" },
     { name = "scikit-learn" },
     { name = "scipy" },
@@ -310,6 +398,51 @@ wheels = [
 ]
 
 [[package]]
+name = "cffi"
+version = "1.17.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pycparser" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fc/97/c783634659c2920c3fc70419e3af40972dbaf758daa229a7d6ea6135c90d/cffi-1.17.1.tar.gz", hash = "sha256:1c39c6016c32bc48dd54561950ebd6836e1670f2ae46128f67cf49e789c52824", size = 516621 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6b/f4/927e3a8899e52a27fa57a48607ff7dc91a9ebe97399b357b85a0c7892e00/cffi-1.17.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:a45e3c6913c5b87b3ff120dcdc03f6131fa0065027d0ed7ee6190736a74cd401", size = 182264 },
+    { url = "https://files.pythonhosted.org/packages/6c/f5/6c3a8efe5f503175aaddcbea6ad0d2c96dad6f5abb205750d1b3df44ef29/cffi-1.17.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:30c5e0cb5ae493c04c8b42916e52ca38079f1b235c2f8ae5f4527b963c401caf", size = 178651 },
+    { url = "https://files.pythonhosted.org/packages/94/dd/a3f0118e688d1b1a57553da23b16bdade96d2f9bcda4d32e7d2838047ff7/cffi-1.17.1-cp311-cp311-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f75c7ab1f9e4aca5414ed4d8e5c0e303a34f4421f8a0d47a4d019ceff0ab6af4", size = 445259 },
+    { url = "https://files.pythonhosted.org/packages/2e/ea/70ce63780f096e16ce8588efe039d3c4f91deb1dc01e9c73a287939c79a6/cffi-1.17.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a1ed2dd2972641495a3ec98445e09766f077aee98a1c896dcb4ad0d303628e41", size = 469200 },
+    { url = "https://files.pythonhosted.org/packages/1c/a0/a4fa9f4f781bda074c3ddd57a572b060fa0df7655d2a4247bbe277200146/cffi-1.17.1-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:46bf43160c1a35f7ec506d254e5c890f3c03648a4dbac12d624e4490a7046cd1", size = 477235 },
+    { url = "https://files.pythonhosted.org/packages/62/12/ce8710b5b8affbcdd5c6e367217c242524ad17a02fe5beec3ee339f69f85/cffi-1.17.1-cp311-cp311-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:a24ed04c8ffd54b0729c07cee15a81d964e6fee0e3d4d342a27b020d22959dc6", size = 459721 },
+    { url = "https://files.pythonhosted.org/packages/ff/6b/d45873c5e0242196f042d555526f92aa9e0c32355a1be1ff8c27f077fd37/cffi-1.17.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:610faea79c43e44c71e1ec53a554553fa22321b65fae24889706c0a84d4ad86d", size = 467242 },
+    { url = "https://files.pythonhosted.org/packages/1a/52/d9a0e523a572fbccf2955f5abe883cfa8bcc570d7faeee06336fbd50c9fc/cffi-1.17.1-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:a9b15d491f3ad5d692e11f6b71f7857e7835eb677955c00cc0aefcd0669adaf6", size = 477999 },
+    { url = "https://files.pythonhosted.org/packages/44/74/f2a2460684a1a2d00ca799ad880d54652841a780c4c97b87754f660c7603/cffi-1.17.1-cp311-cp311-musllinux_1_1_i686.whl", hash = "sha256:de2ea4b5833625383e464549fec1bc395c1bdeeb5f25c4a3a82b5a8c756ec22f", size = 454242 },
+    { url = "https://files.pythonhosted.org/packages/f8/4a/34599cac7dfcd888ff54e801afe06a19c17787dfd94495ab0c8d35fe99fb/cffi-1.17.1-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:fc48c783f9c87e60831201f2cce7f3b2e4846bf4d8728eabe54d60700b318a0b", size = 478604 },
+    { url = "https://files.pythonhosted.org/packages/34/33/e1b8a1ba29025adbdcda5fb3a36f94c03d771c1b7b12f726ff7fef2ebe36/cffi-1.17.1-cp311-cp311-win32.whl", hash = "sha256:85a950a4ac9c359340d5963966e3e0a94a676bd6245a4b55bc43949eee26a655", size = 171727 },
+    { url = "https://files.pythonhosted.org/packages/3d/97/50228be003bb2802627d28ec0627837ac0bf35c90cf769812056f235b2d1/cffi-1.17.1-cp311-cp311-win_amd64.whl", hash = "sha256:caaf0640ef5f5517f49bc275eca1406b0ffa6aa184892812030f04c2abf589a0", size = 181400 },
+    { url = "https://files.pythonhosted.org/packages/5a/84/e94227139ee5fb4d600a7a4927f322e1d4aea6fdc50bd3fca8493caba23f/cffi-1.17.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:805b4371bf7197c329fcb3ead37e710d1bca9da5d583f5073b799d5c5bd1eee4", size = 183178 },
+    { url = "https://files.pythonhosted.org/packages/da/ee/fb72c2b48656111c4ef27f0f91da355e130a923473bf5ee75c5643d00cca/cffi-1.17.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:733e99bc2df47476e3848417c5a4540522f234dfd4ef3ab7fafdf555b082ec0c", size = 178840 },
+    { url = "https://files.pythonhosted.org/packages/cc/b6/db007700f67d151abadf508cbfd6a1884f57eab90b1bb985c4c8c02b0f28/cffi-1.17.1-cp312-cp312-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:1257bdabf294dceb59f5e70c64a3e2f462c30c7ad68092d01bbbfb1c16b1ba36", size = 454803 },
+    { url = "https://files.pythonhosted.org/packages/1a/df/f8d151540d8c200eb1c6fba8cd0dfd40904f1b0682ea705c36e6c2e97ab3/cffi-1.17.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:da95af8214998d77a98cc14e3a3bd00aa191526343078b530ceb0bd710fb48a5", size = 478850 },
+    { url = "https://files.pythonhosted.org/packages/28/c0/b31116332a547fd2677ae5b78a2ef662dfc8023d67f41b2a83f7c2aa78b1/cffi-1.17.1-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:d63afe322132c194cf832bfec0dc69a99fb9bb6bbd550f161a49e9e855cc78ff", size = 485729 },
+    { url = "https://files.pythonhosted.org/packages/91/2b/9a1ddfa5c7f13cab007a2c9cc295b70fbbda7cb10a286aa6810338e60ea1/cffi-1.17.1-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:f79fc4fc25f1c8698ff97788206bb3c2598949bfe0fef03d299eb1b5356ada99", size = 471256 },
+    { url = "https://files.pythonhosted.org/packages/b2/d5/da47df7004cb17e4955df6a43d14b3b4ae77737dff8bf7f8f333196717bf/cffi-1.17.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b62ce867176a75d03a665bad002af8e6d54644fad99a3c70905c543130e39d93", size = 479424 },
+    { url = "https://files.pythonhosted.org/packages/0b/ac/2a28bcf513e93a219c8a4e8e125534f4f6db03e3179ba1c45e949b76212c/cffi-1.17.1-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:386c8bf53c502fff58903061338ce4f4950cbdcb23e2902d86c0f722b786bbe3", size = 484568 },
+    { url = "https://files.pythonhosted.org/packages/d4/38/ca8a4f639065f14ae0f1d9751e70447a261f1a30fa7547a828ae08142465/cffi-1.17.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:4ceb10419a9adf4460ea14cfd6bc43d08701f0835e979bf821052f1805850fe8", size = 488736 },
+    { url = "https://files.pythonhosted.org/packages/86/c5/28b2d6f799ec0bdecf44dced2ec5ed43e0eb63097b0f58c293583b406582/cffi-1.17.1-cp312-cp312-win32.whl", hash = "sha256:a08d7e755f8ed21095a310a693525137cfe756ce62d066e53f502a83dc550f65", size = 172448 },
+    { url = "https://files.pythonhosted.org/packages/50/b9/db34c4755a7bd1cb2d1603ac3863f22bcecbd1ba29e5ee841a4bc510b294/cffi-1.17.1-cp312-cp312-win_amd64.whl", hash = "sha256:51392eae71afec0d0c8fb1a53b204dbb3bcabcb3c9b807eedf3e1e6ccf2de903", size = 181976 },
+    { url = "https://files.pythonhosted.org/packages/8d/f8/dd6c246b148639254dad4d6803eb6a54e8c85c6e11ec9df2cffa87571dbe/cffi-1.17.1-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:f3a2b4222ce6b60e2e8b337bb9596923045681d71e5a082783484d845390938e", size = 182989 },
+    { url = "https://files.pythonhosted.org/packages/8b/f1/672d303ddf17c24fc83afd712316fda78dc6fce1cd53011b839483e1ecc8/cffi-1.17.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:0984a4925a435b1da406122d4d7968dd861c1385afe3b45ba82b750f229811e2", size = 178802 },
+    { url = "https://files.pythonhosted.org/packages/0e/2d/eab2e858a91fdff70533cab61dcff4a1f55ec60425832ddfdc9cd36bc8af/cffi-1.17.1-cp313-cp313-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:d01b12eeeb4427d3110de311e1774046ad344f5b1a7403101878976ecd7a10f3", size = 454792 },
+    { url = "https://files.pythonhosted.org/packages/75/b2/fbaec7c4455c604e29388d55599b99ebcc250a60050610fadde58932b7ee/cffi-1.17.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:706510fe141c86a69c8ddc029c7910003a17353970cff3b904ff0686a5927683", size = 478893 },
+    { url = "https://files.pythonhosted.org/packages/4f/b7/6e4a2162178bf1935c336d4da8a9352cccab4d3a5d7914065490f08c0690/cffi-1.17.1-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:de55b766c7aa2e2a3092c51e0483d700341182f08e67c63630d5b6f200bb28e5", size = 485810 },
+    { url = "https://files.pythonhosted.org/packages/c7/8a/1d0e4a9c26e54746dc08c2c6c037889124d4f59dffd853a659fa545f1b40/cffi-1.17.1-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:c59d6e989d07460165cc5ad3c61f9fd8f1b4796eacbd81cee78957842b834af4", size = 471200 },
+    { url = "https://files.pythonhosted.org/packages/26/9f/1aab65a6c0db35f43c4d1b4f580e8df53914310afc10ae0397d29d697af4/cffi-1.17.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:dd398dbc6773384a17fe0d3e7eeb8d1a21c2200473ee6806bb5e6a8e62bb73dd", size = 479447 },
+    { url = "https://files.pythonhosted.org/packages/5f/e4/fb8b3dd8dc0e98edf1135ff067ae070bb32ef9d509d6cb0f538cd6f7483f/cffi-1.17.1-cp313-cp313-musllinux_1_1_aarch64.whl", hash = "sha256:3edc8d958eb099c634dace3c7e16560ae474aa3803a5df240542b305d14e14ed", size = 484358 },
+    { url = "https://files.pythonhosted.org/packages/f1/47/d7145bf2dc04684935d57d67dff9d6d795b2ba2796806bb109864be3a151/cffi-1.17.1-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:72e72408cad3d5419375fc87d289076ee319835bdfa2caad331e377589aebba9", size = 488469 },
+    { url = "https://files.pythonhosted.org/packages/bf/ee/f94057fa6426481d663b88637a9a10e859e492c73d0384514a17d78ee205/cffi-1.17.1-cp313-cp313-win32.whl", hash = "sha256:e03eab0a8677fa80d646b5ddece1cbeaf556c313dcfac435ba11f107ba117b5d", size = 172475 },
+    { url = "https://files.pythonhosted.org/packages/7c/fc/6a8cb64e5f0324877d503c854da15d76c1e50eb722e320b15345c4d0c6de/cffi-1.17.1-cp313-cp313-win_amd64.whl", hash = "sha256:f6a16c31041f09ead72d69f583767292f750d24913dadacf5756b966aacb3f1a", size = 182009 },
+]
+
+[[package]]
 name = "cfgv"
 version = "3.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -410,9 +543,8 @@ name = "contourpy"
 version = "1.3.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/66/54/eb9bfc647b19f2009dd5c7f5ec51c4e6ca831725f1aea7a993034f483147/contourpy-1.3.2.tar.gz", hash = "sha256:b6945942715a034c671b7fc54f9588126b0b8bf23db2696e3ca8328f3ff0ab54", size = 13466130 }
 wheels = [
@@ -462,6 +594,47 @@ wheels = [
 ]
 
 [[package]]
+name = "cryptography"
+version = "45.0.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cffi", marker = "platform_python_implementation != 'PyPy'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fe/c8/a2a376a8711c1e11708b9c9972e0c3223f5fc682552c82d8db844393d6ce/cryptography-45.0.4.tar.gz", hash = "sha256:7405ade85c83c37682c8fe65554759800a4a8c54b2d96e0f8ad114d31b808d57", size = 744890 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cc/1c/92637793de053832523b410dbe016d3f5c11b41d0cf6eef8787aabb51d41/cryptography-45.0.4-cp311-abi3-macosx_10_9_universal2.whl", hash = "sha256:425a9a6ac2823ee6e46a76a21a4e8342d8fa5c01e08b823c1f19a8b74f096069", size = 7055712 },
+    { url = "https://files.pythonhosted.org/packages/ba/14/93b69f2af9ba832ad6618a03f8a034a5851dc9a3314336a3d71c252467e1/cryptography-45.0.4-cp311-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:680806cf63baa0039b920f4976f5f31b10e772de42f16310a6839d9f21a26b0d", size = 4205335 },
+    { url = "https://files.pythonhosted.org/packages/67/30/fae1000228634bf0b647fca80403db5ca9e3933b91dd060570689f0bd0f7/cryptography-45.0.4-cp311-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:4ca0f52170e821bc8da6fc0cc565b7bb8ff8d90d36b5e9fdd68e8a86bdf72036", size = 4431487 },
+    { url = "https://files.pythonhosted.org/packages/6d/5a/7dffcf8cdf0cb3c2430de7404b327e3db64735747d641fc492539978caeb/cryptography-45.0.4-cp311-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:f3fe7a5ae34d5a414957cc7f457e2b92076e72938423ac64d215722f6cf49a9e", size = 4208922 },
+    { url = "https://files.pythonhosted.org/packages/c6/f3/528729726eb6c3060fa3637253430547fbaaea95ab0535ea41baa4a6fbd8/cryptography-45.0.4-cp311-abi3-manylinux_2_28_armv7l.manylinux_2_31_armv7l.whl", hash = "sha256:25eb4d4d3e54595dc8adebc6bbd5623588991d86591a78c2548ffb64797341e2", size = 3900433 },
+    { url = "https://files.pythonhosted.org/packages/d9/4a/67ba2e40f619e04d83c32f7e1d484c1538c0800a17c56a22ff07d092ccc1/cryptography-45.0.4-cp311-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:ce1678a2ccbe696cf3af15a75bb72ee008d7ff183c9228592ede9db467e64f1b", size = 4464163 },
+    { url = "https://files.pythonhosted.org/packages/7e/9a/b4d5aa83661483ac372464809c4b49b5022dbfe36b12fe9e323ca8512420/cryptography-45.0.4-cp311-abi3-manylinux_2_34_aarch64.whl", hash = "sha256:49fe9155ab32721b9122975e168a6760d8ce4cffe423bcd7ca269ba41b5dfac1", size = 4208687 },
+    { url = "https://files.pythonhosted.org/packages/db/b7/a84bdcd19d9c02ec5807f2ec2d1456fd8451592c5ee353816c09250e3561/cryptography-45.0.4-cp311-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:2882338b2a6e0bd337052e8b9007ced85c637da19ef9ecaf437744495c8c2999", size = 4463623 },
+    { url = "https://files.pythonhosted.org/packages/d8/84/69707d502d4d905021cac3fb59a316344e9f078b1da7fb43ecde5e10840a/cryptography-45.0.4-cp311-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:23b9c3ea30c3ed4db59e7b9619272e94891f8a3a5591d0b656a7582631ccf750", size = 4332447 },
+    { url = "https://files.pythonhosted.org/packages/f3/ee/d4f2ab688e057e90ded24384e34838086a9b09963389a5ba6854b5876598/cryptography-45.0.4-cp311-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:b0a97c927497e3bc36b33987abb99bf17a9a175a19af38a892dc4bbb844d7ee2", size = 4572830 },
+    { url = "https://files.pythonhosted.org/packages/70/d4/994773a261d7ff98034f72c0e8251fe2755eac45e2265db4c866c1c6829c/cryptography-45.0.4-cp311-abi3-win32.whl", hash = "sha256:e00a6c10a5c53979d6242f123c0a97cff9f3abed7f064fc412c36dc521b5f257", size = 2932769 },
+    { url = "https://files.pythonhosted.org/packages/5a/42/c80bd0b67e9b769b364963b5252b17778a397cefdd36fa9aa4a5f34c599a/cryptography-45.0.4-cp311-abi3-win_amd64.whl", hash = "sha256:817ee05c6c9f7a69a16200f0c90ab26d23a87701e2a284bd15156783e46dbcc8", size = 3410441 },
+    { url = "https://files.pythonhosted.org/packages/ce/0b/2488c89f3a30bc821c9d96eeacfcab6ff3accc08a9601ba03339c0fd05e5/cryptography-45.0.4-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:964bcc28d867e0f5491a564b7debb3ffdd8717928d315d12e0d7defa9e43b723", size = 7031836 },
+    { url = "https://files.pythonhosted.org/packages/fe/51/8c584ed426093aac257462ae62d26ad61ef1cbf5b58d8b67e6e13c39960e/cryptography-45.0.4-cp37-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:6a5bf57554e80f75a7db3d4b1dacaa2764611ae166ab42ea9a72bcdb5d577637", size = 4195746 },
+    { url = "https://files.pythonhosted.org/packages/5c/7d/4b0ca4d7af95a704eef2f8f80a8199ed236aaf185d55385ae1d1610c03c2/cryptography-45.0.4-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:46cf7088bf91bdc9b26f9c55636492c1cce3e7aaf8041bbf0243f5e5325cfb2d", size = 4424456 },
+    { url = "https://files.pythonhosted.org/packages/1d/45/5fabacbc6e76ff056f84d9f60eeac18819badf0cefc1b6612ee03d4ab678/cryptography-45.0.4-cp37-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:7bedbe4cc930fa4b100fc845ea1ea5788fcd7ae9562e669989c11618ae8d76ee", size = 4198495 },
+    { url = "https://files.pythonhosted.org/packages/55/b7/ffc9945b290eb0a5d4dab9b7636706e3b5b92f14ee5d9d4449409d010d54/cryptography-45.0.4-cp37-abi3-manylinux_2_28_armv7l.manylinux_2_31_armv7l.whl", hash = "sha256:eaa3e28ea2235b33220b949c5a0d6cf79baa80eab2eb5607ca8ab7525331b9ff", size = 3885540 },
+    { url = "https://files.pythonhosted.org/packages/7f/e3/57b010282346980475e77d414080acdcb3dab9a0be63071efc2041a2c6bd/cryptography-45.0.4-cp37-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:7ef2dde4fa9408475038fc9aadfc1fb2676b174e68356359632e980c661ec8f6", size = 4452052 },
+    { url = "https://files.pythonhosted.org/packages/37/e6/ddc4ac2558bf2ef517a358df26f45bc774a99bf4653e7ee34b5e749c03e3/cryptography-45.0.4-cp37-abi3-manylinux_2_34_aarch64.whl", hash = "sha256:6a3511ae33f09094185d111160fd192c67aa0a2a8d19b54d36e4c78f651dc5ad", size = 4198024 },
+    { url = "https://files.pythonhosted.org/packages/3a/c0/85fa358ddb063ec588aed4a6ea1df57dc3e3bc1712d87c8fa162d02a65fc/cryptography-45.0.4-cp37-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:06509dc70dd71fa56eaa138336244e2fbaf2ac164fc9b5e66828fccfd2b680d6", size = 4451442 },
+    { url = "https://files.pythonhosted.org/packages/33/67/362d6ec1492596e73da24e669a7fbbaeb1c428d6bf49a29f7a12acffd5dc/cryptography-45.0.4-cp37-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:5f31e6b0a5a253f6aa49be67279be4a7e5a4ef259a9f33c69f7d1b1191939872", size = 4325038 },
+    { url = "https://files.pythonhosted.org/packages/53/75/82a14bf047a96a1b13ebb47fb9811c4f73096cfa2e2b17c86879687f9027/cryptography-45.0.4-cp37-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:944e9ccf67a9594137f942d5b52c8d238b1b4e46c7a0c2891b7ae6e01e7c80a4", size = 4560964 },
+    { url = "https://files.pythonhosted.org/packages/cd/37/1a3cba4c5a468ebf9b95523a5ef5651244693dc712001e276682c278fc00/cryptography-45.0.4-cp37-abi3-win32.whl", hash = "sha256:c22fe01e53dc65edd1945a2e6f0015e887f84ced233acecb64b4daadb32f5c97", size = 2924557 },
+    { url = "https://files.pythonhosted.org/packages/2a/4b/3256759723b7e66380397d958ca07c59cfc3fb5c794fb5516758afd05d41/cryptography-45.0.4-cp37-abi3-win_amd64.whl", hash = "sha256:627ba1bc94f6adf0b0a2e35d87020285ead22d9f648c7e75bb64f367375f3b22", size = 3395508 },
+    { url = "https://files.pythonhosted.org/packages/ea/ba/cf442ae99ef363855ed84b39e0fb3c106ac66b7a7703f3c9c9cfe05412cb/cryptography-45.0.4-pp311-pypy311_pp73-macosx_10_9_x86_64.whl", hash = "sha256:4828190fb6c4bcb6ebc6331f01fe66ae838bb3bd58e753b59d4b22eb444b996c", size = 3590512 },
+    { url = "https://files.pythonhosted.org/packages/28/9a/a7d5bb87d149eb99a5abdc69a41e4e47b8001d767e5f403f78bfaafc7aa7/cryptography-45.0.4-pp311-pypy311_pp73-manylinux_2_28_aarch64.whl", hash = "sha256:03dbff8411206713185b8cebe31bc5c0eb544799a50c09035733716b386e61a4", size = 4146899 },
+    { url = "https://files.pythonhosted.org/packages/17/11/9361c2c71c42cc5c465cf294c8030e72fb0c87752bacbd7a3675245e3db3/cryptography-45.0.4-pp311-pypy311_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:51dfbd4d26172d31150d84c19bbe06c68ea4b7f11bbc7b3a5e146b367c311349", size = 4388900 },
+    { url = "https://files.pythonhosted.org/packages/c0/76/f95b83359012ee0e670da3e41c164a0c256aeedd81886f878911581d852f/cryptography-45.0.4-pp311-pypy311_pp73-manylinux_2_34_aarch64.whl", hash = "sha256:0339a692de47084969500ee455e42c58e449461e0ec845a34a6a9b9bf7df7fb8", size = 4146422 },
+    { url = "https://files.pythonhosted.org/packages/09/ad/5429fcc4def93e577a5407988f89cf15305e64920203d4ac14601a9dc876/cryptography-45.0.4-pp311-pypy311_pp73-manylinux_2_34_x86_64.whl", hash = "sha256:0cf13c77d710131d33e63626bd55ae7c0efb701ebdc2b3a7952b9b23a0412862", size = 4388475 },
+    { url = "https://files.pythonhosted.org/packages/99/49/0ab9774f64555a1b50102757811508f5ace451cf5dc0a2d074a4b9deca6a/cryptography-45.0.4-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:bbc505d1dc469ac12a0a064214879eac6294038d6b24ae9f71faae1448a9608d", size = 3337594 },
+]
+
+[[package]]
 name = "cycler"
 version = "0.12.1"
 source = { registry = "https://pypi.org/simple" }
@@ -480,9 +653,8 @@ dependencies = [
     { name = "fsspec", extra = ["http"] },
     { name = "huggingface-hub" },
     { name = "multiprocess" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "packaging" },
     { name = "pandas" },
     { name = "pyarrow" },
@@ -591,8 +763,8 @@ resolution-markers = [
 dependencies = [
     { name = "opt-einsum-fx" },
     { name = "scipy" },
-    { name = "sympy", version = "1.14.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "torch", version = "2.4.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "sympy", version = "1.13.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" } },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/97/ac/ac6120e6e001677b6bbaeee3f7c40af784a1758568ae3246df7b5c3b9552/e3nn-0.5.6.tar.gz", hash = "sha256:e28aa6f67d9c090300d390f9e08fb57211d60562971ae3237e30023ff17093b1", size = 435651 }
 wheels = [
@@ -610,32 +782,31 @@ wheels = [
 
 [[package]]
 name = "fairchem-core"
-version = "1.10.0"
+version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ase" },
+    { name = "ase-db-backends" },
     { name = "e3nn", version = "0.5.6", source = { registry = "https://pypi.org/simple" } },
     { name = "huggingface-hub" },
     { name = "hydra-core" },
     { name = "lmdb" },
     { name = "numba" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" } },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
     { name = "orjson" },
-    { name = "pydantic" },
     { name = "pymatgen" },
     { name = "pyyaml" },
     { name = "requests" },
     { name = "submitit" },
     { name = "tensorboard" },
-    { name = "torch", version = "2.4.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "torch-geometric" },
+    { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" } },
     { name = "torchtnt" },
     { name = "tqdm" },
     { name = "wandb" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ef/c4/73c1f2eccd7513b1a95cb0cec43a2809cd48587becd167ea2a61eaa64a56/fairchem_core-1.10.0.tar.gz", hash = "sha256:ec088258065aa6c6cb6a00c3b6edcf95ce023e7d12d0bd09a280329b8cf4fa7a", size = 347037 }
+sdist = { url = "https://files.pythonhosted.org/packages/bc/d1/8c7029faa8f08194fb5c66729b93fbacc3419055d8553abdd10764b2b6fb/fairchem_core-2.2.0.tar.gz", hash = "sha256:1303ab8b6fea265060788f55e80fa5f22118c5e6826b2a45122c0b7dc8197506", size = 198332 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ae/98/6bda48097679cb44b86d7b91fa41bdfb8b121c95309ca12195ee1e57d5a1/fairchem_core-1.10.0-py3-none-any.whl", hash = "sha256:cad591d8423a5f8ccb1d164bb32686586668a32aa9399baac0f82448ad92e136", size = 456286 },
+    { url = "https://files.pythonhosted.org/packages/16/95/2db3a75f321f3fa307e39a1df5623f349f0e53636c35cc44ed90fde3b0b6/fairchem_core-2.2.0-py3-none-any.whl", hash = "sha256:8edf3fcfc0743cd2ca6df317261b57169c3702ac604b1fa5909e5bff35c52606", size = 284874 },
 ]
 
 [[package]]
@@ -1249,48 +1420,37 @@ dependencies = [
     { name = "fsspec" },
     { name = "func-timeout" },
     { name = "material-hasher" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "pandas" },
     { name = "pyarrow" },
     { name = "pymatgen" },
     { name = "pytest" },
     { name = "rich" },
-    { name = "torch", version = "2.4.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra == 'extra-21-lematerial-forgebench-mace'" },
     { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
 ]
 
 [package.optional-dependencies]
 fairchem = [
-    { name = "e3nn", version = "0.5.6", source = { registry = "https://pypi.org/simple" } },
     { name = "fairchem-core" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" } },
-    { name = "pyg-lib", marker = "sys_platform != 'darwin'" },
-    { name = "torch", version = "2.4.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "torch-cluster", version = "1.6.3+pt24cu124", source = { registry = "https://data.pyg.org/whl/torch-2.4.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
-    { name = "torch-geometric" },
-    { name = "torch-scatter", version = "2.1.2+pt24cu124", source = { registry = "https://data.pyg.org/whl/torch-2.4.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
-    { name = "torch-sparse", version = "0.6.18+pt24cu124", source = { registry = "https://data.pyg.org/whl/torch-2.4.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
-    { name = "torch-spline-conv", version = "1.2.2+pt24cu124", source = { registry = "https://data.pyg.org/whl/torch-2.4.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
 ]
 mace = [
     { name = "e3nn", version = "0.4.4", source = { registry = "https://pypi.org/simple" } },
     { name = "mace-torch" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" } },
     { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" } },
-    { name = "torch-cluster", version = "1.6.3+pt26cu124", source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
-    { name = "torch-scatter", version = "2.1.2+pt26cu124", source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
-    { name = "torch-sparse", version = "0.6.18+pt26cu124", source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
-    { name = "torch-spline-conv", version = "1.2.2+pt26cu124", source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
+    { name = "torch-cluster", marker = "sys_platform != 'darwin'" },
+    { name = "torch-scatter", marker = "sys_platform != 'darwin'" },
+    { name = "torch-sparse", marker = "sys_platform != 'darwin'" },
+    { name = "torch-spline-conv", marker = "sys_platform != 'darwin'" },
 ]
 orb = [
     { name = "orb-models" },
-    { name = "torch-cluster", version = "1.6.3+pt26cu124", source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
-    { name = "torch-scatter", version = "2.1.2+pt26cu124", source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
-    { name = "torch-sparse", version = "0.6.18+pt26cu124", source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
-    { name = "torch-spline-conv", version = "1.2.2+pt26cu124", source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }, marker = "sys_platform != 'darwin'" },
+    { name = "torch-cluster", marker = "sys_platform != 'darwin'" },
+    { name = "torch-scatter", marker = "sys_platform != 'darwin'" },
+    { name = "torch-sparse", marker = "sys_platform != 'darwin'" },
+    { name = "torch-spline-conv", marker = "sys_platform != 'darwin'" },
 ]
 
 [package.dev-dependencies]
@@ -1319,41 +1479,31 @@ requires-dist = [
     { name = "ase", specifier = ">=3.25.0" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "datasets", specifier = ">=3.5.0" },
-    { name = "e3nn", marker = "extra == 'fairchem'", specifier = ">=0.5.0" },
     { name = "e3nn", marker = "extra == 'mace'", specifier = "==0.4.4" },
-    { name = "fairchem-core", marker = "extra == 'fairchem'", specifier = ">=1.4.0" },
+    { name = "fairchem-core", marker = "extra == 'fairchem'", specifier = ">=2.1.0" },
     { name = "fsspec", specifier = ">=2024.12.0" },
     { name = "func-timeout", specifier = ">=4.3.5" },
     { name = "mace-torch", marker = "extra == 'mace'", specifier = ">=0.3.13" },
     { name = "material-hasher", git = "https://github.com/lematerial/material-hasher.git" },
     { name = "numpy", specifier = ">=1.26.4" },
-    { name = "numpy", marker = "extra == 'fairchem'", specifier = "==1.26.4" },
     { name = "numpy", marker = "extra == 'mace'", specifier = "==2.2.3" },
     { name = "orb-models", marker = "extra == 'orb'", specifier = ">=0.5.1" },
     { name = "pandas", specifier = ">=2.2.3" },
     { name = "pyarrow", specifier = ">=19.0.1" },
-    { name = "pyg-lib", marker = "sys_platform != 'darwin' and extra == 'fairchem'", specifier = "==0.4.0+pt24cu124" },
     { name = "pymatgen", specifier = ">=2025.4.20" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "rich", specifier = "==13.9.4" },
     { name = "torch", specifier = ">=2.4.0" },
-    { name = "torch", marker = "extra == 'fairchem'", specifier = "==2.4.0" },
     { name = "torch", marker = "extra == 'mace'", specifier = "==2.6.0" },
-    { name = "torch-cluster", marker = "sys_platform != 'darwin' and extra == 'fairchem'", specifier = "==1.6.3+pt24cu124" },
     { name = "torch-cluster", marker = "sys_platform != 'darwin' and extra == 'mace'", specifier = "==1.6.3+pt26cu124" },
     { name = "torch-cluster", marker = "sys_platform != 'darwin' and extra == 'orb'", specifier = "==1.6.3+pt26cu124" },
-    { name = "torch-geometric", marker = "extra == 'fairchem'", specifier = "==2.4.0" },
-    { name = "torch-scatter", marker = "sys_platform != 'darwin' and extra == 'fairchem'", specifier = "==2.1.2+pt24cu124" },
     { name = "torch-scatter", marker = "sys_platform != 'darwin' and extra == 'mace'", specifier = "==2.1.2+pt26cu124" },
     { name = "torch-scatter", marker = "sys_platform != 'darwin' and extra == 'orb'", specifier = "==2.1.2+pt26cu124" },
-    { name = "torch-sparse", marker = "sys_platform != 'darwin' and extra == 'fairchem'", specifier = "==0.6.18+pt24cu124" },
     { name = "torch-sparse", marker = "sys_platform != 'darwin' and extra == 'mace'", specifier = "==0.6.18+pt26cu124" },
     { name = "torch-sparse", marker = "sys_platform != 'darwin' and extra == 'orb'", specifier = "==0.6.18+pt26cu124" },
-    { name = "torch-spline-conv", marker = "sys_platform != 'darwin' and extra == 'fairchem'", specifier = "==1.2.2+pt24cu124" },
     { name = "torch-spline-conv", marker = "sys_platform != 'darwin' and extra == 'mace'", specifier = "==1.2.2+pt26cu124" },
     { name = "torch-spline-conv", marker = "sys_platform != 'darwin' and extra == 'orb'", specifier = "==1.2.2+pt26cu124" },
 ]
-provides-extras = ["fairchem", "mace", "orb"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -1616,8 +1766,7 @@ dependencies = [
     { name = "pymatgen" },
     { name = "setuptools" },
     { name = "structuregraph-helpers" },
-    { name = "torch", version = "2.4.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra == 'extra-21-lematerial-forgebench-mace'" },
     { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
 ]
 
@@ -1630,9 +1779,8 @@ dependencies = [
     { name = "cycler" },
     { name = "fonttools" },
     { name = "kiwisolver" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "packaging" },
     { name = "pillow" },
     { name = "pyparsing" },
@@ -1716,9 +1864,8 @@ name = "monty"
 version = "2025.3.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
     { name = "ruamel-yaml" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/89/54/a1b2b4c9b16ebc5ea72cf22b1a6bb7ceaa79187fbf22a404c9677c8f90dd/monty-2025.3.3.tar.gz", hash = "sha256:16c1eb54b2372e765c2f3f14cff01cc76ab55c3cc12b27d49962fb8072310ae0", size = 85592 }
@@ -1886,9 +2033,8 @@ version = "0.61.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "llvmlite" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1c/a0/e21f57604304aa03ebb8e098429222722ad99176a4f979d34af1d1ee80da/numba-0.61.2.tar.gz", hash = "sha256:8750ee147940a6637b80ecf7f95062185ad8726c8c28a2295b8ec1160a196f7d", size = 2820615 }
 wheels = [
@@ -1907,38 +2053,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/0d/e0/5ea04e7ad2c39288c0f0f9e8d47638ad70f28e275d092733b5817cf243c9/numba-0.61.2-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:bdbca73ad81fa196bd53dc12e3aaf1564ae036e0c125f237c7644fe64a4928ab", size = 3893918 },
     { url = "https://files.pythonhosted.org/packages/17/58/064f4dcb7d7e9412f16ecf80ed753f92297e39f399c905389688cf950b81/numba-0.61.2-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:5f154aaea625fb32cfbe3b80c5456d514d416fcdf79733dd69c0df3a11348e9e", size = 3584056 },
     { url = "https://files.pythonhosted.org/packages/af/a4/6d3a0f2d3989e62a18749e1e9913d5fa4910bbb3e3311a035baea6caf26d/numba-0.61.2-cp313-cp313-win_amd64.whl", hash = "sha256:59321215e2e0ac5fa928a8020ab00b8e57cda8a97384963ac0dfa4d4e6aa54e7", size = 2831846 },
-]
-
-[[package]]
-name = "numpy"
-version = "1.26.4"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'win32'",
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
-sdist = { url = "https://files.pythonhosted.org/packages/65/6e/09db70a523a96d25e115e71cc56a6f9031e7b8cd166c1ac8438307c14058/numpy-1.26.4.tar.gz", hash = "sha256:2a02aba9ed12e4ac4eb3ea9421c420301a0c6460d9830d74a9df87efa4912010", size = 15786129 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/11/57/baae43d14fe163fa0e4c47f307b6b2511ab8d7d30177c491960504252053/numpy-1.26.4-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:4c66707fabe114439db9068ee468c26bbdf909cac0fb58686a42a24de1760c71", size = 20630554 },
-    { url = "https://files.pythonhosted.org/packages/1a/2e/151484f49fd03944c4a3ad9c418ed193cfd02724e138ac8a9505d056c582/numpy-1.26.4-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:edd8b5fe47dab091176d21bb6de568acdd906d1887a4584a15a9a96a1dca06ef", size = 13997127 },
-    { url = "https://files.pythonhosted.org/packages/79/ae/7e5b85136806f9dadf4878bf73cf223fe5c2636818ba3ab1c585d0403164/numpy-1.26.4-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7ab55401287bfec946ced39700c053796e7cc0e3acbef09993a9ad2adba6ca6e", size = 14222994 },
-    { url = "https://files.pythonhosted.org/packages/3a/d0/edc009c27b406c4f9cbc79274d6e46d634d139075492ad055e3d68445925/numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:666dbfb6ec68962c033a450943ded891bed2d54e6755e35e5835d63f4f6931d5", size = 18252005 },
-    { url = "https://files.pythonhosted.org/packages/09/bf/2b1aaf8f525f2923ff6cfcf134ae5e750e279ac65ebf386c75a0cf6da06a/numpy-1.26.4-cp311-cp311-musllinux_1_1_aarch64.whl", hash = "sha256:96ff0b2ad353d8f990b63294c8986f1ec3cb19d749234014f4e7eb0112ceba5a", size = 13885297 },
-    { url = "https://files.pythonhosted.org/packages/df/a0/4e0f14d847cfc2a633a1c8621d00724f3206cfeddeb66d35698c4e2cf3d2/numpy-1.26.4-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:60dedbb91afcbfdc9bc0b1f3f402804070deed7392c23eb7a7f07fa857868e8a", size = 18093567 },
-    { url = "https://files.pythonhosted.org/packages/d2/b7/a734c733286e10a7f1a8ad1ae8c90f2d33bf604a96548e0a4a3a6739b468/numpy-1.26.4-cp311-cp311-win32.whl", hash = "sha256:1af303d6b2210eb850fcf03064d364652b7120803a0b872f5211f5234b399f20", size = 5968812 },
-    { url = "https://files.pythonhosted.org/packages/3f/6b/5610004206cf7f8e7ad91c5a85a8c71b2f2f8051a0c0c4d5916b76d6cbb2/numpy-1.26.4-cp311-cp311-win_amd64.whl", hash = "sha256:cd25bcecc4974d09257ffcd1f098ee778f7834c3ad767fe5db785be9a4aa9cb2", size = 15811913 },
-    { url = "https://files.pythonhosted.org/packages/95/12/8f2020a8e8b8383ac0177dc9570aad031a3beb12e38847f7129bacd96228/numpy-1.26.4-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:b3ce300f3644fb06443ee2222c2201dd3a89ea6040541412b8fa189341847218", size = 20335901 },
-    { url = "https://files.pythonhosted.org/packages/75/5b/ca6c8bd14007e5ca171c7c03102d17b4f4e0ceb53957e8c44343a9546dcc/numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:03a8c78d01d9781b28a6989f6fa1bb2c4f2d51201cf99d3dd875df6fbd96b23b", size = 13685868 },
-    { url = "https://files.pythonhosted.org/packages/79/f8/97f10e6755e2a7d027ca783f63044d5b1bc1ae7acb12afe6a9b4286eac17/numpy-1.26.4-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9fad7dcb1aac3c7f0584a5a8133e3a43eeb2fe127f47e3632d43d677c66c102b", size = 13925109 },
-    { url = "https://files.pythonhosted.org/packages/0f/50/de23fde84e45f5c4fda2488c759b69990fd4512387a8632860f3ac9cd225/numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:675d61ffbfa78604709862923189bad94014bef562cc35cf61d3a07bba02a7ed", size = 17950613 },
-    { url = "https://files.pythonhosted.org/packages/4c/0c/9c603826b6465e82591e05ca230dfc13376da512b25ccd0894709b054ed0/numpy-1.26.4-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:ab47dbe5cc8210f55aa58e4805fe224dac469cde56b9f731a4c098b91917159a", size = 13572172 },
-    { url = "https://files.pythonhosted.org/packages/76/8c/2ba3902e1a0fc1c74962ea9bb33a534bb05984ad7ff9515bf8d07527cadd/numpy-1.26.4-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:1dda2e7b4ec9dd512f84935c5f126c8bd8b9f2fc001e9f54af255e8c5f16b0e0", size = 17786643 },
-    { url = "https://files.pythonhosted.org/packages/28/4a/46d9e65106879492374999e76eb85f87b15328e06bd1550668f79f7b18c6/numpy-1.26.4-cp312-cp312-win32.whl", hash = "sha256:50193e430acfc1346175fcbdaa28ffec49947a06918b7b92130744e81e640110", size = 5677803 },
-    { url = "https://files.pythonhosted.org/packages/16/2e/86f24451c2d530c88daf997cb8d6ac622c1d40d19f5a031ed68a4b73a374/numpy-1.26.4-cp312-cp312-win_amd64.whl", hash = "sha256:08beddf13648eb95f8d867350f6a018a4be2e5ad54c8d8caed89ebca558b2818", size = 15517754 },
 ]
 
 [[package]]
@@ -2006,6 +2120,12 @@ resolution-markers = [
     "python_full_version == '3.12.*' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
     "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
     "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
     "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
     "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
     "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
@@ -2057,24 +2177,13 @@ wheels = [
 
 [[package]]
 name = "nvidia-cublas-cu12"
-version = "12.1.3.1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/6d/121efd7382d5b0284239f4ab1fc1590d86d34ed4a4a2fdb13b30ca8e5740/nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:ee53ccca76a6fc08fb9701aa95b6ceb242cdaab118c3bb152af4e579af792728", size = 410594774 },
-    { url = "https://files.pythonhosted.org/packages/c5/ef/32a375b74bea706c93deea5613552f7c9104f961b21df423f5887eca713b/nvidia_cublas_cu12-12.1.3.1-py3-none-win_amd64.whl", hash = "sha256:2b964d60e8cf11b5e1073d179d85fa340c120e99b3067558f3cf98dd69d02906", size = 439918445 },
-]
-
-[[package]]
-name = "nvidia-cublas-cu12"
 version = "12.4.5.8"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7f/7f/7fbae15a3982dc9595e49ce0f19332423b260045d0a6afe93cdbe2f1f624/nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_aarch64.whl", hash = "sha256:0f8aa1706812e00b9f19dfe0cdb3999b092ccb8ca168c0db5b8ea712456fd9b3", size = 363333771 },
@@ -2101,24 +2210,13 @@ wheels = [
 
 [[package]]
 name = "nvidia-cuda-cupti-cu12"
-version = "12.1.105"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7e/00/6b218edd739ecfc60524e585ba8e6b00554dd908de2c9c66c1af3e44e18d/nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl", hash = "sha256:e54fde3983165c624cb79254ae9818a456eb6e87a7fd4d56a2352c24ee542d7e", size = 14109015 },
-    { url = "https://files.pythonhosted.org/packages/d0/56/0021e32ea2848c24242f6b56790bd0ccc8bf99f973ca790569c6ca028107/nvidia_cuda_cupti_cu12-12.1.105-py3-none-win_amd64.whl", hash = "sha256:bea8236d13a0ac7190bd2919c3e8e6ce1e402104276e6f9694479e48bb0eb2a4", size = 10154340 },
-]
-
-[[package]]
-name = "nvidia-cuda-cupti-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/93/b5/9fb3d00386d3361b03874246190dfec7b206fd74e6e287b26a8fcb359d95/nvidia_cuda_cupti_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:79279b35cf6f91da114182a5ce1864997fd52294a87a16179ce275773799458a", size = 12354556 },
@@ -2147,24 +2245,13 @@ wheels = [
 
 [[package]]
 name = "nvidia-cuda-nvrtc-cu12"
-version = "12.1.105"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b6/9f/c64c03f49d6fbc56196664d05dba14e3a561038a81a638eeb47f4d4cfd48/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl", hash = "sha256:339b385f50c309763ca65456ec75e17bbefcbbf2893f462cb8b90584cd27a1c2", size = 23671734 },
-    { url = "https://files.pythonhosted.org/packages/ad/1d/f76987c4f454eb86e0b9a0e4f57c3bf1ac1d13ad13cd1a4da4eb0e0c0ce9/nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-win_amd64.whl", hash = "sha256:0a98a522d9ff138b96c010a65e145dc1b4850e9ecb75a0172371793752fd46ed", size = 19331863 },
-]
-
-[[package]]
-name = "nvidia-cuda-nvrtc-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/77/aa/083b01c427e963ad0b314040565ea396f914349914c298556484f799e61b/nvidia_cuda_nvrtc_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:0eedf14185e04b76aa05b1fea04133e59f465b6f960c0cbf4e37c3cb6b0ea198", size = 24133372 },
@@ -2191,24 +2278,13 @@ wheels = [
 
 [[package]]
 name = "nvidia-cuda-runtime-cu12"
-version = "12.1.105"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/d5/c68b1d2cdfcc59e72e8a5949a37ddb22ae6cade80cd4a57a84d4c8b55472/nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl", hash = "sha256:6e258468ddf5796e25f1dc591a31029fa317d97a0a94ed93468fc86301d61e40", size = 823596 },
-    { url = "https://files.pythonhosted.org/packages/9f/e2/7a2b4b5064af56ea8ea2d8b2776c0f2960d95c88716138806121ae52a9c9/nvidia_cuda_runtime_cu12-12.1.105-py3-none-win_amd64.whl", hash = "sha256:dfb46ef84d73fababab44cf03e3b83f80700d27ca300e537f85f636fac474344", size = 821226 },
-]
-
-[[package]]
-name = "nvidia-cuda-runtime-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a1/aa/b656d755f474e2084971e9a297def515938d56b466ab39624012070cb773/nvidia_cuda_runtime_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:961fe0e2e716a2a1d967aab7caee97512f71767f852f67432d572e36cb3a11f3", size = 894177 },
@@ -2246,8 +2322,7 @@ resolution-markers = [
     "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 dependencies = [
-    { name = "nvidia-cublas-cu12", version = "12.1.3.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cublas-cu12", version = "12.4.5.8", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "nvidia-cublas-cu12", version = "12.4.5.8", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9f/fd/713452cd72343f682b1c7b9321e23829f00b842ceaedcda96e742ea0b0b3/nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl", hash = "sha256:165764f44ef8c61fcdfdfdbe769d687e06374059fbb388b6c89ecb0e28793a6f", size = 664752741 },
@@ -2276,27 +2351,16 @@ wheels = [
 
 [[package]]
 name = "nvidia-cufft-cu12"
-version = "11.0.2.54"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/94/eb540db023ce1d162e7bea9f8f5aa781d57c65aed513c33ee9a5123ead4d/nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl", hash = "sha256:794e3948a1aa71fd817c3775866943936774d1c14e7628c74f6f7417224cdf56", size = 121635161 },
-    { url = "https://files.pythonhosted.org/packages/f7/57/7927a3aa0e19927dfed30256d1c854caf991655d847a4e7c01fe87e3d4ac/nvidia_cufft_cu12-11.0.2.54-py3-none-win_amd64.whl", hash = "sha256:d9ac353f78ff89951da4af698f80870b1534ed69993f10a4cf1d96f21357e253", size = 121344196 },
-]
-
-[[package]]
-name = "nvidia-cufft-cu12"
 version = "11.2.1.3"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 dependencies = [
-    { name = "nvidia-nvjitlink-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "nvidia-nvjitlink-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7a/8a/0e728f749baca3fbeffad762738276e5df60851958be7783af121a7221e7/nvidia_cufft_cu12-11.2.1.3-py3-none-manylinux2014_aarch64.whl", hash = "sha256:5dad8008fc7f92f5ddfa2101430917ce2ffacd86824914c82e28990ad7f00399", size = 211422548 },
@@ -2337,24 +2401,13 @@ wheels = [
 
 [[package]]
 name = "nvidia-curand-cu12"
-version = "10.3.2.106"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/31/4890b1c9abc496303412947fc7dcea3d14861720642b49e8ceed89636705/nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl", hash = "sha256:9d264c5036dde4e64f1de8c50ae753237c12e0b1348738169cd0f8a536c0e1e0", size = 56467784 },
-    { url = "https://files.pythonhosted.org/packages/5c/97/4c9c7c79efcdf5b70374241d48cf03b94ef6707fd18ea0c0f53684931d0b/nvidia_curand_cu12-10.3.2.106-py3-none-win_amd64.whl", hash = "sha256:75b6b0c574c0037839121317e17fd01f8a69fd2ef8e25853d826fec30bdba74a", size = 55995813 },
-]
-
-[[package]]
-name = "nvidia-curand-cu12"
 version = "10.3.5.147"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/80/9c/a79180e4d70995fdf030c6946991d0171555c6edf95c265c6b2bf7011112/nvidia_curand_cu12-10.3.5.147-py3-none-manylinux2014_aarch64.whl", hash = "sha256:1f173f09e3e3c76ab084aba0de819c49e56614feae5c12f69883f4ae9bb5fad9", size = 56314811 },
@@ -2383,34 +2436,18 @@ wheels = [
 
 [[package]]
 name = "nvidia-cusolver-cu12"
-version = "11.4.5.107"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "nvidia-cublas-cu12", version = "12.1.3.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cusparse-cu12", version = "12.1.0.106", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-nvjitlink-cu12", version = "12.6.85", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/1d/8de1e5c67099015c834315e333911273a8c6aaba78923dd1d1e25fc5f217/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl", hash = "sha256:8a7ec542f0412294b15072fa7dab71d31334014a69f953004ea7a118206fe0dd", size = 124161928 },
-    { url = "https://files.pythonhosted.org/packages/b8/80/8fca0bf819122a631c3976b6fc517c1b10741b643b94046bd8dd451522c5/nvidia_cusolver_cu12-11.4.5.107-py3-none-win_amd64.whl", hash = "sha256:74e0c3a24c78612192a74fcd90dd117f1cf21dea4822e66d89e8ea80e3cd2da5", size = 121643081 },
-]
-
-[[package]]
-name = "nvidia-cusolver-cu12"
 version = "11.6.1.9"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 dependencies = [
-    { name = "nvidia-cublas-cu12", version = "12.4.5.8", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cusparse-cu12", version = "12.3.1.170", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-nvjitlink-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "nvidia-cublas-cu12", version = "12.4.5.8", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
+    { name = "nvidia-cusparse-cu12", version = "12.3.1.170", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
+    { name = "nvidia-nvjitlink-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/46/6b/a5c33cf16af09166845345275c34ad2190944bcc6026797a39f8e0a282e0/nvidia_cusolver_cu12-11.6.1.9-py3-none-manylinux2014_aarch64.whl", hash = "sha256:d338f155f174f90724bbde3758b7ac375a70ce8e706d70b018dd3375545fc84e", size = 127634111 },
@@ -2444,30 +2481,16 @@ wheels = [
 
 [[package]]
 name = "nvidia-cusparse-cu12"
-version = "12.1.0.106"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "nvidia-nvjitlink-cu12", version = "12.6.85", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/5b/cfaeebf25cd9fdec14338ccb16f6b2c4c7fa9163aefcf057d86b9cc248bb/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl", hash = "sha256:f3b50f42cf363f86ab21f720998517a659a48131e8d538dc02f8768237bd884c", size = 195958278 },
-    { url = "https://files.pythonhosted.org/packages/0f/95/48fdbba24c93614d1ecd35bc6bdc6087bd17cbacc3abc4b05a9c2a1ca232/nvidia_cusparse_cu12-12.1.0.106-py3-none-win_amd64.whl", hash = "sha256:b798237e81b9719373e8fae8d4f091b70a0cf09d9d85c95a557e11df2d8e9a5a", size = 195414588 },
-]
-
-[[package]]
-name = "nvidia-cusparse-cu12"
 version = "12.3.1.170"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 dependencies = [
-    { name = "nvidia-nvjitlink-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "nvidia-nvjitlink-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/96/a9/c0d2f83a53d40a4a41be14cea6a0bf9e668ffcf8b004bd65633f433050c0/nvidia_cusparse_cu12-12.3.1.170-py3-none-manylinux2014_aarch64.whl", hash = "sha256:9d32f62896231ebe0480efd8a7f702e143c98cfaa0e8a76df3386c1ba2b54df3", size = 207381987 },
@@ -2502,8 +2525,10 @@ name = "nvidia-cusparselt-cu12"
 version = "0.6.2"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/98/8e/675498726c605c9441cf46653bd29cb1b8666da1fb1469ffa25f67f20c58/nvidia_cusparselt_cu12-0.6.2-py3-none-manylinux2014_aarch64.whl", hash = "sha256:067a7f6d03ea0d4841c85f0c6f1991c5dda98211f6302cb83a4ab234ee95bef8", size = 149422781 },
@@ -2530,24 +2555,13 @@ wheels = [
 
 [[package]]
 name = "nvidia-nccl-cu12"
-version = "2.20.5"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/bb/d09dda47c881f9ff504afd6f9ca4f502ded6d8fc2f572cacc5e39da91c28/nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_aarch64.whl", hash = "sha256:1fc150d5c3250b170b29410ba682384b14581db722b2531b0d8d33c595f33d01", size = 176238458 },
-    { url = "https://files.pythonhosted.org/packages/4b/2a/0a131f572aa09f741c30ccd45a8e56316e8be8dfc7bc19bf0ab7cfef7b19/nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl", hash = "sha256:057f6bf9685f75215d0c53bf3ac4a10b3e6578351de307abad9e18a99182af56", size = 176249402 },
-]
-
-[[package]]
-name = "nvidia-nccl-cu12"
 version = "2.21.5"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/df/99/12cd266d6233f47d00daf3a72739872bdc10267d0383508b0b9c84a18bb6/nvidia_nccl_cu12-2.21.5-py3-none-manylinux2014_x86_64.whl", hash = "sha256:8579076d30a8c24988834445f8d633c697d42397e92ffc3f63fa26766d25e0a0", size = 188654414 },
@@ -2574,8 +2588,10 @@ name = "nvidia-nvjitlink-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/02/45/239d52c05074898a80a900f49b1615d81c07fceadd5ad6c4f86a987c0bc4/nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:4abe7fef64914ccfa909bc2ba39739670ecc9e820c83ccc7a6ed414122599b83", size = 20552510 },
@@ -2591,8 +2607,6 @@ resolution-markers = [
     "python_full_version >= '3.13' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
     "python_full_version == '3.12.*' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
     "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
     "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
     "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
@@ -2604,24 +2618,13 @@ wheels = [
 
 [[package]]
 name = "nvidia-nvtx-cu12"
-version = "12.1.105"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/d3/8057f0587683ed2fcd4dbfbdfdfa807b9160b809976099d36b8f60d08f03/nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl", hash = "sha256:dc21cf308ca5691e7c04d962e213f8a4aa9bbfa23d95412f452254c2caeb09e5", size = 99138 },
-    { url = "https://files.pythonhosted.org/packages/b8/d7/bd7cb2d95ac6ac6e8d05bfa96cdce69619f1ef2808e072919044c2d47a8c/nvidia_nvtx_cu12-12.1.105-py3-none-win_amd64.whl", hash = "sha256:65f4d98982b31b60026e0e6de73fbdfc09d08a96f4656dd3665ca616a11e1e82", size = 66307 },
-]
-
-[[package]]
-name = "nvidia-nvtx-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/06/39/471f581edbb7804b39e8063d92fc8305bdc7a80ae5c07dbe6ea5c50d14a5/nvidia_nvtx_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:7959ad635db13edf4fc65c06a6e9f9e55fc2f92596db928d169c0bb031e88ef3", size = 100417 },
@@ -2677,8 +2680,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "opt-einsum" },
     { name = "packaging" },
-    { name = "torch", version = "2.4.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" } },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/93/de/856dab99be0360c7275fee075eb0450a2ec82a54c4c33689606f62e9615b/opt_einsum_fx-0.1.4.tar.gz", hash = "sha256:7eeb7f91ecb70be65e6179c106ea7f64fc1db6319e3d1289a4518b384f81e74f", size = 12969 }
 wheels = [
@@ -2779,9 +2781,8 @@ name = "pandas"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "python-dateutil" },
     { name = "pytz" },
     { name = "tzdata" },
@@ -3092,6 +3093,49 @@ wheels = [
 ]
 
 [[package]]
+name = "psycopg2-binary"
+version = "2.9.10"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/0e/bdc8274dc0585090b4e3432267d7be4dfbfd8971c0fa59167c711105a6bf/psycopg2-binary-2.9.10.tar.gz", hash = "sha256:4b3df0e6990aa98acda57d983942eff13d824135fe2250e6522edaa782a06de2", size = 385764 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9c/8f/9feb01291d0d7a0a4c6a6bab24094135c2b59c6a81943752f632c75896d6/psycopg2_binary-2.9.10-cp311-cp311-macosx_12_0_x86_64.whl", hash = "sha256:04392983d0bb89a8717772a193cfaac58871321e3ec69514e1c4e0d4957b5aff", size = 3043397 },
+    { url = "https://files.pythonhosted.org/packages/15/30/346e4683532011561cd9c8dfeac6a8153dd96452fee0b12666058ab7893c/psycopg2_binary-2.9.10-cp311-cp311-macosx_14_0_arm64.whl", hash = "sha256:1a6784f0ce3fec4edc64e985865c17778514325074adf5ad8f80636cd029ef7c", size = 3274806 },
+    { url = "https://files.pythonhosted.org/packages/66/6e/4efebe76f76aee7ec99166b6c023ff8abdc4e183f7b70913d7c047701b79/psycopg2_binary-2.9.10-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b5f86c56eeb91dc3135b3fd8a95dc7ae14c538a2f3ad77a19645cf55bab1799c", size = 2851370 },
+    { url = "https://files.pythonhosted.org/packages/7f/fd/ff83313f86b50f7ca089b161b8e0a22bb3c319974096093cd50680433fdb/psycopg2_binary-2.9.10-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:2b3d2491d4d78b6b14f76881905c7a8a8abcf974aad4a8a0b065273a0ed7a2cb", size = 3080780 },
+    { url = "https://files.pythonhosted.org/packages/e6/c4/bfadd202dcda8333a7ccafdc51c541dbdfce7c2c7cda89fa2374455d795f/psycopg2_binary-2.9.10-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:2286791ececda3a723d1910441c793be44625d86d1a4e79942751197f4d30341", size = 3264583 },
+    { url = "https://files.pythonhosted.org/packages/5d/f1/09f45ac25e704ac954862581f9f9ae21303cc5ded3d0b775532b407f0e90/psycopg2_binary-2.9.10-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:512d29bb12608891e349af6a0cccedce51677725a921c07dba6342beaf576f9a", size = 3019831 },
+    { url = "https://files.pythonhosted.org/packages/9e/2e/9beaea078095cc558f215e38f647c7114987d9febfc25cb2beed7c3582a5/psycopg2_binary-2.9.10-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:5a507320c58903967ef7384355a4da7ff3f28132d679aeb23572753cbf2ec10b", size = 2871822 },
+    { url = "https://files.pythonhosted.org/packages/01/9e/ef93c5d93f3dc9fc92786ffab39e323b9aed066ba59fdc34cf85e2722271/psycopg2_binary-2.9.10-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:6d4fa1079cab9018f4d0bd2db307beaa612b0d13ba73b5c6304b9fe2fb441ff7", size = 2820975 },
+    { url = "https://files.pythonhosted.org/packages/a5/f0/049e9631e3268fe4c5a387f6fc27e267ebe199acf1bc1bc9cbde4bd6916c/psycopg2_binary-2.9.10-cp311-cp311-musllinux_1_2_ppc64le.whl", hash = "sha256:851485a42dbb0bdc1edcdabdb8557c09c9655dfa2ca0460ff210522e073e319e", size = 2919320 },
+    { url = "https://files.pythonhosted.org/packages/dc/9a/bcb8773b88e45fb5a5ea8339e2104d82c863a3b8558fbb2aadfe66df86b3/psycopg2_binary-2.9.10-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:35958ec9e46432d9076286dda67942ed6d968b9c3a6a2fd62b48939d1d78bf68", size = 2957617 },
+    { url = "https://files.pythonhosted.org/packages/e2/6b/144336a9bf08a67d217b3af3246abb1d027095dab726f0687f01f43e8c03/psycopg2_binary-2.9.10-cp311-cp311-win32.whl", hash = "sha256:ecced182e935529727401b24d76634a357c71c9275b356efafd8a2a91ec07392", size = 1024618 },
+    { url = "https://files.pythonhosted.org/packages/61/69/3b3d7bd583c6d3cbe5100802efa5beacaacc86e37b653fc708bf3d6853b8/psycopg2_binary-2.9.10-cp311-cp311-win_amd64.whl", hash = "sha256:ee0e8c683a7ff25d23b55b11161c2663d4b099770f6085ff0a20d4505778d6b4", size = 1163816 },
+    { url = "https://files.pythonhosted.org/packages/49/7d/465cc9795cf76f6d329efdafca74693714556ea3891813701ac1fee87545/psycopg2_binary-2.9.10-cp312-cp312-macosx_12_0_x86_64.whl", hash = "sha256:880845dfe1f85d9d5f7c412efea7a08946a46894537e4e5d091732eb1d34d9a0", size = 3044771 },
+    { url = "https://files.pythonhosted.org/packages/8b/31/6d225b7b641a1a2148e3ed65e1aa74fc86ba3fee850545e27be9e1de893d/psycopg2_binary-2.9.10-cp312-cp312-macosx_14_0_arm64.whl", hash = "sha256:9440fa522a79356aaa482aa4ba500b65f28e5d0e63b801abf6aa152a29bd842a", size = 3275336 },
+    { url = "https://files.pythonhosted.org/packages/30/b7/a68c2b4bff1cbb1728e3ec864b2d92327c77ad52edcd27922535a8366f68/psycopg2_binary-2.9.10-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e3923c1d9870c49a2d44f795df0c889a22380d36ef92440ff618ec315757e539", size = 2851637 },
+    { url = "https://files.pythonhosted.org/packages/0b/b1/cfedc0e0e6f9ad61f8657fd173b2f831ce261c02a08c0b09c652b127d813/psycopg2_binary-2.9.10-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:7b2c956c028ea5de47ff3a8d6b3cc3330ab45cf0b7c3da35a2d6ff8420896526", size = 3082097 },
+    { url = "https://files.pythonhosted.org/packages/18/ed/0a8e4153c9b769f59c02fb5e7914f20f0b2483a19dae7bf2db54b743d0d0/psycopg2_binary-2.9.10-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:f758ed67cab30b9a8d2833609513ce4d3bd027641673d4ebc9c067e4d208eec1", size = 3264776 },
+    { url = "https://files.pythonhosted.org/packages/10/db/d09da68c6a0cdab41566b74e0a6068a425f077169bed0946559b7348ebe9/psycopg2_binary-2.9.10-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8cd9b4f2cfab88ed4a9106192de509464b75a906462fb846b936eabe45c2063e", size = 3020968 },
+    { url = "https://files.pythonhosted.org/packages/94/28/4d6f8c255f0dfffb410db2b3f9ac5218d959a66c715c34cac31081e19b95/psycopg2_binary-2.9.10-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:6dc08420625b5a20b53551c50deae6e231e6371194fa0651dbe0fb206452ae1f", size = 2872334 },
+    { url = "https://files.pythonhosted.org/packages/05/f7/20d7bf796593c4fea95e12119d6cc384ff1f6141a24fbb7df5a668d29d29/psycopg2_binary-2.9.10-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:d7cd730dfa7c36dbe8724426bf5612798734bff2d3c3857f36f2733f5bfc7c00", size = 2822722 },
+    { url = "https://files.pythonhosted.org/packages/4d/e4/0c407ae919ef626dbdb32835a03b6737013c3cc7240169843965cada2bdf/psycopg2_binary-2.9.10-cp312-cp312-musllinux_1_2_ppc64le.whl", hash = "sha256:155e69561d54d02b3c3209545fb08938e27889ff5a10c19de8d23eb5a41be8a5", size = 2920132 },
+    { url = "https://files.pythonhosted.org/packages/2d/70/aa69c9f69cf09a01da224909ff6ce8b68faeef476f00f7ec377e8f03be70/psycopg2_binary-2.9.10-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:c3cc28a6fd5a4a26224007712e79b81dbaee2ffb90ff406256158ec4d7b52b47", size = 2959312 },
+    { url = "https://files.pythonhosted.org/packages/d3/bd/213e59854fafe87ba47814bf413ace0dcee33a89c8c8c814faca6bc7cf3c/psycopg2_binary-2.9.10-cp312-cp312-win32.whl", hash = "sha256:ec8a77f521a17506a24a5f626cb2aee7850f9b69a0afe704586f63a464f3cd64", size = 1025191 },
+    { url = "https://files.pythonhosted.org/packages/92/29/06261ea000e2dc1e22907dbbc483a1093665509ea586b29b8986a0e56733/psycopg2_binary-2.9.10-cp312-cp312-win_amd64.whl", hash = "sha256:18c5ee682b9c6dd3696dad6e54cc7ff3a1a9020df6a5c0f861ef8bfd338c3ca0", size = 1164031 },
+    { url = "https://files.pythonhosted.org/packages/3e/30/d41d3ba765609c0763505d565c4d12d8f3c79793f0d0f044ff5a28bf395b/psycopg2_binary-2.9.10-cp313-cp313-macosx_12_0_x86_64.whl", hash = "sha256:26540d4a9a4e2b096f1ff9cce51253d0504dca5a85872c7f7be23be5a53eb18d", size = 3044699 },
+    { url = "https://files.pythonhosted.org/packages/35/44/257ddadec7ef04536ba71af6bc6a75ec05c5343004a7ec93006bee66c0bc/psycopg2_binary-2.9.10-cp313-cp313-macosx_14_0_arm64.whl", hash = "sha256:e217ce4d37667df0bc1c397fdcd8de5e81018ef305aed9415c3b093faaeb10fb", size = 3275245 },
+    { url = "https://files.pythonhosted.org/packages/1b/11/48ea1cd11de67f9efd7262085588790a95d9dfcd9b8a687d46caf7305c1a/psycopg2_binary-2.9.10-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:245159e7ab20a71d989da00f280ca57da7641fa2cdcf71749c193cea540a74f7", size = 2851631 },
+    { url = "https://files.pythonhosted.org/packages/62/e0/62ce5ee650e6c86719d621a761fe4bc846ab9eff8c1f12b1ed5741bf1c9b/psycopg2_binary-2.9.10-cp313-cp313-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:3c4ded1a24b20021ebe677b7b08ad10bf09aac197d6943bfe6fec70ac4e4690d", size = 3082140 },
+    { url = "https://files.pythonhosted.org/packages/27/ce/63f946c098611f7be234c0dd7cb1ad68b0b5744d34f68062bb3c5aa510c8/psycopg2_binary-2.9.10-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:3abb691ff9e57d4a93355f60d4f4c1dd2d68326c968e7db17ea96df3c023ef73", size = 3264762 },
+    { url = "https://files.pythonhosted.org/packages/43/25/c603cd81402e69edf7daa59b1602bd41eb9859e2824b8c0855d748366ac9/psycopg2_binary-2.9.10-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8608c078134f0b3cbd9f89b34bd60a943b23fd33cc5f065e8d5f840061bd0673", size = 3020967 },
+    { url = "https://files.pythonhosted.org/packages/5f/d6/8708d8c6fca531057fa170cdde8df870e8b6a9b136e82b361c65e42b841e/psycopg2_binary-2.9.10-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:230eeae2d71594103cd5b93fd29d1ace6420d0b86f4778739cb1a5a32f607d1f", size = 2872326 },
+    { url = "https://files.pythonhosted.org/packages/ce/ac/5b1ea50fc08a9df82de7e1771537557f07c2632231bbab652c7e22597908/psycopg2_binary-2.9.10-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:bb89f0a835bcfc1d42ccd5f41f04870c1b936d8507c6df12b7737febc40f0909", size = 2822712 },
+    { url = "https://files.pythonhosted.org/packages/c4/fc/504d4503b2abc4570fac3ca56eb8fed5e437bf9c9ef13f36b6621db8ef00/psycopg2_binary-2.9.10-cp313-cp313-musllinux_1_2_ppc64le.whl", hash = "sha256:f0c2d907a1e102526dd2986df638343388b94c33860ff3bbe1384130828714b1", size = 2920155 },
+    { url = "https://files.pythonhosted.org/packages/b2/d1/323581e9273ad2c0dbd1902f3fb50c441da86e894b6e25a73c3fda32c57e/psycopg2_binary-2.9.10-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:f8157bed2f51db683f31306aa497311b560f2265998122abe1dce6428bd86567", size = 2959356 },
+    { url = "https://files.pythonhosted.org/packages/08/50/d13ea0a054189ae1bc21af1d85b6f8bb9bbc5572991055d70ad9006fe2d6/psycopg2_binary-2.9.10-cp313-cp313-win_amd64.whl", hash = "sha256:27422aa5f11fbcd9b18da48373eb67081243662f9b46e6fd07c3eb46e4535142", size = 2569224 },
+]
+
+[[package]]
 name = "ptyprocess"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3175,6 +3219,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pycparser"
+version = "2.22"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/1d/b2/31537cf4b1ca988837256c910a668b553fceb8f069bedc4b1c826024b52c/pycparser-2.22.tar.gz", hash = "sha256:491c8be9c040f5390f5bf44a5b07752bd07f56edf992381b05c701439eec10f6", size = 172736 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl", hash = "sha256:c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc", size = 117552 },
+]
+
+[[package]]
 name = "pydantic"
 version = "2.11.7"
 source = { registry = "https://pypi.org/simple" }
@@ -3255,17 +3308,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pyg-lib"
-version = "0.4.0+pt24cu124"
-source = { registry = "https://data.pyg.org/whl/torch-2.4.0+cu124.html" }
-wheels = [
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/pyg_lib-0.4.0%2Bpt24cu124-cp311-cp311-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/pyg_lib-0.4.0%2Bpt24cu124-cp311-cp311-win_amd64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/pyg_lib-0.4.0%2Bpt24cu124-cp312-cp312-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/pyg_lib-0.4.0%2Bpt24cu124-cp312-cp312-win_amd64.whl" },
-]
-
-[[package]]
 name = "pygments"
 version = "2.19.1"
 source = { registry = "https://pypi.org/simple" }
@@ -3284,9 +3326,8 @@ dependencies = [
     { name = "matplotlib" },
     { name = "monty" },
     { name = "networkx" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
     { name = "orjson" },
     { name = "palettable" },
     { name = "pandas" },
@@ -3295,8 +3336,8 @@ dependencies = [
     { name = "ruamel-yaml" },
     { name = "scipy" },
     { name = "spglib" },
-    { name = "sympy", version = "1.13.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "sympy", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "sympy", version = "1.13.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "sympy", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
     { name = "tabulate" },
     { name = "tqdm" },
     { name = "uncertainties" },
@@ -3320,6 +3361,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/27/db/4fd9dbcbd86a2684129587c76723b6d9ccf41c7149ec632ccd9876865689/pymatgen-2025.5.28-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8ed206ea7d672590b0c4091b31fc7aa7f290e83f01b43e85acd75b150cd466eb", size = 5060253 },
     { url = "https://files.pythonhosted.org/packages/78/d8/34d02cab978308509cdb82ee75626a0d9b6efd02409b4a5ac29046a83d17/pymatgen-2025.5.28-cp313-cp313-win32.whl", hash = "sha256:0d5562d5016aab3ebe05792f5ccd8f8eab8a6213978d4e797aded2b8aa8f5e5d", size = 3618775 },
     { url = "https://files.pythonhosted.org/packages/2e/2c/e774b5fa843525fb70f56b163d87d0e8ca58c31a424c13357f5dbefd69ce/pymatgen-2025.5.28-cp313-cp313-win_amd64.whl", hash = "sha256:38df82d1adc349b7da81c0ba0b39d10ee7e4ac55c162883cb5ca171a7d41242e", size = 3660406 },
+]
+
+[[package]]
+name = "pymysql"
+version = "1.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/8f/ce59b5e5ed4ce8512f879ff1fa5ab699d211ae2495f1adaa5fbba2a1eada/pymysql-1.1.1.tar.gz", hash = "sha256:e127611aaf2b417403c60bf4dc570124aeb4a57f5f37b8e95ae399a42f904cd0", size = 47678 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0c/94/e4181a1f6286f545507528c78016e00065ea913276888db2262507693ce5/PyMySQL-1.1.1-py3-none-any.whl", hash = "sha256:4de15da4c61dc132f4fb9ab763063e693d521a80fd0e87943b9a453dd4c19d6c", size = 44972 },
 ]
 
 [[package]]
@@ -3561,9 +3611,8 @@ version = "1.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "joblib" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "scipy" },
     { name = "threadpoolctl" },
 ]
@@ -3595,9 +3644,8 @@ name = "scipy"
 version = "1.15.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/0f/37/6964b830433e654ec7485e45a00fc9a27cf868d622838f6b6d9c5ec0d532/scipy-1.15.3.tar.gz", hash = "sha256:eae3cf522bc7df64b42cad3925c876e1b0b6c35c1337c93e12c0f366f55b0eaf", size = 59419214 }
 wheels = [
@@ -3770,9 +3818,8 @@ name = "spglib"
 version = "2.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
     { name = "numpy", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
     { name = "typing-extensions", marker = "python_full_version < '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/bf/34/1fe99124be59579ebd24316522e1da780979c856977b142c0dcd878b0a2d/spglib-2.6.0.tar.gz", hash = "sha256:d66eda2ba00a1e14fd96ec9c3b4dbf8ab0fb3f124643e35785c71ee455b408eb", size = 2360880 }
@@ -4012,13 +4059,19 @@ name = "sympy"
 version = "1.13.1"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'win32'",
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 dependencies = [
-    { name = "mpmath", marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "mpmath" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ca/99/5a5b6f19ff9f083671ddf7b9632028436167cd3d33e11015754e41b249a4/sympy-1.13.1.tar.gz", hash = "sha256:9cebf7e04ff162015ce31c9c6c9144daa34a93bd082f54fd8f12deca4f47515f", size = 7533040 }
 wheels = [
@@ -4036,19 +4089,13 @@ resolution-markers = [
     "python_full_version == '3.12.*' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
     "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
     "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
     "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
     "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
     "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
     "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 dependencies = [
-    { name = "mpmath", marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or extra != 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "mpmath", marker = "extra == 'extra-21-lematerial-forgebench-orb' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/83/d3/803453b36afefb7c2bb238361cd4ae6125a569b4db67cd9e79846ba2d68c/sympy-1.14.0.tar.gz", hash = "sha256:d3d3fe8df1e5a0b42f0e7bdf50541697dbe7d23746e894990c030e2b05e72517", size = 7793921 }
 wheels = [
@@ -4072,7 +4119,7 @@ dependencies = [
     { name = "absl-py" },
     { name = "grpcio" },
     { name = "markdown" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" } },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
     { name = "packaging" },
     { name = "protobuf" },
     { name = "setuptools" },
@@ -4105,79 +4152,42 @@ wheels = [
 
 [[package]]
 name = "torch"
-version = "2.4.0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'win32'",
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
-dependencies = [
-    { name = "filelock", marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "fsspec", marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "jinja2", marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "networkx", marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cublas-cu12", version = "12.1.3.1", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cuda-cupti-cu12", version = "12.1.105", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cuda-nvrtc-cu12", version = "12.1.105", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cuda-runtime-cu12", version = "12.1.105", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cudnn-cu12", version = "9.1.0.70", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cufft-cu12", version = "11.0.2.54", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-curand-cu12", version = "10.3.2.106", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cusolver-cu12", version = "11.4.5.107", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cusparse-cu12", version = "12.1.0.106", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-nccl-cu12", version = "2.20.5", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-nvtx-cu12", version = "12.1.105", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "sympy", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "triton", version = "3.0.0", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.13' and platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem') or (python_full_version >= '3.13' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (python_full_version >= '3.13' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "typing-extensions", marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/83/9b7681e41e59adb6c2b042f7e8eb716515665a6eed3dda4215c6b3385b90/torch-2.4.0-cp311-cp311-manylinux1_x86_64.whl", hash = "sha256:e743adadd8c8152bb8373543964551a7cb7cc20ba898dc8f9c0cdbe47c283de0", size = 797262052 },
-    { url = "https://files.pythonhosted.org/packages/84/fa/2b510a02809ddd70aed821bc2328c4effd206503df38a1328c9f1f957813/torch-2.4.0-cp311-cp311-manylinux2014_aarch64.whl", hash = "sha256:7334325c0292cbd5c2eac085f449bf57d3690932eac37027e193ba775703c9e6", size = 89850473 },
-    { url = "https://files.pythonhosted.org/packages/18/cf/f69dff972a748e08e1bf602ef94ea5c6d4dd2f41cea22c8ad67a607d8b41/torch-2.4.0-cp311-cp311-win_amd64.whl", hash = "sha256:97730014da4c57ffacb3c09298c6ce05400606e890bd7a05008d13dd086e46b1", size = 197860580 },
-    { url = "https://files.pythonhosted.org/packages/b7/d0/5e8f96d83889e77b478b90e7d8d24a5fc14c5c9350c6b93d071f45f39096/torch-2.4.0-cp311-none-macosx_11_0_arm64.whl", hash = "sha256:f169b4ea6dc93b3a33319611fcc47dc1406e4dd539844dcbd2dec4c1b96e166d", size = 62144370 },
-    { url = "https://files.pythonhosted.org/packages/bf/55/b6c74df4695f94a9c3505021bc2bd662e271d028d055b3b2529f3442a3bd/torch-2.4.0-cp312-cp312-manylinux1_x86_64.whl", hash = "sha256:997084a0f9784d2a89095a6dc67c7925e21bf25dea0b3d069b41195016ccfcbb", size = 797168571 },
-    { url = "https://files.pythonhosted.org/packages/9a/5d/327fb72044c22d68a826643abf2e220db3d7f6005a41a6b167af1ffbc708/torch-2.4.0-cp312-cp312-manylinux2014_aarch64.whl", hash = "sha256:bc3988e8b36d1e8b998d143255d9408d8c75da4ab6dd0dcfd23b623dfb0f0f57", size = 89746726 },
-    { url = "https://files.pythonhosted.org/packages/dc/95/a14dd84ce65e5ce176176393a80b2f74864ee134a31f590140456a4c0959/torch-2.4.0-cp312-cp312-win_amd64.whl", hash = "sha256:3374128bbf7e62cdaed6c237bfd39809fbcfaa576bee91e904706840c3f2195c", size = 197807123 },
-    { url = "https://files.pythonhosted.org/packages/c7/87/489ebb234e75760e06fa4789fa6d4e13c125beefa1483ce35c9e43dcd395/torch-2.4.0-cp312-none-macosx_11_0_arm64.whl", hash = "sha256:91aaf00bfe1ffa44dc5b52809d9a95129fca10212eca3ac26420eb11727c6288", size = 62123112 },
-]
-
-[[package]]
-name = "torch"
 version = "2.6.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'win32'",
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 dependencies = [
-    { name = "filelock", marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "fsspec", marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "jinja2", marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "networkx", marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cublas-cu12", version = "12.4.5.8", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cuda-cupti-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cuda-nvrtc-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cuda-runtime-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cudnn-cu12", version = "9.1.0.70", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cufft-cu12", version = "11.2.1.3", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-curand-cu12", version = "10.3.5.147", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cusolver-cu12", version = "11.6.1.9", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cusparse-cu12", version = "12.3.1.170", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-cusparselt-cu12", version = "0.6.2", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-nccl-cu12", version = "2.21.5", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-nvjitlink-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "nvidia-nvtx-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "setuptools", marker = "(python_full_version >= '3.12' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "sympy", version = "1.13.1", source = { registry = "https://pypi.org/simple" }, marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "triton", version = "3.2.0", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine == 'x86_64' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-mace') or (platform_machine != 'x86_64' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (sys_platform != 'linux' and extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace') or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
-    { name = "typing-extensions", marker = "extra == 'extra-21-lematerial-forgebench-mace' or (extra == 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-orb')" },
+    { name = "filelock" },
+    { name = "fsspec" },
+    { name = "jinja2" },
+    { name = "networkx" },
+    { name = "nvidia-cublas-cu12", version = "12.4.5.8", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cuda-cupti-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cuda-nvrtc-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cuda-runtime-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cudnn-cu12", version = "9.1.0.70", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cufft-cu12", version = "11.2.1.3", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-curand-cu12", version = "10.3.5.147", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cusolver-cu12", version = "11.6.1.9", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cusparse-cu12", version = "12.3.1.170", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cusparselt-cu12", version = "0.6.2", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-nccl-cu12", version = "2.21.5", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-nvjitlink-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-nvtx-cu12", version = "12.4.127", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "setuptools", marker = "python_full_version >= '3.12'" },
+    { name = "sympy", version = "1.13.1", source = { registry = "https://pypi.org/simple" } },
+    { name = "triton", version = "3.2.0", source = { registry = "https://pypi.org/simple" }, marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "typing-extensions" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/78/a9/97cbbc97002fff0de394a2da2cdfa859481fdca36996d7bd845d50aa9d8d/torch-2.6.0-cp311-cp311-manylinux1_x86_64.whl", hash = "sha256:7979834102cd5b7a43cc64e87f2f3b14bd0e1458f06e9f88ffa386d07c7446e1", size = 766715424 },
@@ -4255,42 +4265,8 @@ wheels = [
 
 [[package]]
 name = "torch-cluster"
-version = "1.6.3+pt24cu124"
-source = { registry = "https://data.pyg.org/whl/torch-2.4.0+cu124.html" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'win32'",
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
-dependencies = [
-    { name = "scipy" },
-]
-wheels = [
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_cluster-1.6.3%2Bpt24cu124-cp311-cp311-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_cluster-1.6.3%2Bpt24cu124-cp311-cp311-win_amd64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_cluster-1.6.3%2Bpt24cu124-cp312-cp312-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_cluster-1.6.3%2Bpt24cu124-cp312-cp312-win_amd64.whl" },
-]
-
-[[package]]
-name = "torch-cluster"
 version = "1.6.3+pt26cu124"
 source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }
-resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version == '3.12.*' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.13' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version == '3.12.*' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-]
 dependencies = [
     { name = "scipy" },
 ]
@@ -4314,59 +4290,9 @@ wheels = [
 ]
 
 [[package]]
-name = "torch-geometric"
-version = "2.4.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "jinja2" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" } },
-    { name = "psutil" },
-    { name = "pyparsing" },
-    { name = "requests" },
-    { name = "scikit-learn" },
-    { name = "scipy" },
-    { name = "tqdm" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e6/6e/a596e2ddecc3b13a0d576495369a30309fb54c74fadf0bbca645bfbcaa2f/torch_geometric-2.4.0.tar.gz", hash = "sha256:343c6906d0678f16553c2d02b7267d0ec77eafb5b44324070ebcf7da8a934557", size = 689471 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/4e/6f9a75548a93fedcd4514ae2de9bee1e91bade6b73252b4da32f0e42ac52/torch_geometric-2.4.0-py3-none-any.whl", hash = "sha256:9d8eb5eec44382f4072aa5e835450f144e9edb9d164627e532e311880b6bdad0", size = 1033784 },
-]
-
-[[package]]
-name = "torch-scatter"
-version = "2.1.2+pt24cu124"
-source = { registry = "https://data.pyg.org/whl/torch-2.4.0+cu124.html" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'win32'",
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
-wheels = [
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_scatter-2.1.2%2Bpt24cu124-cp311-cp311-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_scatter-2.1.2%2Bpt24cu124-cp311-cp311-win_amd64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_scatter-2.1.2%2Bpt24cu124-cp312-cp312-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_scatter-2.1.2%2Bpt24cu124-cp312-cp312-win_amd64.whl" },
-]
-
-[[package]]
 name = "torch-scatter"
 version = "2.1.2+pt26cu124"
 source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }
-resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version == '3.12.*' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.13' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version == '3.12.*' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-]
 wheels = [
     { url = "https://data.pyg.org/whl/torch-2.6.0%2Bcu124/torch_scatter-2.1.2%2Bpt26cu124-cp311-cp311-linux_x86_64.whl" },
     { url = "https://data.pyg.org/whl/torch-2.6.0%2Bcu124/torch_scatter-2.1.2%2Bpt26cu124-cp311-cp311-win_amd64.whl" },
@@ -4376,42 +4302,8 @@ wheels = [
 
 [[package]]
 name = "torch-sparse"
-version = "0.6.18+pt24cu124"
-source = { registry = "https://data.pyg.org/whl/torch-2.4.0+cu124.html" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'win32'",
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
-dependencies = [
-    { name = "scipy" },
-]
-wheels = [
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_sparse-0.6.18%2Bpt24cu124-cp311-cp311-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_sparse-0.6.18%2Bpt24cu124-cp311-cp311-win_amd64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_sparse-0.6.18%2Bpt24cu124-cp312-cp312-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_sparse-0.6.18%2Bpt24cu124-cp312-cp312-win_amd64.whl" },
-]
-
-[[package]]
-name = "torch-sparse"
 version = "0.6.18+pt26cu124"
 source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }
-resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version == '3.12.*' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.13' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version == '3.12.*' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-]
 dependencies = [
     { name = "scipy" },
 ]
@@ -4424,39 +4316,8 @@ wheels = [
 
 [[package]]
 name = "torch-spline-conv"
-version = "1.2.2+pt24cu124"
-source = { registry = "https://data.pyg.org/whl/torch-2.4.0+cu124.html" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'win32'",
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version >= '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'win32'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform != 'linux' and sys_platform != 'win32'",
-]
-wheels = [
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_spline_conv-1.2.2%2Bpt24cu124-cp311-cp311-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_spline_conv-1.2.2%2Bpt24cu124-cp311-cp311-win_amd64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_spline_conv-1.2.2%2Bpt24cu124-cp312-cp312-linux_x86_64.whl" },
-    { url = "https://data.pyg.org/whl/torch-2.4.0%2Bcu124/torch_spline_conv-1.2.2%2Bpt24cu124-cp312-cp312-win_amd64.whl" },
-]
-
-[[package]]
-name = "torch-spline-conv"
 version = "1.2.2+pt26cu124"
 source = { registry = "https://data.pyg.org/whl/torch-2.6.0+cu124.html" }
-resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version == '3.12.*' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.13' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version == '3.12.*' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform == 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
-]
 wheels = [
     { url = "https://data.pyg.org/whl/torch-2.6.0%2Bcu124/torch_spline_conv-1.2.2%2Bpt26cu124-cp311-cp311-linux_x86_64.whl" },
     { url = "https://data.pyg.org/whl/torch-2.6.0%2Bcu124/torch_spline_conv-1.2.2%2Bpt26cu124-cp311-cp311-win_amd64.whl" },
@@ -4485,14 +4346,14 @@ version = "0.2.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fsspec" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" } },
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" } },
     { name = "packaging" },
     { name = "psutil" },
     { name = "pyre-extensions" },
     { name = "setuptools" },
     { name = "tabulate" },
     { name = "tensorboard" },
-    { name = "torch", version = "2.4.0", source = { registry = "https://pypi.org/simple" } },
+    { name = "torch", version = "2.6.0", source = { registry = "https://pypi.org/simple" } },
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
@@ -4524,27 +4385,13 @@ wheels = [
 
 [[package]]
 name = "triton"
-version = "3.0.0"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "filelock", marker = "extra == 'extra-21-lematerial-forgebench-fairchem' or (extra == 'extra-21-lematerial-forgebench-mace' and extra == 'extra-21-lematerial-forgebench-orb')" },
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/3e/a2f59384587eff6aeb7d37b6780de7fedd2214935e27520430ca9f5b7975/triton-3.0.0-1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:5ce8520437c602fb633f1324cc3871c47bee3b67acf9756c1a66309b60e3216c", size = 209438883 },
-    { url = "https://files.pythonhosted.org/packages/fe/7b/7757205dee3628f75e7991021d15cd1bd0c9b044ca9affe99b50879fc0e1/triton-3.0.0-1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:34e509deb77f1c067d8640725ef00c5cbfcb2052a1a3cb6a6d343841f92624eb", size = 209464695 },
-]
-
-[[package]]
-name = "triton"
 version = "3.2.0"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform != 'win32'",
-    "python_full_version < '3.12' and sys_platform != 'win32'",
+    "python_full_version >= '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform != 'win32' and extra != 'extra-21-lematerial-forgebench-fairchem' and extra == 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version >= '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra == 'extra-21-lematerial-forgebench-fairchem' and extra != 'extra-21-lematerial-forgebench-mace' and extra != 'extra-21-lematerial-forgebench-orb'",
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a7/2e/757d2280d4fefe7d33af7615124e7e298ae7b8e3bc4446cdb8e88b0f9bab/triton-3.2.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8009a1fb093ee8546495e96731336a33fb8856a38e45bb4ab6affd6dbc3ba220", size = 253157636 },
