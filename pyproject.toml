@@ -12,16 +12,45 @@ dependencies = [
     "datasets>=3.5.0",
     "fsspec>=2024.12.0",
     "func-timeout>=4.3.5",
-    "mace-torch>=0.3.13",
     "material-hasher",
-    "numpy>=2.2.5",
-    "orb-models==0.5.4",
+    "numpy>=1.26.4",
     "pandas>=2.2.3",
     "pyarrow>=19.0.1",
     "pymatgen>=2025.4.20",
     "pytest>=8.3.5",
     "rich==13.9.4",
-    "torch>=2.7.1",
+    "torch>=2.4.0",
+]
+
+[project.optional-dependencies]
+fairchem = [
+    "fairchem-core>=1.4.0",
+    "e3nn>=0.5.0",
+    "numpy==1.26.4",
+    "torch==2.4.0",
+    "torch_geometric==2.4.0",
+    "pyg-lib==0.4.0+pt24cu124; sys_platform != 'darwin'",
+    "torch_scatter==2.1.2+pt24cu124; sys_platform != 'darwin'",
+    "torch-sparse==0.6.18+pt24cu124; sys_platform != 'darwin'",
+    "torch-cluster==1.6.3+pt24cu124; sys_platform != 'darwin'",
+    "torch-spline-conv==1.2.2+pt24cu124; sys_platform != 'darwin'",
+]
+mace = [
+    "mace-torch>=0.3.13",
+    "e3nn==0.4.4",
+    "numpy==2.2.3",
+    "torch==2.6.0",
+    "torch_scatter==2.1.2+pt26cu124; sys_platform != 'darwin'",
+    "torch-sparse==0.6.18+pt26cu124; sys_platform != 'darwin'",
+    "torch-cluster==1.6.3+pt26cu124; sys_platform != 'darwin'",
+    "torch-spline-conv==1.2.2+pt26cu124; sys_platform != 'darwin'",
+]
+orb = [
+    "orb-models>=0.5.1",
+    "torch_scatter==2.1.2+pt26cu124; sys_platform != 'darwin'",
+    "torch-sparse==0.6.18+pt26cu124; sys_platform != 'darwin'",
+    "torch-cluster==1.6.3+pt26cu124; sys_platform != 'darwin'",
+    "torch-spline-conv==1.2.2+pt26cu124; sys_platform != 'darwin'",
 ]
 
 [project.scripts]
@@ -50,6 +79,19 @@ dev-dependencies = [
     "lxml>=5.3.0",
     "requests>=2.32.3",
     "botocore>=1.36.20",
+]
+find-links = [
+  "https://data.pyg.org/whl/torch-2.6.0+cu124.html",
+  "https://data.pyg.org/whl/torch-2.6.0+cpu.html",
+  "https://data.pyg.org/whl/torch-2.4.0+cu124.html",
+  "https://data.pyg.org/whl/torch-2.4.0+cpu.html",
+]
+conflicts = [
+    [
+        { extra = "fairchem" },
+        { extra = "mace" },
+        { extra = "orb" }
+    ]
 ]
 
 [tool.uv.sources]
