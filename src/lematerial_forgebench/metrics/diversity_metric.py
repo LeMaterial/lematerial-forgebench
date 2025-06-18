@@ -390,8 +390,8 @@ Density Diversity
 """
 
 @dataclass
-class DensityComponentConfig(MetricConfig):
-    """Configuration for the Density sub-component of Diversity metric.
+class PhysicalSizeComponentConfig(MetricConfig):
+    """Configuration for the Density, Volume, and Lattice Parameter Size sub-component of Diversity metric.
 
     This configuration extends the base MetricConfig to include
     weights for evaluating different components of structural diversity.
@@ -403,43 +403,55 @@ class DensityComponentConfig(MetricConfig):
     """
     bin_size: float = 0.5
 
-class _DensityComponentMetric(BaseMetric):
+class _PhysicalSizeComponentConfig(BaseMetric):
     """
-    Calculates a scalar score capturing Density Diversity across the structures
+    Calculates a scalar score capturing Physical Aspects of the Structure to measure Diversity across the structures
     """
 
     def __init__(
         self,
-        name: str | None = "Density Diversity",
+        name: str | None = "Physical Diversity",
         description: str | None = None,
         lower_is_better: bool = False,
         n_jobs: int = 1,
         bin_size = 0.5
     ):
         super().__init__(
-            name=name or "Density Diversity",
+            name=name or "Physical Diversity",
             description=description 
-            or "Scalar Score of Density Diversity in Generated Set",
+            or "Scalar Score of Physical Diversity in Generated Set",
             lower_is_better=lower_is_better,
             n_jobs=n_jobs,
         )
-        self.config = DensityComponentConfig(
+        self.config = PhysicalSizeComponentConfig(
             name=self.config.name,
             description=self.config.description,
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
             bin_size = bin_size,
             )
-
-
+        
+        # Initializing Generated Dataset Histograms 
         self._init_density_histogram(
             smallest_density_bucket=0.5,
             largest_density_bucket=25.0,
             )
-        self._init_reference_histogram(
+
+        self._init_lattice_param_histogram(
+            smallest_lattice_size=0.0,
+            largest_lattice_size=50.0,
+        )
+        
+        # Initializing Reference Dataset Histograms 
+        self._init_reference_density_histogram(
             smallest_density_bucket=0.5,
             largest_density_bucket=25.0,
         )
+        self._init_reference_lattice_params_histogram(
+            smallest_lattice_size=0.0,
+            largest_lattice_size=50.0,
+        )
+
 
     def _init_density_histogram(
             self,
@@ -455,16 +467,37 @@ class _DensityComponentMetric(BaseMetric):
             Float value for the smallest sized bucket to capture
         largest_density_bucket: Float
             Float value for the largest sized bucket to capture
-        bin_size : Float
-            Float value for bin size and effective precision
         """
 
         bins = np.arange(smallest_density_bucket, largest_density_bucket, self.config.bin_size )
         bucket_dict = {lower_ceiling :0 for lower_ceiling in bins }
         self.density_histogram = bucket_dict
+    
+    def _init_lattice_param_histogram(
+            self,
+            smallest_lattice_size:float = 0.0,
+            largest_lattice_size:float = 50.0,
+            ):
+        """
+        Instantiates a bucket-based histogram capturing diversity and corresponding frequency
+        of materials in the generated set.
+        Parameters
+        ----------
+        smallest_lattice_size: Float
+            Float value for the smallest sized bucket to capture
+        largest_lattice_size: Float
+            Float value for the largest sized bucket to capture
+        """
+
+        bins = np.arange(smallest_lattice_size, largest_lattice_size, self.config.bin_size )
+        bucket_dict = {lower_ceiling :0 for lower_ceiling in bins }
+        self.lattice_a_histogram = bucket_dict
+        self.lattice_b_histogram = bucket_dict
+        self.lattice_c_histogram = bucket_dict
 
 
-    def _init_reference_histogram(
+
+    def _init_reference_density_histogram(
             self,
             smallest_density_bucket:float = 0.5,
             largest_density_bucket:float = 25.0,
@@ -482,15 +515,38 @@ class _DensityComponentMetric(BaseMetric):
 
         bins = np.arange(smallest_density_bucket, largest_density_bucket, self.config.bin_size )
         bucket_dict = {lower_ceiling :1 for lower_ceiling in bins } # setting this as a uniform dist 
-        self.reference_histogram = bucket_dict
+        self.reference_density_histogram = bucket_dict
+
+    def _init_reference_lattice_params_histogram(
+            self,
+            smallest_lattice_size:float = 0.0,
+            largest_lattice_size:float = 50.0,
+            ):
+        """
+        Instantiates a bucket-based histogram capturing diversity and corresponding frequency
+        of materials in the generated set.
+        Parameters
+        ----------
+        smallest_density_bucket: Float
+            Float value for the smallest sized bucket to capture
+        largest_density_bucket: Float
+            Float value for the largest sized bucket to capture
+        """
+
+        bins = np.arange(smallest_lattice_size, largest_lattice_size, self.config.bin_size )
+        bucket_dict = {lower_ceiling :1 for lower_ceiling in bins } # setting as a uniform dist
+        self.reference_lattice_a = bucket_dict
+        self.reference_lattice_b = bucket_dict
+        self.reference_lattice_c = bucket_dict
     
 
-    def _compute_density_diversity_with_kl(
-            
+    def _compute_diversity_with_kl(  
         self,
+        actual_histogram,
+        reference_histogram
     ) -> dict[str, float]:
         """
-        Compute Shannon entropy and KL divergence between the structure density
+        Compute Shannon entropy and KL divergence between the actual 
         distribution of the current dataset and a reference distribution.
 
         Assumes both distributions are defined over the same bins, and are class objects
@@ -514,8 +570,8 @@ class _DensityComponentMetric(BaseMetric):
         *On Information and Sufficiency*.  
         [https://projecteuclid.org/euclid.aoms/1177729694](https://projecteuclid.org/euclid.aoms/1177729694)
         """
-        values = np.array(list(self.density_histogram.values()), dtype=float)
-        ref_values = np.array([self.reference_histogram.get(k, 1) for k in self.density_histogram], dtype=float)
+        values = np.array(list(actual_histogram.values()), dtype=float)
+        ref_values = np.array([reference_histogram.get(k, 1) for k in actual_histogram], dtype=float)
 
         total = np.sum(values)
         ref_total = np.sum(ref_values)
@@ -553,7 +609,13 @@ class _DensityComponentMetric(BaseMetric):
     def _get_compute_attributes(self) -> dict[str, Any]:
         return {
             "density_histogram" : self.density_histogram,
-            "reference_histogram" : self.reference_histogram,
+            "reference_histogram" : self.reference_density_histogram,
+            "lattice_a_histogram" : self.lattice_a_histogram,
+            "lattice_a_reference" : self.reference_lattice_a,
+            "lattice_b_histogram" : self.lattice_b_histogram,
+            "lattice_b_reference" : self.reference_lattice_b,
+            "lattice_c_histogram" : self.lattice_c_histogram,
+            "lattice_c_reference" : self.reference_lattice_c,
             "bin_size": self.config.bin_size,
         }
     
@@ -561,7 +623,9 @@ class _DensityComponentMetric(BaseMetric):
     def compute_structure(
         structure: Structure,
         density_histogram: Dict[float, int],
-        reference_histogram: Dict[float, int],
+        lattice_a_histogram: Dict[float, int],
+        lattice_b_histogram: Dict[float, int],
+        lattice_c_histogram: Dict[float, int],
         bin_size: float
         ) -> float:
         """
@@ -571,25 +635,48 @@ class _DensityComponentMetric(BaseMetric):
         structure: Structure
             A pymatgen Structure object to evaluate.
         density_histogram: dict[float:int]
-            a bucket-based histogram capturing diversity and corresponding frequency of materials
+            a bucket-based histogram capturing diversity and corresponding frequency of density of materials
             in the generated set.
-        reference_histogram: dict[float:int]
-            a bucket-based reference histogram capturing diversity and corresponding frequency of materials
+        lattice_a_histogram: dict[float:int]
+            a bucket-based histogram capturing diversity and corresponding frequency of lattice A of materials
+            in the generated set.
+        lattice_b_histogram: dict[float:int]
+            a bucket-based histogram capturing diversity and corresponding frequency of lattice B of materials
+            in the generated set.
+        lattice_c_histogram: dict[float:int]
+            a bucket-based histogram capturing diversity and corresponding frequency of lattice C of materials
             in the generated set.
         Returns:
         -------
         float:
-            This value serves as a Binary Indicator representing if the structure was successfully evaluated or not. 
+            This value is the Volume of the Cell Calculated by A x B x C 
 
         """
         try:
+            # Capture Density
             density = structure.density
-            bin_index = int(density // bin_size)
-            density_histogram[bin_index] += 1
-            return 1
+            density_bin_index = int(density // bin_size)
+            density_histogram[density_bin_index] += 1
+
+            # Capture Lattice A
+            lattice_a = structure.lattice.a
+            lattice_a_bin_index = int(lattice_a // bin_size)
+            lattice_a_histogram[lattice_a_bin_index]
+            
+            # Capture Lattice B
+            lattice_b = structure.lattice.b
+            lattice_b_bin_index = int(lattice_b // bin_size)
+            lattice_b_histogram[lattice_b_bin_index]
+
+            # Capture Lattice A
+            lattice_c = structure.lattice.c
+            lattice_c_bin_index = int(lattice_c // bin_size)
+            lattice_c_histogram[lattice_c_bin_index]
+
+            return lattice_a * lattice_b * lattice_c # returning the Volume
     
         except Exception as e:
-            logger.debug(f"Could not determine Density in {structure.formula} : {str(e)}")
+            logger.debug(f"Could not determine Physical Properties of {structure.formula} : {str(e)}")
             return 0  
      
     def aggregate_results(self, values: list[float]) -> dict[str, Any]:
@@ -605,16 +692,54 @@ class _DensityComponentMetric(BaseMetric):
         dict
             Dictionary with aggregated metrics.
         """
-        density_metrics = self._compute_density_diversity_with_kl()
 
+        # Calculate the Mean Volume of the Generated Set
+        
+        non_zero_values = [v for v in values if v != 0]
+        if non_zero_values:
+            mean_volume = np.mean(non_zero_values)
+        else:
+            mean_volume = 0.0
+
+
+        density_metrics = self._compute_diversity_with_kl(
+            actual_histogram=self.density_histogram,
+              reference_histogram= self.reference_density_histogram
+              )
+        lattice_a_metrics = self._compute_diversity_with_kl(
+            actual_histogram=self.lattice_a_histogram,
+              reference_histogram= self.reference_lattice_a
+              )
+        lattice_b_metrics = self._compute_diversity_with_kl(
+            actual_histogram=self.lattice_b_histogram,
+              reference_histogram= self.reference_lattice_b
+              )
+        lattice_c_metrics = self._compute_diversity_with_kl(
+            actual_histogram=self.lattice_c_histogram,
+              reference_histogram= self.reference_lattice_c
+              )
+        
         return {
             "metrics": {
                 "density_diversity_shannon_entropy": density_metrics["shannon_entropy"],
                 "density_diversity_kl_divergence_from_uniform": density_metrics["kl_divergence"],
+                "lattice_a_diversity_shannon_entropy": lattice_a_metrics["shannon_entropy"],
+                "lattice_a_diversity_kl_divergence_from_uniform": lattice_a_metrics["kl_divergence"],
+                "lattice_b_diversity_shannon_entropy": lattice_b_metrics["shannon_entropy"],
+                "lattice_b_diversity_kl_divergence_from_uniform": lattice_b_metrics["kl_divergence"],
+                "lattice_c_diversity_shannon_entropy": lattice_c_metrics["shannon_entropy"],
+                "lattice_c_diversity_kl_divergence_from_uniform": lattice_c_metrics["kl_divergence"],
+                "mean_volume": mean_volume,
             },
             "primary_metric": "density_diversity_kl_divergence_from_uniform",
             "uncertainties": {
-                "shannon_entropy_std" : density_metrics["entropy_std"],
-                "shannon_entropy_variance": density_metrics["entropy_variance"],
+                "density_shannon_entropy_std" : density_metrics["entropy_std"],
+                "density_shannon_entropy_variance": density_metrics["entropy_variance"],
+                "lattice_a_shannon_entropy_std" : lattice_a_metrics["entropy_std"],
+                "lattice_a_shannon_entropy_variance": lattice_a_metrics["entropy_variance"],
+                "lattice_b_shannon_entropy_std" : lattice_b_metrics["entropy_std"],
+                "lattice_b_shannon_entropy_variance": lattice_b_metrics["entropy_variance"],
+                "lattice_c_shannon_entropy_std" : lattice_c_metrics["entropy_std"],
+                "lattice_c_shannon_entropy_variance": lattice_c_metrics["entropy_variance"],
             }
         }
