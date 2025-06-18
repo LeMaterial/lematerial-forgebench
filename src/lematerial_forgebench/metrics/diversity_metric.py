@@ -45,7 +45,14 @@ class ElementComponentConfig(MetricConfig):
 
     This configuration extends the base MetricConfig to include
     weights for evaluating Elemental components of structural diversity.
+
+    Parameters
+    ----------
+    reference_element_space : int
+        The number of Reference Elements to compute Coverage across. Set to 118 as a default
     """
+
+    reference_element_space:int = 118
 
 class _ElementDiversity(BaseMetric):
     """
@@ -57,6 +64,7 @@ class _ElementDiversity(BaseMetric):
         description: str | None = None,
         lower_is_better: bool = False,
         n_jobs: int = 1,
+        reference_element_space = 118,
     ):
         super().__init__(
             name=name or "Element Diversity",
@@ -70,6 +78,7 @@ class _ElementDiversity(BaseMetric):
             description=self.config.description,
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
+            reference_element_space=reference_element_space,
             )
         
         # Initialize element Histogram
@@ -84,7 +93,6 @@ class _ElementDiversity(BaseMetric):
 
         self.element_histogram = defaultdict(int)
 
-    # TODO: Add in Coverage
     def _compute_vendi_score_with_uncertainty(self) -> dict[str, float]:
         """
         Compute the Vendi score (effective diversity) from an elemental distribution,
@@ -194,14 +202,16 @@ class _ElementDiversity(BaseMetric):
         """
         invalid_computations = sum(values)
         elemental_diversity_metric = self._compute_vendi_score_with_uncertainty()
+        coverage_ratio = len(self.element_histogram.keys()) / self.config.reference_element_space
 
         return {
             "metrics": {
                 "element_diversity_vendi_score": elemental_diversity_metric["vendi_score"],
                 "element_diversity_shannon_entropy": elemental_diversity_metric["shannon_entropy"],
                 "invalid_computations_in_batch":invalid_computations,
+                "element_coverage_ratio" : coverage_ratio
             },
-            "primary_metric": "element_diversity_vendi_score",
+            "primary_metric": "element_coverage_ratio",
             "uncertainties": {
                 "shannon_entropy_std" : elemental_diversity_metric["entropy_std"],
                 "shannon_entropy_variance": elemental_diversity_metric["entropy_variance"],
@@ -216,12 +226,17 @@ SpaceGroup Diversity
 
 @dataclass
 class SpaceGroupComponentConfig(MetricConfig):
-     """Configuration for the DiversityScore metric.
+    """Configuration for the DiversityScore metric.
 
     This configuration extends the base MetricConfig to include
     weights for evaluating different components of structural diversity.
-
+    
+    Parameters
+    ----------
+    reference_space_group_space : int
+        The number of Reference Elements to compute Coverage across. Set to 230 as a default
     """
+    reference_space_group_space: int = 230
 
 class _SpaceGroupDiversity(BaseMetric):
     """
@@ -234,6 +249,8 @@ class _SpaceGroupDiversity(BaseMetric):
         description: str | None = None,
         lower_is_better: bool = False,
         n_jobs: int = 1,
+        reference_space_group_space: int = 230
+
     ):
         super().__init__(
             name=name or "Space Group Diversity",
@@ -247,6 +264,7 @@ class _SpaceGroupDiversity(BaseMetric):
             description=self.config.description,
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
+            reference_space_group_space=reference_space_group_space
             )
         
         self._init_spacegroup_histogram()
@@ -260,8 +278,6 @@ class _SpaceGroupDiversity(BaseMetric):
 
         self.spacegroup_histogram = defaultdict(int)
     
-        # TODO: Add in Coverage
-
     def _compute_vendi_score_with_uncertainty(self) -> dict[str, float]:
         """
         Compute the Vendi score (effective diversity) from the spacegroup distribution,
@@ -368,14 +384,16 @@ class _SpaceGroupDiversity(BaseMetric):
         """
         mean_symmetry_rating = np.mean(values)
         spacegroup_diversity_metric = self._compute_vendi_score_with_uncertainty()
+        space_group_coverage = len(self.spacegroup_histogram.keys()) // self.config.reference_space_group_space
 
         return {
             "metrics": {
                 "spacegroup_diversity_vendi_score": spacegroup_diversity_metric["vendi_score"],
                 "spacegroup_diversity_shannon_entropy": spacegroup_diversity_metric["shannon_entropy"],
                 "mean_symmetry_rating":mean_symmetry_rating,
+                "space_group_coverage": space_group_coverage
             },
-            "primary_metric": "spacegroup_diversity_vendi_score",
+            "primary_metric": "space_group_coverage",
             "uncertainties": {
                 "shannon_entropy_std" : spacegroup_diversity_metric["entropy_std"],
                 "shannon_entropy_variance": spacegroup_diversity_metric["entropy_variance"],
@@ -915,7 +933,6 @@ class _SiteNumberComponentMetric(BaseMetric):
 
         self.site_number = defaultdict(int)
 
-    # TODO: Add in Coverage
     def _compute_vendi_score_with_uncertainty(self) -> dict[str, float]:
         """
         Compute the Vendi score (effective diversity) from an #of species distribution,
