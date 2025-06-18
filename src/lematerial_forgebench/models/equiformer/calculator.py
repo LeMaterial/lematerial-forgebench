@@ -5,8 +5,7 @@ import torch
 from pymatgen.core.structure import Structure
 
 try:
-    from nets.equiformer_v2.equiformer_v2_oc20 import EquiformerV2_OC20
-    from ocpmodels.common import AtomsToGraph
+    from fairchem.core import OCPCalculator as EquiformerASECalculator
 
     EQUIFORMER_AVAILABLE = True
 except ImportError:
@@ -20,7 +19,6 @@ from lematerial_forgebench.models.base import (
     get_formation_energy_from_total_energy,
 )
 from lematerial_forgebench.models.equiformer.embeddings import (
-    EquiformerASECalculator,
     EquiformerEmbeddingExtractor,
 )
 from lematerial_forgebench.utils.logging import logger
@@ -50,25 +48,12 @@ class EquiformerCalculator(BaseMLIPCalculator):
     def _setup_model(self, **kwargs):
         """Initialize the Equiformer v2 model."""
         try:
-            # Load checkpoint
-            ckpt = torch.load(self.model_path, map_location=self.device)
-
-            # Initialize model
-            self.model = EquiformerV2_OC20(**ckpt["config"]["model"]).to(self.device)
-            self.model.load_state_dict(ckpt["state_dict"], strict=False)
-            self.model.eval()
-
-            # Create atoms-to-graph converter
-            self.converter = AtomsToGraph(max_neigh=self.max_neigh, radius=self.radius)
-
-            # Create ASE calculator wrapper
             self.ase_calc = EquiformerASECalculator(
-                self.model, self.converter, self.device
+                checkpoint_path=self.model_path, cpu=False
             )
-
             # Create embedding extractor
             self.embedding_extractor = EquiformerEmbeddingExtractor(
-                self.model, self.converter, self.device
+                self.ase_calc, self.device
             )
 
             logger.info(
