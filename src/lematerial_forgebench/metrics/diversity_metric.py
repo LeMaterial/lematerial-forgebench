@@ -26,7 +26,7 @@ from dataclasses import dataclass
 from typing import Any, Dict
 
 import numpy as np
-from pymatgen.core import Structure
+from pymatgen.core import Structure, Element
 from scipy.special import rel_entr
 
 from lematerial_forgebench.metrics import BaseMetric
@@ -389,6 +389,7 @@ Density Diversity
 -------------------------------------------------------------------------------
 """
 
+#TODO: update tests
 @dataclass
 class PhysicalSizeComponentConfig(MetricConfig):
     """Configuration for the Density, Volume, and Lattice Parameter Size sub-component of Diversity metric.
@@ -397,11 +398,17 @@ class PhysicalSizeComponentConfig(MetricConfig):
     weights for evaluating different components of structural diversity.
     Parameters
     ----------
-        bin_size : Float
-            Float value for bin size and effective precision
+        density_bin_size : Float
+            Float value for bin size and effective precision for density histogram
+        lattice_bin_size : Float
+            Float value for bin size and effective precision for lattice histograms
+        packing_factor_bin_size : Float
+            Float value for bin size and effective precision for packing factor histogram
 
     """
-    bin_size: float = 0.5
+    density_bin_size: float = 0.5
+    lattice_bin_size: float = 0.5
+    packing_factor_bin_size: float = 0.05
 
 class _PhysicalSizeComponentConfig(BaseMetric):
     """
@@ -414,7 +421,9 @@ class _PhysicalSizeComponentConfig(BaseMetric):
         description: str | None = None,
         lower_is_better: bool = False,
         n_jobs: int = 1,
-        bin_size = 0.5
+        density_bin_size:float = 0.5,
+        lattice_bin_size:float = 0.5,
+        packing_factor_bin_size:float = 0.05,
     ):
         super().__init__(
             name=name or "Physical Diversity",
@@ -428,7 +437,9 @@ class _PhysicalSizeComponentConfig(BaseMetric):
             description=self.config.description,
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
-            bin_size = bin_size,
+            density_bin_size= density_bin_size,
+            lattice_bin_size=lattice_bin_size,
+            packing_factor_bin_size=packing_factor_bin_size,
             )
         
         # Initializing Generated Dataset Histograms 
@@ -441,6 +452,11 @@ class _PhysicalSizeComponentConfig(BaseMetric):
             smallest_lattice_size=0.0,
             largest_lattice_size=50.0,
         )
+
+        self._init_packing_factor_histogram(
+            smallest_packing_factor=0.0,
+            largest_packing_factor=1.0
+        )
         
         # Initializing Reference Dataset Histograms 
         self._init_reference_density_histogram(
@@ -450,6 +466,10 @@ class _PhysicalSizeComponentConfig(BaseMetric):
         self._init_reference_lattice_params_histogram(
             smallest_lattice_size=0.0,
             largest_lattice_size=50.0,
+        )
+        self._init_packing_factor_histogram(
+            smallest_packing_factor=0.0,
+            largest_packing_factor=1.0,
         )
 
 
@@ -469,7 +489,7 @@ class _PhysicalSizeComponentConfig(BaseMetric):
             Float value for the largest sized bucket to capture
         """
 
-        bins = np.arange(smallest_density_bucket, largest_density_bucket, self.config.bin_size )
+        bins = np.arange(smallest_density_bucket, largest_density_bucket, self.config.density_bin_size )
         bucket_dict = {lower_ceiling :0 for lower_ceiling in bins }
         self.density_histogram = bucket_dict
     
@@ -489,13 +509,31 @@ class _PhysicalSizeComponentConfig(BaseMetric):
             Float value for the largest sized bucket to capture
         """
 
-        bins = np.arange(smallest_lattice_size, largest_lattice_size, self.config.bin_size )
+        bins = np.arange(smallest_lattice_size, largest_lattice_size, self.config.lattice_bin_size )
         bucket_dict = {lower_ceiling :0 for lower_ceiling in bins }
         self.lattice_a_histogram = bucket_dict
         self.lattice_b_histogram = bucket_dict
         self.lattice_c_histogram = bucket_dict
 
+    def _init_packing_factor_histogram(
+            self,
+            smallest_packing_factor:float = 0.0,
+            largest_packing_factor:float = 1.0,
+            ):
+        """
+        Instantiates a bucket-based histogram capturing diversity and corresponding frequency
+        of materials in the generated set.
+        Parameters
+        ----------
+        smallest_density_bucket: Float
+            Float value for the smallest sized bucket to capture
+        largest_density_bucket: Float
+            Float value for the largest sized bucket to capture
+        """
 
+        bins = np.arange(smallest_packing_factor, largest_packing_factor, self.config.packing_factor_bin_size )
+        bucket_dict = {lower_ceiling :0 for lower_ceiling in bins }
+        self.packing_factor_histogram = bucket_dict
 
     def _init_reference_density_histogram(
             self,
@@ -534,11 +572,30 @@ class _PhysicalSizeComponentConfig(BaseMetric):
         """
 
         bins = np.arange(smallest_lattice_size, largest_lattice_size, self.config.bin_size )
-        bucket_dict = {lower_ceiling :1 for lower_ceiling in bins } # setting as a uniform dist
+        bucket_dict = {lower_ceiling:1 for lower_ceiling in bins } # setting as a uniform dist
         self.reference_lattice_a = bucket_dict
         self.reference_lattice_b = bucket_dict
         self.reference_lattice_c = bucket_dict
-    
+
+    def _init_reference_packing_factor_histogram(
+            self,
+            smallest_packing_factor:float = 0.0,
+            largest_packing_factor:float = 1.0,
+            ):
+        """
+        Instantiates a bucket-based histogram capturing diversity and corresponding frequency
+        of materials in the generated set.
+        Parameters
+        ----------
+        smallest_density_bucket: Float
+            Float value for the smallest sized bucket to capture
+        largest_density_bucket: Float
+            Float value for the largest sized bucket to capture
+        """
+
+        bins = np.arange(smallest_packing_factor, largest_packing_factor, self.config.packing_factor_bin_size )
+        bucket_dict = {lower_ceiling:1 for lower_ceiling in bins }
+        self.reference_packing_factor = bucket_dict
 
     def _compute_diversity_with_kl(  
         self,
@@ -605,6 +662,33 @@ class _PhysicalSizeComponentConfig(BaseMetric):
             "entropy_std": entropy_std,
             "kl_divergence": kl_divergence,
         }
+    
+    def _compute_packing_factor(structure: Structure) -> float:
+        """
+        Approximate the atomic packing factor (APF) of a structure
+        using covalent radii to estimate atomic volumes.
+
+        Parameters
+        ----------
+        structure : pymatgen Structure
+            The crystal structure to analyze.
+
+        Returns
+        -------
+        float
+            Estimated packing factor (0 to ~0.74 typical).
+        """
+        total_atomic_volume = 0.0
+
+        for site in structure:
+            element = Element(site.specie.symbol)
+            radius = element.covalent_radius  # in angstroms
+            atom_volume = (4/3) * np.pi * (radius ** 3)
+            total_atomic_volume += atom_volume
+
+        packing_factor = total_atomic_volume / structure.volume
+        return min(packing_factor, 1.0)  # Clamp to 1.0 max
+    
 
     def _get_compute_attributes(self) -> dict[str, Any]:
         return {
@@ -616,7 +700,12 @@ class _PhysicalSizeComponentConfig(BaseMetric):
             "lattice_b_reference" : self.reference_lattice_b,
             "lattice_c_histogram" : self.lattice_c_histogram,
             "lattice_c_reference" : self.reference_lattice_c,
-            "bin_size": self.config.bin_size,
+            "packing_factor_histogram": self.packing_factor_histogram,
+            "packing_factor_reference": self.reference_packing_factor,
+            "density_bin_size": self.config.density_bin_size,
+            "lattice_bin_size": self.config.lattice_bin_size,
+            "packing_factor_bin_size": self.config.packing_factor_bin_size,
+            "packing_factor_function": self._compute_packing_factor,
         }
     
     @staticmethod
@@ -626,7 +715,12 @@ class _PhysicalSizeComponentConfig(BaseMetric):
         lattice_a_histogram: Dict[float, int],
         lattice_b_histogram: Dict[float, int],
         lattice_c_histogram: Dict[float, int],
-        bin_size: float
+        packing_factor_histogram: Dict[float, int],
+        packing_factor_function: function,
+        density_bin_size: float,
+        lattice_bin_size: float,
+        packing_factor_bin_size: float,
+
         ) -> float:
         """
         Retrieves all elements present in Structure and adds count to internal elemental distribution
@@ -646,6 +740,17 @@ class _PhysicalSizeComponentConfig(BaseMetric):
         lattice_c_histogram: dict[float:int]
             a bucket-based histogram capturing diversity and corresponding frequency of lattice C of materials
             in the generated set.
+        packing_factor_histogram: dict[float:int]
+            a bucket-based histogram capturing diversity and corresponding frequency of packing factors of materials
+            in the generated set
+        packing_factor_function: function
+            A private function to calculate the packing factor of a structure to then save to the distribution
+        density_bin_size : Float
+            Float value for bin size and effective precision for density histogram
+        lattice_bin_size : Float
+            Float value for bin size and effective precision for lattice histograms
+        packing_factor_bin_size : Float
+            Float value for bin size and effective precision for packing factor histogram
         Returns:
         -------
         float:
@@ -655,23 +760,28 @@ class _PhysicalSizeComponentConfig(BaseMetric):
         try:
             # Capture Density
             density = structure.density
-            density_bin_index = int(density // bin_size)
+            density_bin_index = int(density // density_bin_size)
             density_histogram[density_bin_index] += 1
 
             # Capture Lattice A
             lattice_a = structure.lattice.a
-            lattice_a_bin_index = int(lattice_a // bin_size)
-            lattice_a_histogram[lattice_a_bin_index]
+            lattice_a_bin_index = int(lattice_a // lattice_bin_size)
+            lattice_a_histogram[lattice_a_bin_index] += 1
             
             # Capture Lattice B
             lattice_b = structure.lattice.b
-            lattice_b_bin_index = int(lattice_b // bin_size)
-            lattice_b_histogram[lattice_b_bin_index]
+            lattice_b_bin_index = int(lattice_b // lattice_bin_size)
+            lattice_b_histogram[lattice_b_bin_index] += 1
 
             # Capture Lattice A
             lattice_c = structure.lattice.c
-            lattice_c_bin_index = int(lattice_c // bin_size)
-            lattice_c_histogram[lattice_c_bin_index]
+            lattice_c_bin_index = int(lattice_c // lattice_bin_size)
+            lattice_c_histogram[lattice_c_bin_index] += 1
+ 
+            # Capture Packing Factor
+            packing_factor = packing_factor_function(structure)
+            packing_factor_bin_index = int(packing_factor // packing_factor_bin_size)
+            packing_factor_histogram[packing_factor_bin_index] += 1
 
             return lattice_a * lattice_b * lattice_c # returning the Volume
     
@@ -718,6 +828,10 @@ class _PhysicalSizeComponentConfig(BaseMetric):
             actual_histogram=self.lattice_c_histogram,
               reference_histogram= self.reference_lattice_c
               )
+        packing_factor_metrics = self._compute_diversity_with_kl(
+            actual_histogram=self.packing_factor_histogram,
+            reference_histogram=self.reference_packing_factor
+        )
         
         return {
             "metrics": {
@@ -729,6 +843,8 @@ class _PhysicalSizeComponentConfig(BaseMetric):
                 "lattice_b_diversity_kl_divergence_from_uniform": lattice_b_metrics["kl_divergence"],
                 "lattice_c_diversity_shannon_entropy": lattice_c_metrics["shannon_entropy"],
                 "lattice_c_diversity_kl_divergence_from_uniform": lattice_c_metrics["kl_divergence"],
+                "packing_factor_diversity_shannon_entropy": packing_factor_metrics["shannon_entropy"],
+                "packing_factor_diversity_kl_divergence_from_uniform": packing_factor_metrics["kl_divergence"],
                 "mean_volume": mean_volume,
             },
             "primary_metric": "density_diversity_kl_divergence_from_uniform",
@@ -741,6 +857,8 @@ class _PhysicalSizeComponentConfig(BaseMetric):
                 "lattice_b_shannon_entropy_variance": lattice_b_metrics["entropy_variance"],
                 "lattice_c_shannon_entropy_std" : lattice_c_metrics["entropy_std"],
                 "lattice_c_shannon_entropy_variance": lattice_c_metrics["entropy_variance"],
+                "packing_factor_shannon_entropy_std" : packing_factor_metrics["entropy_std"],
+                "packing_factor_shannon_entropy_variance": packing_factor_metrics["entropy_variance"],
             }
         }
     
@@ -751,6 +869,7 @@ Atom Number Diversity
 -------------------------------------------------------------------------------
 """
 
+#TODO: Update Tests
 @dataclass
 class SiteNumberComponentConfig(MetricConfig):
     """Configuration for the Number of Sites Diversity metric.
