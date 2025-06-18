@@ -18,10 +18,10 @@ class TestValidityBenchmark:
         assert "version" in benchmark.config.metadata
 
         # Check correct evaluators
-        assert len(benchmark.evaluators) == 5
+        assert len(benchmark.evaluators) == 4
         assert "charge_neutrality" in benchmark.evaluators
         assert "interatomic_distance" in benchmark.evaluators
-        assert "coordination_environment" in benchmark.evaluators
+        # assert "coordination_environment" in benchmark.evaluators
         assert "physical_plausibility" in benchmark.evaluators
         assert "overall_validity" in benchmark.evaluators
 
@@ -30,7 +30,7 @@ class TestValidityBenchmark:
         benchmark = ValidityBenchmark(
             charge_weight=0.4,
             distance_weight=0.3,
-            coordination_weight=0.2,
+            # coordination_weight=0.2,
             plausibility_weight=0.1,
             name="Custom Benchmark",
             description="Custom description",
@@ -46,7 +46,7 @@ class TestValidityBenchmark:
         weights = benchmark.config.metadata["weights"]
         assert weights["charge_neutrality"] == 0.4
         assert weights["interatomic_distance"] == 0.3
-        assert weights["coordination_environment"] == 0.2
+        # assert weights["coordination_environment"] == 0.2
         assert weights["physical_plausibility"] == 0.1
 
     def test_evaluate(self):
@@ -61,11 +61,11 @@ class TestValidityBenchmark:
         result = benchmark.evaluate(structures)
 
         # Check result format
-        assert len(result.evaluator_results) == 5
+        assert len(result.evaluator_results) == 4
         assert "overall_validity_score" in result.final_scores
         assert "charge_neutrality_score" in result.final_scores
         assert "interatomic_distance_score" in result.final_scores
-        assert "coordination_environment_score" in result.final_scores
+        # assert "coordination_environment_score" in result.final_scores
         assert "physical_plausibility_score" in result.final_scores
         assert "valid_structures_ratio" in result.final_scores
 
@@ -99,7 +99,7 @@ class TestValidityBenchmark:
             },
             "charge_neutrality": {"combined_value": 0.9},
             "interatomic_distance": {"combined_value": 0.8},
-            "coordination_environment": {"combined_value": 0.7},
+            # "coordination_environment": {"combined_value": 0.7},
             "physical_plausibility": {"combined_value": 0.6},
         }
 
@@ -110,7 +110,7 @@ class TestValidityBenchmark:
         assert scores["overall_validity_score"] == 0.8
         assert scores["charge_neutrality_score"] == 0.9
         assert scores["interatomic_distance_score"] == 0.8
-        assert scores["coordination_environment_score"] == 0.7
+        # assert scores["coordination_environment_score"] == 0.7
         assert scores["physical_plausibility_score"] == 0.6
         assert scores["valid_structures_ratio"] == 0.75
 

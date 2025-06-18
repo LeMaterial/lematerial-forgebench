@@ -11,7 +11,7 @@ from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
 from lematerial_forgebench.metrics.validity_metrics import (
     ChargeNeutralityMetric,
     CompositeValidityMetric,
-    CoordinationEnvironmentMetric,
+    # CoordinationEnvironmentMetric,
     MinimumInteratomicDistanceMetric,
     PhysicalPlausibilityMetric,
 )
@@ -24,7 +24,7 @@ class ValidityBenchmark(BaseBenchmark):
         self,
         charge_weight: float = 0.25,
         distance_weight: float = 0.25,
-        coordination_weight: float = 0.25,
+        # coordination_weight: float = 0.25,
         plausibility_weight: float = 0.25,
         name: str = "ValidityBenchmark",
         description: str | None = None,
@@ -40,7 +40,7 @@ class ValidityBenchmark(BaseBenchmark):
         # Initialize metrics
         charge_metric = ChargeNeutralityMetric()
         distance_metric = MinimumInteratomicDistanceMetric()
-        coordination_metric = CoordinationEnvironmentMetric()
+        # coordination_metric = CoordinationEnvironmentMetric()
         plausibility_metric = PhysicalPlausibilityMetric()
 
         # Set up evaluators - pass the metric objects, not their configs
@@ -63,15 +63,15 @@ class ValidityBenchmark(BaseBenchmark):
                 weights={"min_distance": 1.0},
                 aggregation_method="weighted_mean",
             ),
-            "coordination_environment": EvaluatorConfig(
-                name="Coordination Environment",
-                description="Evaluates chemical bonding environments",
-                metrics={
-                    "coordination": coordination_metric
-                },  # Pass metric object, not config
-                weights={"coordination": 1.0},
-                aggregation_method="weighted_mean",
-            ),
+            # "coordination_environment": EvaluatorConfig(
+            #     name="Coordination Environment",
+            #     description="Evaluates chemical bonding environments",
+            #     metrics={
+            #         "coordination": coordination_metric
+            #     },  # Pass metric object, not config
+            #     weights={"coordination": 1.0},
+            #     aggregation_method="weighted_mean",
+            # ),
             "physical_plausibility": EvaluatorConfig(
                 name="Physical Plausibility",
                 description="Evaluates basic physical properties",
@@ -89,13 +89,13 @@ class ValidityBenchmark(BaseBenchmark):
                         metrics={
                             "charge_neutrality": charge_metric,
                             "min_distance": distance_metric,
-                            "coordination": coordination_metric,
+                            # "coordination": coordination_metric,
                             "physical_plausibility": plausibility_metric,
                         },
                         weights={
                             "charge_neutrality": charge_weight,
                             "min_distance": distance_weight,
-                            "coordination": coordination_weight,
+                            # "coordination": coordination_weight,
                             "physical_plausibility": plausibility_weight,
                         },
                     )
@@ -112,7 +112,7 @@ class ValidityBenchmark(BaseBenchmark):
             "weights": {
                 "charge_neutrality": charge_weight,
                 "interatomic_distance": distance_weight,
-                "coordination_environment": coordination_weight,
+                # "coordination_environment": coordination_weight,
                 "physical_plausibility": plausibility_weight,
             },
             **(metadata or {}),
@@ -155,9 +155,9 @@ class ValidityBenchmark(BaseBenchmark):
         distance_score = evaluator_results.get("interatomic_distance", {}).get(
             "combined_value", 0.0
         )
-        coordination_score = evaluator_results.get("coordination_environment", {}).get(
-            "combined_value", 0.0
-        )
+        # coordination_score = evaluator_results.get("coordination_environment", {}).get(
+        #     "combined_value", 0.0
+        # )
         plausibility_score = evaluator_results.get("physical_plausibility", {}).get(
             "combined_value", 0.0
         )
@@ -166,16 +166,20 @@ class ValidityBenchmark(BaseBenchmark):
         overall_validity_ratio = evaluator_results.get("overall_validity", {})
         overall_validity_ratio = overall_validity_ratio.get("metric_results", {})
         overall_validity_ratio = overall_validity_ratio.get("composite", {})
-        overall_validity_ratio = overall_validity_ratio.get("metrics", {})
+        if isinstance(overall_validity_ratio, dict):
+            overall_validity_ratio = overall_validity_ratio.get("metrics", {})
+        else:
+            overall_validity_ratio = overall_validity_ratio.metrics 
         overall_validity_ratio = overall_validity_ratio.get(
             "valid_structures_ratio", 0.0
         )
+
 
         return {
             "overall_validity_score": overall_score,
             "charge_neutrality_score": charge_score,
             "interatomic_distance_score": distance_score,
-            "coordination_environment_score": coordination_score,
+            # "coordination_environment_score": coordination_score,
             "physical_plausibility_score": plausibility_score,
             "valid_structures_ratio": overall_validity_ratio,
         }

@@ -10,7 +10,8 @@ from pathlib import Path
 import click
 import yaml
 
-from lematerial_forgebench.benchmarks.example import ExampleBenchmark
+# from lematerial_forgebench.benchmarks.example import ExampleBenchmark
+from lematerial_forgebench.benchmarks.stability_benchmark import StabilityBenchmark
 from lematerial_forgebench.benchmarks.validity_benchmark import ValidityBenchmark
 from lematerial_forgebench.data.structure import format_structures
 from lematerial_forgebench.metrics.validity_metrics import (
@@ -18,6 +19,9 @@ from lematerial_forgebench.metrics.validity_metrics import (
     CoordinationEnvironmentMetric,
     MinimumInteratomicDistanceMetric,
     PhysicalPlausibilityMetric,
+)
+from lematerial_forgebench.preprocess.stability_preprocess import (
+    StabilityPreprocessor,
 )
 from lematerial_forgebench.utils.logging import logger
 
@@ -144,13 +148,13 @@ def main(input: str, config_name: str, output: str):
         # Initialization
         benchmark_type = config.get("type", "example")
 
-        if benchmark_type == "example":
-            benchmark = ExampleBenchmark(
-                quality_weight=config.get("quality_weight", 0.4),
-                diversity_weight=config.get("diversity_weight", 0.4),
-                novelty_weight=config.get("novelty_weight", 0.2),
-            )
-        elif benchmark_type == "validity":
+        # if benchmark_type == "example":
+        #     benchmark = ExampleBenchmark(
+        #         quality_weight=config.get("quality_weight", 0.4),
+        #         diversity_weight=config.get("diversity_weight", 0.4),
+        #         novelty_weight=config.get("novelty_weight", 0.2),
+        #     )
+        if benchmark_type == "validity":
             # Get metric-specific configs if available
             metric_configs = config.get("metric_configs", {})
 
@@ -177,6 +181,7 @@ def main(input: str, config_name: str, output: str):
                 scaling_factor=distance_scaling
             )
 
+
             CoordinationEnvironmentMetric(
                 nn_method=coord_nn_method, tolerance=coord_tolerance
             )
@@ -196,6 +201,15 @@ def main(input: str, config_name: str, output: str):
                     "metric_configs": metric_configs,
                 },
             )
+
+        elif benchmark_type == "stability":
+            # before running the benchmark, we need to preprocess the structures
+            stability_preprocessor = StabilityPreprocessor()
+            # Use the preprocessor to process structures
+            preprocessor_result = stability_preprocessor(structures)
+            structures = preprocessor_result.processed_structures
+
+            benchmark = StabilityBenchmark()
         else:
             raise ValueError(f"Unknown benchmark type: {benchmark_type}")
 
