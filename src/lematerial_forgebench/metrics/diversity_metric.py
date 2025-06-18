@@ -743,3 +743,175 @@ class _PhysicalSizeComponentConfig(BaseMetric):
                 "lattice_c_shannon_entropy_variance": lattice_c_metrics["entropy_variance"],
             }
         }
+    
+    
+"""
+-------------------------------------------------------------------------------
+Atom Number Diversity
+-------------------------------------------------------------------------------
+"""
+
+@dataclass
+class SiteNumberComponentConfig(MetricConfig):
+    """Configuration for the Number of Sites Diversity metric.
+
+    This configuration extends the base MetricConfig to include
+    weights for evaluating Elemental components of structural diversity.
+    """
+
+class _SiteNumberComponentMetric(BaseMetric):
+    """
+    Calculates a scalar score capturing Number of Sites diversity across the structures compared to reference distribution
+    """
+    def __init__(
+        self,
+        name: str | None = "Site Number Diversity",
+        description: str | None = None,
+        lower_is_better: bool = False,
+        n_jobs: int = 1,
+    ):
+        super().__init__(
+            name=name or "Site Number Diversity",
+            description=description 
+            or "Scalar Score of Site Number Diversity in Generated Set",
+            lower_is_better=lower_is_better,
+            n_jobs=n_jobs,
+        )
+        self.config = SiteNumberComponentConfig(
+            name=self.config.name,
+            description=self.config.description,
+            lower_is_better=self.config.lower_is_better,
+            n_jobs=self.config.n_jobs,
+            )
+        
+        # Initialize element Histogram
+        self._init_element_histogram()
+    
+    def _init_site_histogram(self):
+        """
+        Initialize an empty dictionary to function as a histogram counter for element.
+        Dictionary mapping is Number of Sites in unit Cell -> total count across all structure
+        Note: Before compute, Dictionary Values are normalized 
+        """
+
+        self.site_number = defaultdict(int)
+
+    # TODO: Add in Coverage
+    def _compute_vendi_score_with_uncertainty(self) -> dict[str, float]:
+        """
+        Compute the Vendi score (effective diversity) from an #of species distribution,
+        along with Shannon entropy, variance, and standard deviation.
+
+        Returns
+        -------
+        dict[str, float]
+            Dictionary containing:
+            - vendi_score: Effective number of categories
+            - shannon_entropy: Raw entropy in nats
+            - entropy_variance: Estimated variance of entropy (multi-nomial approx.)
+            - entropy_std: Standard deviation (sqrt of variance)
+        
+        References
+        ----------
+        Friedman, D., & Dieng, A. B. (2023). 
+        The Vendi Score: A Diversity Evaluation Metric for Machine Learning. 
+        Transactions on Machine Learning Research. https://openreview.net/forum?id=aNVLfhU9pH
+
+        """
+        values = np.array(list(self.site_number.values()), dtype=float)
+        total = np.sum(values)
+
+        if total == 0:
+            return {
+                "vendi_score": 0.0,
+                "shannon_entropy": 0.0,
+                "entropy_variance": 0.0,
+                "entropy_std": 0.0,
+            }
+
+        # Normalize to probability distribution
+        probs = values / total
+
+        # Shannon entropy (in nats)
+        entropy = -np.sum(probs * np.log(probs + 1e-12))  # add epsilon to avoid log(0)
+
+        # Vendi score
+        vendi_score = np.exp(entropy)
+
+        # Variance of entropy estimate (asymptotic approximation)
+        second_moment = np.sum(probs * (np.log(probs + 1e-12)) ** 2)
+        entropy_variance = (1 / total) * (second_moment - entropy ** 2)
+        entropy_std = np.sqrt(entropy_variance)
+
+        return {
+            "vendi_score": vendi_score,
+            "shannon_entropy": entropy,
+            "entropy_variance": entropy_variance,
+            "entropy_std": entropy_std,
+        }
+
+
+    def _get_compute_attributes(self) -> dict[str, Any]:
+        return {
+            "site_number_histogram" : self.site_number
+        }
+
+    @staticmethod
+    def compute_structure(structure: Structure, site_number_histogram: Dict[int, int]) -> float:
+        """
+        Retrieves all elements present in Structure and adds count to internal elemental distribution
+        Parameters
+        ----------
+        structure: Structure
+            A pymatgen Structure object to evaluate.
+        elemental_histogram: dict[str:int]
+            Class variable for storing the current histogram/distribution of elements across all structures
+
+        Returns:
+        -------
+        float:
+            This value serves as a Binary Indicator representing if the structure was successfully evaluated or not. 
+
+        """
+        try:
+            number_of_sites_in_structure = len(structure.sites)
+            site_number_histogram[number_of_sites_in_structure]
+            return number_of_sites_in_structure
+    
+        except Exception as e:
+            logger.debug(f"Could not determine number of sites in {structure.formula} : {str(e)}")
+            return 0.0
+
+    def aggregate_results(self, values: list[float]) -> dict[str, Any]:
+        """Aggregate results into final metric values.
+
+        Parameters
+        ----------
+        values : list[float]
+            1 or 0 indicators showcasing if the compute function was able to parse through a structure
+            - values of 1 represent erroneous calculations and is used for debugging only
+
+        Returns
+        -------
+        dict
+            Dictionary with aggregated metrics.
+        """
+        non_zero_values = [v for v in values if v != 0.0]
+        if non_zero_values:
+            mean_atoms_per_structure = np.mean(values)
+        else:
+            mean_atoms_per_structure = 0.0
+        site_diversity = self._compute_vendi_score_with_uncertainty()
+
+        return {
+            "metrics": {
+                "site_number_diversity_vendi_score": site_diversity["vendi_score"],
+                "site_number_diversity_shannon_entropy": site_diversity["shannon_entropy"],
+                "mean_atoms_per_structure" : mean_atoms_per_structure,
+            },
+            "primary_metric": "site_number_diversity_vendi_score",
+            "uncertainties": {
+                "shannon_entropy_std" : site_diversity["entropy_std"],
+                "shannon_entropy_variance": site_diversity["entropy_variance"],
+            }
+        }
