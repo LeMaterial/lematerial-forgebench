@@ -562,6 +562,18 @@ wheels = [
 ]
 
 [[package]]
+name = "frechetdist"
+version = "0.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/eb/bd/6b3ddd08ec7fc63d082215b924127f8fffc6f9743ccd0f2d3c05aad28544/frechetdist-0.6.tar.gz", hash = "sha256:ab1d2592932cfa37e36a29e6df903592a366b86a91e395aa5866ad1cb53ad162", size = 2815 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5a/f8/fdd0d7ca48066152f4a80cd645a4f65e909350ee9b2f6026c6d917d73b62/frechetdist-0.6-py3-none-any.whl", hash = "sha256:c451619f1de6739d57c13981c34725a603c1068953d099b8cb07fa08d64f1072", size = 7626 },
+]
+
+[[package]]
 name = "frozenlist"
 version = "1.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1075,6 +1087,7 @@ dependencies = [
     { name = "ase" },
     { name = "click" },
     { name = "datasets" },
+    { name = "frechetdist" },
     { name = "fsspec" },
     { name = "func-timeout" },
     { name = "mace-torch" },
@@ -1114,6 +1127,7 @@ requires-dist = [
     { name = "ase", specifier = ">=3.25.0" },
     { name = "click", specifier = ">=8.1.8" },
     { name = "datasets", specifier = ">=3.5.0" },
+    { name = "frechetdist", specifier = ">=0.6" },
     { name = "fsspec", specifier = ">=2024.12.0" },
     { name = "func-timeout", specifier = ">=4.3.5" },
     { name = "mace-torch", specifier = ">=0.3.13" },

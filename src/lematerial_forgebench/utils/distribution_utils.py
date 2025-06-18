@@ -5,6 +5,7 @@ from scipy.spatial.distance import jensenshannon
 import matplotlib.pyplot as plt
 from pymatgen.core import Composition, Element, Structure
 from scipy.spatial.distance import cdist
+from frechetdist import frdist
 
 
 def one_hot_encode_composition(composition):
@@ -96,3 +97,10 @@ def compute_mmd(reference_data, generated_crystals, crystal_param, sigma=1.0):
     
     mmd = np.mean(k_xx) + np.mean(k_yy) - 2 * np.mean(k_xy)
     return mmd
+
+def compute_frechetdist(reference_data, generated_crystals, crystal_param):
+    generated_crystals_dist = generate_probabilities(generated_crystals, metric=crystal_param, return_2d_array=True)
+    reference_data_dist = generate_probabilities(reference_data, metric=crystal_param, return_2d_array=True)
+
+    distance = frdist(reference_data_dist, generated_crystals_dist)
+    return distance 
