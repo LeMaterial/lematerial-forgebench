@@ -26,7 +26,7 @@ from dataclasses import dataclass
 from typing import Any, Dict
 
 import numpy as np
-from pymatgen.core import Structure, Element
+from pymatgen.core import Element, Structure
 from scipy.special import rel_entr
 
 from lematerial_forgebench.metrics import BaseMetric
@@ -54,7 +54,7 @@ class ElementComponentConfig(MetricConfig):
 
     reference_element_space:int = 118
 
-class _ElementDiversity(BaseMetric):
+class _ElementDiversityMetric(BaseMetric):
     """
     Calculates a scalar score capturing elemental diversity across the structures compared to reference distribution
     """
@@ -238,7 +238,7 @@ class SpaceGroupComponentConfig(MetricConfig):
     """
     reference_space_group_space: int = 230
 
-class _SpaceGroupDiversity(BaseMetric):
+class _SpaceGroupDiversityMetric(BaseMetric):
     """
     Calculates a scalar score capturing Spacegroup Diversity across the structures
     """
@@ -407,7 +407,6 @@ Density Diversity
 -------------------------------------------------------------------------------
 """
 
-#TODO: update tests
 @dataclass
 class PhysicalSizeComponentConfig(MetricConfig):
     """Configuration for the Density, Volume, and Lattice Parameter Size sub-component of Diversity metric.
@@ -428,7 +427,7 @@ class PhysicalSizeComponentConfig(MetricConfig):
     lattice_bin_size: float = 0.5
     packing_factor_bin_size: float = 0.05
 
-class _PhysicalSizeComponentConfig(BaseMetric):
+class _PhysicalSizeComponentMetric(BaseMetric):
     """
     Calculates a scalar score capturing Physical Aspects of the Structure to measure Diversity across the structures
     """
@@ -734,7 +733,7 @@ class _PhysicalSizeComponentConfig(BaseMetric):
         lattice_b_histogram: Dict[float, int],
         lattice_c_histogram: Dict[float, int],
         packing_factor_histogram: Dict[float, int],
-        packing_factor_function: function,
+        packing_factor_function: callable,
         density_bin_size: float,
         lattice_bin_size: float,
         packing_factor_bin_size: float,
@@ -761,7 +760,7 @@ class _PhysicalSizeComponentConfig(BaseMetric):
         packing_factor_histogram: dict[float:int]
             a bucket-based histogram capturing diversity and corresponding frequency of packing factors of materials
             in the generated set
-        packing_factor_function: function
+        packing_factor_function: Callable
             A private function to calculate the packing factor of a structure to then save to the distribution
         density_bin_size : Float
             Float value for bin size and effective precision for density histogram
@@ -865,7 +864,7 @@ class _PhysicalSizeComponentConfig(BaseMetric):
                 "packing_factor_diversity_kl_divergence_from_uniform": packing_factor_metrics["kl_divergence"],
                 "mean_volume": mean_volume,
             },
-            "primary_metric": "density_diversity_kl_divergence_from_uniform",
+            "primary_metric": "mean_volume",
             "uncertainties": {
                 "density_shannon_entropy_std" : density_metrics["entropy_std"],
                 "density_shannon_entropy_variance": density_metrics["entropy_variance"],

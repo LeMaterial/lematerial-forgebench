@@ -12,10 +12,11 @@ from pymatgen.io.cif import CifParser
 
 from lematerial_forgebench.metrics.base import MetricResult
 from lematerial_forgebench.metrics.diversity_metric import (
-    _ElementDiversity,
-    _SpaceGroupDiversity,
-    _DensityComponentMetric,
-    )
+    _ElementDiversityMetric,
+    _PhysicalSizeComponentMetric,
+    _SiteNumberComponentMetric,
+    _SpaceGroupDiversityMetric,
+)
 
 trial_data_file_path = "trial_data/crystal_symmcd_mp20.csv"
 
@@ -71,7 +72,7 @@ class TestElementDiversityMetric:
     def test_diversity_metrics_initialization(self):
         """ Tests the initialization of Diversity Metric"""
 
-        metric = _ElementDiversity()
+        metric = _ElementDiversityMetric()
         assert metric.name == "Element Diversity"
 
     def test_element_diversity_score(self, fetch_sample_from_trial_data):
@@ -83,7 +84,7 @@ class TestElementDiversityMetric:
                 PyTest Fixture which locally initializes a list of 10 structures from the trial data
         """
 
-        metric = _ElementDiversity()
+        metric = _ElementDiversityMetric()
         metric_score = metric.compute(fetch_sample_from_trial_data)
         
         # Sanity Checks
@@ -93,11 +94,13 @@ class TestElementDiversityMetric:
         # Check Result Structure
         assert "element_diversity_vendi_score" in metric_score.metrics
         assert "element_diversity_shannon_entropy" in metric_score.metrics
+        assert "element_coverage_ratio" in metric_score.metrics
         assert "invalid_computations_in_batch" in metric_score.metrics
-        assert metric_score.primary_metric == "element_diversity_vendi_score"
+        assert metric_score.primary_metric == "element_coverage_ratio"
 
         # Check Value Range
-        assert 0.0 <= metric_score.metrics[metric_score.primary_metric] <= 118
+        assert 0.0 <= metric_score.metrics["element_diversity_vendi_score"] <= 118
+        assert 0.0 <= metric_score.metrics["element_coverage_ratio"] <= 1.0
         
         #Check Uncertainty Sanity
         assert isinstance(metric_score.uncertainties["shannon_entropy_std"], float)
@@ -111,7 +114,7 @@ class TestSpaceGroupDiversityMetric:
     def test_diversity_metrics_initialization(self):
         """ Tests the initialization of Diversity Metric"""
 
-        metric = _SpaceGroupDiversity()
+        metric = _SpaceGroupDiversityMetric()
         assert metric.name == "Space Group Diversity"
 
     def test_element_diversity_score(self, fetch_sample_from_trial_data):
@@ -123,7 +126,7 @@ class TestSpaceGroupDiversityMetric:
                 PyTest Fixture which locally initializes a list of 10 structures from the trial data
         """
 
-        metric = _SpaceGroupDiversity()
+        metric = _SpaceGroupDiversityMetric()
         metric_score = metric.compute(fetch_sample_from_trial_data)
         
         # Sanity Checks
@@ -134,11 +137,14 @@ class TestSpaceGroupDiversityMetric:
         assert "spacegroup_diversity_vendi_score" in metric_score.metrics
         assert "spacegroup_diversity_shannon_entropy" in metric_score.metrics
         assert "mean_symmetry_rating" in metric_score.metrics
-        assert metric_score.primary_metric == "spacegroup_diversity_vendi_score"
+        assert "space_group_coverage" in metric_score.metrics
+        assert metric_score.primary_metric == "space_group_coverage"
 
         # Check Value Range
-        assert 0.0 <= metric_score.metrics[metric_score.primary_metric] <= 230.0
+        assert 0.0 <= metric_score.metrics["spacegroup_diversity_vendi_score"] <= 230.0
         assert 0.0 <= metric_score.metrics["mean_symmetry_rating"] <= 1.0
+        assert 0.0 <= metric_score.metrics["space_group_coverage"] <= 1.0
+
 
         
         #Check Uncertainty Sanity
@@ -146,12 +152,12 @@ class TestSpaceGroupDiversityMetric:
         assert isinstance(metric_score.uncertainties["shannon_entropy_variance"], float)
 
 
-class TestDensityDiversityMetrics:
+class TestPhysicalDiversityMetrics:
     """ Tests the Density Diversity Metric Component of the overall Diversity Metrics"""
 
     def test_diversity_metrics_initialization(self):
-        metric = _DensityComponentMetric()
-        assert metric.name == "Density Diversity"
+        metric = _PhysicalSizeComponentMetric()
+        assert metric.name == "Physical Diversity"
 
     def test_element_diversity_score(self, fetch_sample_from_trial_data):
         """Runs a Sanity check on the elemental diversity score
@@ -162,7 +168,7 @@ class TestDensityDiversityMetrics:
                 PyTest Fixture which locally initializes a list of 10 structures from the trial data
         """
 
-        metric = _DensityComponentMetric()
+        metric = _PhysicalSizeComponentMetric()
         metric_score = metric.compute(fetch_sample_from_trial_data)
         
         # Sanity Checks
@@ -170,15 +176,73 @@ class TestDensityDiversityMetrics:
         assert len(metric_score.failed_indices) == 0
 
         # Check Result Structure
+            ## Density
         assert "density_diversity_shannon_entropy" in metric_score.metrics
         assert "density_diversity_kl_divergence_from_uniform" in metric_score.metrics
+            ## Lattice
+        assert "lattice_a_diversity_shannon_entropy" in metric_score.metrics
+        assert "lattice_a_diversity_kl_divergence_from_uniform" in metric_score.metrics
+        assert "lattice_b_diversity_shannon_entropy" in metric_score.metrics
+        assert "lattice_b_diversity_kl_divergence_from_uniform" in metric_score.metrics
+        assert "lattice_c_diversity_shannon_entropy" in metric_score.metrics
+        assert "lattice_c_diversity_kl_divergence_from_uniform" in metric_score.metrics
+            ## Packing Factor
+        assert "packing_factor_diversity_shannon_entropy" in metric_score.metrics
+        assert "packing_factor_diversity_kl_divergence_from_uniform" in metric_score.metrics
 
-        assert metric_score.primary_metric == "density_diversity_kl_divergence_from_uniform"
-
-        # Check Value Range
-        assert 0.0 <= metric_score.metrics[metric_score.primary_metric] <= 25.0
+            ## Mean Volume
+        assert "mean_volume" in metric_score.metrics
 
         
+        assert metric_score.primary_metric == "mean_volume"
+        
+        #Check Uncertainty Sanity
+        assert isinstance(metric_score.uncertainties["density_shannon_entropy_std"], float)
+        assert isinstance(metric_score.uncertainties["density_shannon_entropy_variance"], float)
+        assert isinstance(metric_score.uncertainties["lattice_a_shannon_entropy_std"], float)
+        assert isinstance(metric_score.uncertainties["lattice_a_shannon_entropy_variance"], float)
+        assert isinstance(metric_score.uncertainties["lattice_b_shannon_entropy_std"], float)
+        assert isinstance(metric_score.uncertainties["lattice_b_shannon_entropy_variance"], float)
+        assert isinstance(metric_score.uncertainties["lattice_c_shannon_entropy_std"], float)
+        assert isinstance(metric_score.uncertainties["lattice_b_shannon_entropy_variance"], float)
+        assert isinstance(metric_score.uncertainties["packing_factor_shannon_entropy_std"], float)
+        assert isinstance(metric_score.uncertainties["packing_factor_shannon_entropy_variance"], float)
+
+
+
+
+class TestAtomNumberDiversityMetric:
+    
+    """Tests the Elemental Diversity Metric component in overall Diversity Metrics"""
+
+    def test_diversity_metrics_initialization(self):
+        """ Tests the initialization of Diversity Metric"""
+
+        metric = _SiteNumberComponentMetric()
+        assert metric.name == "Site Number Diversity"
+
+    def test_element_diversity_score(self, fetch_sample_from_trial_data):
+        """Runs a Sanity check on the elemental diversity score
+        
+            Parameters
+            ----------
+            fetch_sample_from_trial_data : pytest.fixture
+                PyTest Fixture which locally initializes a list of 10 structures from the trial data
+        """
+
+        metric = _SiteNumberComponentMetric()
+        metric_score = metric.compute(fetch_sample_from_trial_data)
+        
+        # Sanity Checks
+        assert isinstance(metric_score, MetricResult)
+        assert len(metric_score.failed_indices) == 0
+
+        # Check Result Structure
+        assert "site_number_diversity_vendi_score" in metric_score.metrics
+        assert "site_number_diversity_shannon_entropy" in metric_score.metrics
+        assert "mean_atoms_per_structure" in metric_score.metrics
+        assert metric_score.primary_metric == "site_number_diversity_vendi_score"
+
         #Check Uncertainty Sanity
         assert isinstance(metric_score.uncertainties["shannon_entropy_std"], float)
         assert isinstance(metric_score.uncertainties["shannon_entropy_variance"], float)
