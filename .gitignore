@@ -172,3 +172,4 @@ src/lematerial_forgebench/.DS_Store
 
 # Ignore .gz
 *.gz
+temp.cif
