@@ -12,10 +12,19 @@ except ImportError:
     create_orb_calculator = None
     AVAILABLE_ORB_MODELS = []
 
+INFO = {
+    "name": "ORB",
+    "description": "Orbital Materials' ORB force fields",
+    "default_model": "orb_v3_conservative_inf_omat",
+    "supports_embeddings": True,
+    "supports_relaxation": True,
+}
+
 __all__ = [
     "ORBCalculator",
     "ORBEmbeddingExtractor",
     "create_orb_calculator",
     "AVAILABLE_ORB_MODELS",
     "ORB_AVAILABLE",
+    "INFO",
 ]
