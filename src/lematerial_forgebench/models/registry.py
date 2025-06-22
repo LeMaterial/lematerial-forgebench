@@ -2,6 +2,28 @@
 
 This is a refactored version that eliminates redundancy and standardizes
 model handling using a configuration-driven approach.
+
+This implementation assumes a consistent naming convention for model packages
+and their contents:
+
+- The model package must have an ``INFO`` dictionary with the following keys:
+  - ``name``: str
+  - ``description``: str
+  - ``default_model``: str
+  - ``supports_embeddings``: bool
+  - ``supports_relaxation``: bool
+
+- The model package must have a calculator class called ``{name}Calculator``
+  - e.g. ``MACECalculator``
+- The model package must have a factory function called ``create_{name.lower()}_calculator``
+  - e.g. ``create_mace_calculator``
+- The model package must have an attribute called ``AVAILABLE_{name.upper()}_MODELS``
+  - e.g. ``AVAILABLE_MACE_MODELS``
+- The model package _may_ have an attribute called ``AVAILABLE_{name.upper()}_TASKS``
+  - e.g. ``AVAILABLE_MACE_TASKS``
+
+Available models are automatically discovered by looking for directories with
+``__init__.py`` in the ``models/`` package.
 """
 
 from dataclasses import dataclass
@@ -15,7 +37,7 @@ from lematerial_forgebench.utils.logging import logger
 
 @dataclass
 class ModelConfig:
-    """Configuration for a model type."""
+    """Data class to describe a model's configuration."""
 
     description: str
     name: str
@@ -71,6 +93,9 @@ class ModelRegistry:
 
     This version uses a configuration-driven approach to eliminate redundancy
     and standardize model handling.
+
+    Models are discovered by looking for directories with ``__init__.py`` in the
+    ``models/`` package.
     """
 
     def __init__(self):
@@ -82,7 +107,16 @@ class ModelRegistry:
         self._discover_and_register_models()
 
     def _discover_and_register_models(self):
-        """Automatically discover and register available models."""
+        """Automatically discover and register available models.
+
+        Models are discovered by looking for directories with ``__init__.py`` in
+        the ``models/`` package.
+
+        If a model's calculator module can be imported, its calculator class and
+        factory function are registered and a success message is printed.
+
+        Otherwise, a warning message is printed and the model is skipped.
+        """
 
         # Discover models in the models package by looking for directories with __init__.py
         candidates = [
@@ -136,6 +170,8 @@ class ModelRegistry:
             "default_model": config.default_model,
             "default_task": config.default_task,
             "is_available": config.is_available,
+            "available_models": [],
+            "available_tasks": [],
         }
 
         # Add available models if attribute exists
