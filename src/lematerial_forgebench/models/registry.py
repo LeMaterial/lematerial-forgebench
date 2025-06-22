@@ -289,23 +289,33 @@ def get_model_info() -> Dict[str, Dict]:
 
 def print_model_info():
     """Print information about available models."""
-    info = get_model_info()
+    from rich import print
+    from rich.console import Group
+    from rich.table import Table
 
-    print("Available MLIP Models:")
-    print("=" * 50)
+    info = get_model_info()
+    tables = []
+    max_width = 0
 
     for model_type, details in info.items():
-        print(f"\n{model_type.upper()}:")
-        print(f"  Class: {details['class']}")
-        print(f"  Description: {details['description']}")
-        print(f"  Supports embeddings: {details['supports_embeddings']}")
-        print(f"  Supports relaxation: {details['supports_relaxation']}")
+        if not max_width:
+            max_width = max(len(key) for key in details.keys())
 
-        if "available_models" in details:
-            print(f"  Available models: {details['available_models']}")
+        table = Table(
+            title=f"\n[bold blue]{model_type.upper()}[/bold blue]",
+            show_header=False,
+            title_justify="left",
+        )
+        table.add_column(width=max_width, justify="left")
+        table.add_column(justify="left")
 
-        if "available_tasks" in details:
-            print(f"  Available tasks: {details['available_tasks']}")
+        for key, value in details.items():
+            key = " ".join(word.capitalize() for word in key.split("_")).strip()
+            table.add_row(key, str(value))
+
+        tables.append(table)
+
+    print(Group(*tables))
 
 
 def get_equiformer_calculator(**kwargs) -> BaseMLIPCalculator:
