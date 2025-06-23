@@ -21,7 +21,7 @@ except ImportError:
 
 INFO = {
     "name": "UMA",
-    "description": "Universal Materials Accelerator by Meta",
+    "description": "Universal Models for Atoms by Meta",
     "default_model": "uma-s-1",
     "default_task": "omat",
     "supports_embeddings": True,
