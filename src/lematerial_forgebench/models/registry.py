@@ -211,13 +211,13 @@ class ModelRegistry:
         """
         return self._model_availability.get(model_name, False)
 
-    def create_calculator(self, model_type: str, **kwargs) -> BaseMLIPCalculator:
+    def create_calculator(self, model_name: str, **kwargs) -> BaseMLIPCalculator:
         """Create a calculator for the specified model type.
 
         Parameters
         ----------
-        model_type : str
-            Type of model (e.g., "orb", "mace", "equiformer", "uma")
+        model_name : str
+            Name of the model (e.g., "orb", "mace", "equiformer", "uma")
         **kwargs
             Model-specific arguments
 
@@ -229,16 +229,16 @@ class ModelRegistry:
         Raises
         ------
         ValueError
-            If model_type is not available
+            If model_name is not available
         """
-        if model_type not in self._factory_functions:
+        if model_name not in self._factory_functions:
             available = self.get_available_models()
             raise ValueError(
-                f"Model type '{model_type}' not available. "
+                f"Model type '{model_name}' not available. "
                 f"Available models: {available}"
             )
 
-        factory_func = self._factory_functions[model_type]
+        factory_func = self._factory_functions[model_name]
         return factory_func(**kwargs)
 
     def get_model_info(self) -> Dict[str, Dict]:
@@ -275,15 +275,15 @@ class ModelRegistry:
 _registry = ModelRegistry()
 
 
-def get_calculator(model_type: str, **kwargs) -> BaseMLIPCalculator:
+def get_calculator(model_name: str, **kwargs) -> BaseMLIPCalculator:
     """Get a calculator for the specified model type.
 
     This is the main entry point for creating calculators.
 
     Parameters
     ----------
-    model_type : str
-        Type of model to create
+    model_name : str
+        Name of the model to create
     **kwargs
         Model-specific configuration
 
@@ -298,7 +298,7 @@ def get_calculator(model_type: str, **kwargs) -> BaseMLIPCalculator:
     >>> calc = get_calculator("mace", model_type="mp")
     >>> calc = get_calculator("uma", model_name="uma-s-1", task="omat")
     """
-    return _registry.create_calculator(model_type, **kwargs)
+    return _registry.create_calculator(model_name, **kwargs)
 
 
 def list_available_models() -> list[str]:
