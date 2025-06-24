@@ -46,8 +46,10 @@ class MACECalculator(BaseMLIPCalculator):
         """Initialize the MACE model."""
         try:
             # Convert torch.device back to string for MACE compatibility
-            device_str = str(self.device) if hasattr(self.device, 'type') else self.device
-            
+            device_str = (
+                str(self.device) if hasattr(self.device, "type") else self.device
+            )
+
             if self.model_type == "mp":
                 # Materials Project foundation model
                 self.ase_calc = mace_mp(device=device_str, **kwargs)

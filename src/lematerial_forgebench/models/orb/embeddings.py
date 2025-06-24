@@ -36,11 +36,10 @@ class ORBEmbeddingExtractor(BaseEmbeddingExtractor):
         graph = graph.to(self.device)
 
         # Forward pass to get embeddings
-        with torch.no_grad():
-            out = self.model(graph)
-            node_features = out["node_features"]  # Shape: (N_atoms, 1024)
+        out = self.model(graph)
+        node_features = out["node_features"]  # Shape: (N_atoms, 1024)
 
-        return node_features.cpu().numpy()
+        return node_features.detach().cpu().numpy()
 
     def extract_graph_embedding_with_learned_pooling(
         self, structure: Structure
@@ -60,23 +59,23 @@ class ORBEmbeddingExtractor(BaseEmbeddingExtractor):
             Graph embedding from learned pooling
         """
         import torch_scatter
+
         atoms = structure.to_ase_atoms()
         graph = atomic_system.ase_atoms_to_atom_graphs(atoms, self.system_config)
         graph = graph.to(self.device)
 
-        with torch.no_grad():
-            # Forward pass through the full model to get pooled representation
-            out = self.model(graph)
+        # Forward pass through the full model to get pooled representation
+        out = self.model(graph)
 
-            # The model should have a global pooling layer before energy prediction
-            # This varies by ORB version, so we'll use the manual pooling as fallback
-            if "graph_features" in out:
-                graph_features = out["graph_features"]
-            else:
-                # Manual pooling as fallback
-                node_features = out["node_features"]
-                graph_features = torch_scatter.scatter_mean(
-                    node_features, graph.batch, dim=0
-                )
+        # The model should have a global pooling layer before energy prediction
+        # This varies by ORB version, so we'll use the manual pooling as fallback
+        if "graph_features" in out:
+            graph_features = out["graph_features"]
+        else:
+            # Manual pooling as fallback
+            node_features = out["node_features"]
+            graph_features = torch_scatter.scatter_mean(
+                node_features, graph.batch, dim=0
+            )
 
-        return graph_features.cpu().numpy().squeeze()
+        return graph_features.detach().cpu().numpy().squeeze()

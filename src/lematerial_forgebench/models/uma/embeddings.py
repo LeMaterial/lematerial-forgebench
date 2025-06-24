@@ -40,9 +40,8 @@ class UMAEmbeddingExtractor(BaseEmbeddingExtractor):
         # Convert to FAIRChem's AtomicData format
         adata = atoms_to_data(atoms, device=self.device)
 
-        with torch.no_grad():
-            out = self.model(adata, return_embeddings=True)
-            node_embeddings = out["node_embeddings"]
+        out = self.model(adata, return_embeddings=True)
+        node_embeddings = out["node_embeddings"]
 
         return node_embeddings.cpu().numpy()
 
@@ -66,27 +65,22 @@ class UMAEmbeddingExtractor(BaseEmbeddingExtractor):
         atoms = structure.to_ase_atoms()
         adata = atoms_to_data(atoms, device=self.device)
 
-        with torch.no_grad():
-            out = self.model(adata, return_embeddings=True)
-            node_embeddings = out["node_embeddings"]
+        out = self.model(adata, return_embeddings=True)
+        node_embeddings = out["node_embeddings"]
 
-            # Pool over atoms to get graph representation
-            if pooling_method == "mean":
-                graph_emb = torch_scatter.scatter_mean(
-                    node_embeddings, adata.batch, dim=0
-                )
-            elif pooling_method == "sum":
-                graph_emb = torch_scatter.scatter_sum(
-                    node_embeddings, adata.batch, dim=0
-                )
-            elif pooling_method == "max":
-                graph_emb = torch_scatter.scatter_max(
-                    node_embeddings, adata.batch, dim=0
-                )[0]
-            else:
-                raise ValueError(f"Unknown pooling method: {pooling_method}")
+        # Pool over atoms to get graph representation
+        if pooling_method == "mean":
+            graph_emb = torch_scatter.scatter_mean(node_embeddings, adata.batch, dim=0)
+        elif pooling_method == "sum":
+            graph_emb = torch_scatter.scatter_sum(node_embeddings, adata.batch, dim=0)
+        elif pooling_method == "max":
+            graph_emb = torch_scatter.scatter_max(node_embeddings, adata.batch, dim=0)[
+                0
+            ]
+        else:
+            raise ValueError(f"Unknown pooling method: {pooling_method}")
 
-        return graph_emb.cpu().numpy().squeeze()
+        return graph_emb.detach().cpu().numpy().squeeze()
 
 
 class UMAASECalculator:
