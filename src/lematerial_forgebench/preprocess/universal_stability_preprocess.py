@@ -6,48 +6,9 @@ from typing import Any, Dict
 import numpy as np
 from pymatgen.core import Structure
 
-from lematerial_forgebench.models.registry import list_available_models
+from lematerial_forgebench.models.registry import get_calculator, list_available_models
 from lematerial_forgebench.preprocess.base import BasePreprocessor, PreprocessorConfig
 from lematerial_forgebench.utils.logging import logger
-from lematerial_forgebench.utils.relaxers import (
-    BaseRelaxer,
-    get_relaxer,
-)
-
-# Import factory functions directly
-try:
-    from lematerial_forgebench.models.orb.calculator import create_orb_calculator
-
-    ORB_AVAILABLE = True
-except ImportError:
-    ORB_AVAILABLE = False
-    create_orb_calculator = None
-
-try:
-    from lematerial_forgebench.models.mace.calculator import create_mace_calculator
-
-    MACE_AVAILABLE = True
-except ImportError:
-    MACE_AVAILABLE = False
-    create_mace_calculator = None
-
-try:
-    from lematerial_forgebench.models.uma.calculator import create_uma_calculator
-
-    UMA_AVAILABLE = True
-except ImportError:
-    UMA_AVAILABLE = False
-    create_uma_calculator = None
-
-try:
-    from lematerial_forgebench.models.equiformer.calculator import (
-        create_equiformer_calculator,
-    )
-
-    EQUIFORMER_AVAILABLE = True
-except ImportError:
-    EQUIFORMER_AVAILABLE = False
-    create_equiformer_calculator = None
 
 
 @dataclass
@@ -76,6 +37,7 @@ class UniversalStabilityPreprocessorConfig(PreprocessorConfig):
     relaxation_config: Dict[str, Any] = field(default_factory=dict)
     calculate_formation_energy: bool = True
     calculate_energy_above_hull: bool = True
+    extract_embeddings: bool = True
 
 
 class UniversalStabilityPreprocessor(BasePreprocessor):
@@ -136,88 +98,15 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
             calculate_energy_above_hull=calculate_energy_above_hull,
         )
 
-        # Extract model-specific parameters from model_config
-        model_specific_config = dict(self.config.model_config)  # Make a copy
-
-        if model_type == "orb":
-            if not ORB_AVAILABLE or create_orb_calculator is None:
-                raise ImportError("ORB not available")
-
-            # Extract parameters for ORB
-            orb_model_type = model_specific_config.get(
-                "model_type", "orb_v3_conservative_inf_omat"
-            )
-            device = model_specific_config.get("device", "cpu")
-            precision = model_specific_config.get("precision", "float32-high")
-
-            # Call factory function directly
-            self.calculator = create_orb_calculator(
-                model_type=orb_model_type, device=device, precision=precision
-            )
-
-        elif model_type == "mace":
-            if not MACE_AVAILABLE or create_mace_calculator is None:
-                raise ImportError("MACE not available")
-
-            # Extract parameters for MACE
-            mace_model_type = model_specific_config.get("model_type", "mp")
-            device = model_specific_config.get("device", "cpu")
-            model_path = model_specific_config.get("model_path", None)
-
-            # Call factory function directly
-            self.calculator = create_mace_calculator(
-                model_type=mace_model_type, device=device, model_path=model_path
-            )
-
-        elif model_type == "uma":
-            if not UMA_AVAILABLE or create_uma_calculator is None:
-                raise ImportError("UMA not available")
-
-            # Extract parameters for UMA
-            model_name = model_specific_config.get("model_name", "uma-s-1")
-            task = model_specific_config.get("task", "omat")
-            device = model_specific_config.get("device", "cpu")
-            precision = model_specific_config.get("precision", "float32")
-
-            # Call factory function directly
-            self.calculator = create_uma_calculator(
-                model_name=model_name, task=task, device=device, precision=precision
-            )
-
-        elif model_type == "equiformer":
-            if not EQUIFORMER_AVAILABLE or create_equiformer_calculator is None:
-                raise ImportError("Equiformer v2 not available")
-
-            # Extract parameters for Equiformer
-            model_path = model_specific_config.get("model_path", None)
-            if model_path is None:
-                raise ValueError("model_path is required for Equiformer models")
-
-            device = model_specific_config.get("device", "cpu")
-            max_neigh = model_specific_config.get("max_neigh", 50)
-            radius = model_specific_config.get("radius", 6.0)
-
-            # Call factory function directly
-            self.calculator = create_equiformer_calculator(
-                model_path=model_path, device=device, max_neigh=max_neigh, radius=radius
-            )
-
-        else:
-            # Fallback - this shouldn't happen if we validate model types
-            available_models = []
-            if ORB_AVAILABLE:
-                available_models.append("orb")
-            if MACE_AVAILABLE:
-                available_models.append("mace")
-            if UMA_AVAILABLE:
-                available_models.append("uma")
-            if EQUIFORMER_AVAILABLE:
-                available_models.append("equiformer")
-
+        # Create calculator using the registry
+        try:
+            self.calculator = get_calculator(model_type, **self.config.model_config)
+        except ValueError as e:
+            available_models = list_available_models()
             raise ValueError(
                 f"Model type '{model_type}' not supported. "
                 f"Available models: {available_models}"
-            )
+            ) from e
 
     def _get_process_attributes(self) -> dict[str, Any]:
         """Get the attributes for the process_structure method."""
@@ -227,6 +116,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
             "relaxation_config": self.config.relaxation_config,
             "calculate_formation_energy": self.config.calculate_formation_energy,
             "calculate_energy_above_hull": self.config.calculate_energy_above_hull,
+            "extract_embeddings": self.config.extract_embeddings,
         }
 
     @staticmethod
@@ -237,6 +127,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
         relaxation_config: Dict[str, Any],
         calculate_formation_energy: bool,
         calculate_energy_above_hull: bool,
+        extract_embeddings: bool,
     ) -> Structure:
         """Process a single structure by calculating energies and optionally relaxing.
 
@@ -254,6 +145,8 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
             Whether to calculate formation energy
         calculate_energy_above_hull : bool
             Whether to calculate energy above hull
+        extract_embeddings : bool
+            Whether to extract embeddings
 
         Returns
         -------
@@ -304,6 +197,12 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
                         f"Failed to compute e_above_hull for {structure.formula}: {str(e)}"
                     )
                     structure.properties["e_above_hull"] = None
+
+            # Extract embeddings if requested
+            if extract_embeddings:
+                embeddings = calculator.extract_embeddings(structure)
+                structure.properties["node_embeddings"] = embeddings.node_embeddings
+                structure.properties["graph_embedding"] = embeddings.graph_embedding
 
             # Optionally relax the structure
             if relax_structures:
@@ -379,149 +278,6 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
             raise
 
 
-@dataclass
-class StabilityPreprocessorConfig(PreprocessorConfig):
-    """Configuration for the StabilityPreprocessor.
-
-    Parameters
-    ----------
-    relaxer_type : str
-        Type of relaxer to use (e.g., "orb", "mace", "chgnet").
-    relaxer_config : dict
-        Configuration for the specific relaxer.
-    """
-
-    relaxer_type: str = "orb"
-    relaxer_config: Dict[str, Any] = field(default_factory=dict)
-
-
-class StabilityPreprocessor(BasePreprocessor):
-    """Legacy stability preprocessor using relaxer-based system.
-
-    This preprocessor maintains backward compatibility with the existing
-    relaxer-based approach while providing the same functionality.
-
-    Parameters
-    ----------
-    relaxer_type : str
-        Type of relaxer to use
-    relaxer_config : dict
-        Configuration for the specific relaxer
-    name : str, optional
-        Custom name for the preprocessor
-    description : str, optional
-        Description of what the preprocessor does
-    n_jobs : int, default=1
-        Number of parallel jobs to run
-    """
-
-    def __init__(
-        self,
-        relaxer_type: str = "orb",
-        relaxer_config: Dict[str, Any] = None,
-        name: str | None = None,
-        description: str | None = None,
-        n_jobs: int = 1,
-    ):
-        super().__init__(
-            name=name or "StabilityPreprocessor",
-            description=description or "Preprocesses structures for stability analysis",
-            n_jobs=n_jobs,
-        )
-
-        self.config = StabilityPreprocessorConfig(
-            name=self.config.name,
-            description=self.config.description,
-            n_jobs=self.config.n_jobs,
-            relaxer_type=relaxer_type,
-            relaxer_config=relaxer_config or {"fmax": 0.02, "steps": 500},
-        )
-
-        # Initialize the relaxer
-        self.relaxer = get_relaxer(relaxer_type, **self.config.relaxer_config)
-
-    def _get_process_attributes(self) -> dict[str, Any]:
-        """Get the attributes for the process_structure method."""
-        return {
-            "relaxer": self.relaxer,
-        }
-
-    @staticmethod
-    def process_structure(
-        structure: Structure,
-        relaxer: BaseRelaxer,
-    ) -> Structure:
-        """Process a single structure by relaxing it and computing stability metrics.
-
-        Parameters
-        ----------
-        structure : Structure
-            A pymatgen Structure object to process
-        relaxer : BaseRelaxer
-            Relaxer object to use
-
-        Returns
-        -------
-        Structure
-            The processed Structure with relaxed geometry and stability properties
-
-        Raises
-        ------
-        Exception
-            If relaxation fails or other processing errors occur
-        """
-        try:
-            # Relax the structure
-            relaxed_structure, relaxation_result = relaxer.relax(structure)
-
-            # Calculate RMSE between original and relaxed positions
-            rmse = _calculate_rmse(structure, relaxed_structure)
-
-            # Store relaxed structure and properties
-            structure.properties["relaxed_structure"] = relaxed_structure
-            structure.properties["relaxation_rmse"] = rmse
-            structure.properties["relaxation_energy"] = relaxation_result.energy
-
-            if hasattr(relaxation_result, "metadata") and relaxation_result.metadata:
-                if "relaxation_steps" in relaxation_result.metadata:
-                    structure.properties["relaxation_steps"] = (
-                        relaxation_result.metadata["relaxation_steps"]
-                    )
-
-            # Calculate energy above hull if available in relaxer
-            if hasattr(relaxer, "calculate_energy_above_hull"):
-                try:
-                    e_above_hull = relaxer.calculate_energy_above_hull(
-                        relaxed_structure
-                    )
-                    structure.properties["e_above_hull"] = e_above_hull
-                except Exception as e:
-                    logger.warning(f"Failed to compute e_above_hull: {str(e)}")
-                    structure.properties["e_above_hull"] = None
-
-            # Calculate formation energy if available in relaxer
-            if hasattr(relaxer, "calculate_formation_energy"):
-                try:
-                    formation_energy = relaxer.calculate_formation_energy(
-                        relaxed_structure
-                    )
-                    structure.properties["formation_energy"] = formation_energy
-                except Exception as e:
-                    logger.warning(f"Failed to compute formation_energy: {str(e)}")
-                    structure.properties["formation_energy"] = None
-
-            logger.debug(
-                f"Relaxed structure: RMSE: {rmse:.3f} Å, "
-                f"energy: {relaxation_result.energy:.3f} eV for {structure.formula}"
-            )
-
-            return structure
-
-        except Exception as e:
-            logger.error(f"Failed to process structure {structure.formula}: {str(e)}")
-            raise
-
-
 def _calculate_rmse(original: Structure, relaxed: Structure) -> float:
     """Calculate RMSE between atomic positions of original and relaxed structures.
 
@@ -548,126 +304,3 @@ def _calculate_rmse(original: Structure, relaxed: Structure) -> float:
 
     mse /= len(original)
     return np.sqrt(mse)
-
-
-# Factory functions for different models
-def create_orb_stability_preprocessor(
-    orb_model_type: str = "orb_v3_conservative_inf_omat",
-    device: str = "cpu",
-    relax_structures: bool = True,
-    **kwargs,
-) -> UniversalStabilityPreprocessor:
-    """Create stability preprocessor using ORB.
-
-    Parameters
-    ----------
-    orb_model_type : str
-        ORB model variant
-    device : str
-        Device for computation
-    relax_structures : bool
-        Whether to relax structures
-    **kwargs
-        Additional arguments
-
-    Returns
-    -------
-    UniversalStabilityPreprocessor
-        Configured preprocessor
-    """
-    model_config = {"model_type": orb_model_type, "device": device, **kwargs}
-    return UniversalStabilityPreprocessor(
-        model_type="orb", model_config=model_config, relax_structures=relax_structures
-    )
-
-
-def create_mace_stability_preprocessor(
-    mace_model_type: str = "mp",
-    device: str = "cpu",
-    relax_structures: bool = True,
-    **kwargs,
-) -> UniversalStabilityPreprocessor:
-    """Create stability preprocessor using MACE.
-
-    Parameters
-    ----------
-    mace_model_type : str
-        MACE model type ("mp" or "off")
-    device : str
-        Device for computation
-    relax_structures : bool
-        Whether to relax structures
-    **kwargs
-        Additional arguments
-
-    Returns
-    -------
-    UniversalStabilityPreprocessor
-        Configured preprocessor
-    """
-    model_config = {"model_type": mace_model_type, "device": device, **kwargs}
-    return UniversalStabilityPreprocessor(
-        model_type="mace", model_config=model_config, relax_structures=relax_structures
-    )
-
-
-def create_uma_stability_preprocessor(
-    model_name: str = "uma-s-1",
-    task: str = "omat",
-    device: str = "cpu",
-    relax_structures: bool = True,
-    **kwargs,
-) -> UniversalStabilityPreprocessor:
-    """Create stability preprocessor using UMA.
-
-    Parameters
-    ----------
-    model_name : str
-        UMA model name
-    task : str
-        UMA task domain
-    device : str
-        Device for computation
-    relax_structures : bool
-        Whether to relax structures
-    **kwargs
-        Additional arguments
-
-    Returns
-    -------
-    UniversalStabilityPreprocessor
-        Configured preprocessor
-    """
-    model_config = {"model_name": model_name, "task": task, "device": device, **kwargs}
-    return UniversalStabilityPreprocessor(
-        model_type="uma", model_config=model_config, relax_structures=relax_structures
-    )
-
-
-def create_equiformer_stability_preprocessor(
-    model_path: str, device: str = "cpu", relax_structures: bool = True, **kwargs
-) -> UniversalStabilityPreprocessor:
-    """Create stability preprocessor using Equiformer v2.
-
-    Parameters
-    ----------
-    model_path : str
-        Path to Equiformer checkpoint
-    device : str
-        Device for computation
-    relax_structures : bool
-        Whether to relax structures
-    **kwargs
-        Additional arguments
-
-    Returns
-    -------
-    UniversalStabilityPreprocessor
-        Configured preprocessor
-    """
-    model_config = {"model_path": model_path, "device": device, **kwargs}
-    return UniversalStabilityPreprocessor(
-        model_type="equiformer",
-        model_config=model_config,
-        relax_structures=relax_structures,
-    )
