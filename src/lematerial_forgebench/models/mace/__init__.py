@@ -16,10 +16,19 @@ except ImportError:
     create_mace_calculator = None
     AVAILABLE_MACE_MODELS = []
 
+INFO = {
+    "name": "MACE",
+    "description": "MACE: Materials Accelerated by Chemical Embedding",
+    "default_model": "mp",
+    "supports_embeddings": True,
+    "supports_relaxation": True,
+}
+
 __all__ = [
     "MACECalculator",
     "MACEEmbeddingExtractor",
     "create_mace_calculator",
     "AVAILABLE_MACE_MODELS",
     "MACE_AVAILABLE",
+    "INFO",
 ]

@@ -1,85 +1,190 @@
-"""Model registry for easy access to different MLIPs."""
+"""Model registry for easy access to different MLIPs.
 
-from typing import Dict, Type, Union
+This is a refactored version that eliminates redundancy and standardizes
+model handling using a configuration-driven approach.
+
+This implementation assumes a consistent naming convention for model packages
+and their contents:
+
+- The model package must have an ``INFO`` dictionary with the following keys:
+  - ``name``: str
+  - ``description``: str
+  - ``default_model``: str
+  - ``supports_embeddings``: bool
+  - ``supports_relaxation``: bool
+
+- The model package must have a calculator class called ``{name}Calculator``
+  - e.g. ``MACECalculator``
+- The model package must have a factory function called ``create_{name.lower()}_calculator``
+  - e.g. ``create_mace_calculator``
+- The model package must have an attribute called ``AVAILABLE_{name.upper()}_MODELS``
+  - e.g. ``AVAILABLE_MACE_MODELS``
+- The model package _may_ have an attribute called ``AVAILABLE_{name.upper()}_TASKS``
+  - e.g. ``AVAILABLE_MACE_TASKS``
+
+Available models are automatically discovered by looking for directories with
+``__init__.py`` in the ``models/`` package.
+"""
+
+from dataclasses import dataclass
+from importlib import import_module
+from pathlib import Path
+from typing import Any, Dict, Optional, Type
 
 from lematerial_forgebench.models.base import BaseMLIPCalculator
 from lematerial_forgebench.utils.logging import logger
 
-# Import all calculator implementations
-try:
-    from lematerial_forgebench.models.orb.calculator import (
-        AVAILABLE_ORB_MODELS,
-        ORBCalculator,
-        create_orb_calculator,
-    )
 
-    ORB_AVAILABLE = True
-except ImportError:
-    ORB_AVAILABLE = False
-    logger.warning("ORB not available")
+@dataclass
+class ModelConfig:
+    """Data class to describe a model's configuration."""
 
-try:
-    from lematerial_forgebench.models.mace.calculator import (
-        AVAILABLE_MACE_MODELS,
-        MACECalculator,
-        create_mace_calculator,
-    )
+    description: str
+    name: str
+    supports_embeddings: bool
+    supports_relaxation: bool
 
-    MACE_AVAILABLE = True
-except ImportError:
-    MACE_AVAILABLE = False
-    logger.warning("MACE not available")
+    available_models: Optional[list[str]] = None
+    available_tasks: Optional[list[str]] = None
+    calculator_class: str = ""
+    default_model: Optional[str] = None
+    default_task: Optional[str] = None
+    factory_function: str = ""
+    is_available: bool = False
+    module_path: str = ""
 
-try:
-    from lematerial_forgebench.models.equiformer.calculator import (
-        EquiformerCalculator,
-        create_equiformer_calculator,
-    )
+    def __post_init__(self):
+        self.module_path = (
+            f"lematerial_forgebench.models.{self.name.lower()}.calculator"
+        )
 
-    EQUIFORMER_AVAILABLE = True
-except ImportError:
-    EQUIFORMER_AVAILABLE = False
-    logger.warning("Equiformer v2 not available")
+        try:
+            self.module = import_module(self.module_path)
+        except ImportError as e:
+            logger.debug(f"Module {self.module_path} unavailable: {e}")
+            return
+        self.is_available = True
 
-try:
-    from lematerial_forgebench.models.uma.calculator import (
-        AVAILABLE_UMA_MODELS,
-        AVAILABLE_UMA_TASKS,
-        UMACalculator,
-        create_uma_calculator,
-    )
+        self.calculator_class = f"{self.name}Calculator"
+        if not hasattr(self.module, self.calculator_class):
+            raise ImportError(
+                f"Calculator class {self.calculator_class} not found in {self.module_path}"
+            )
 
-    UMA_AVAILABLE = True
-except ImportError:
-    UMA_AVAILABLE = False
-    logger.warning("UMA not available")
+        self.factory_function = f"create_{self.name.lower()}_calculator"
+        if not hasattr(self.module, self.factory_function):
+            raise ImportError(
+                f"Factory function {self.factory_function} not found in {self.module_path}"
+            )
+
+        self.available_models = f"AVAILABLE_{self.name.upper()}_MODELS"
+        if not hasattr(self.module, self.available_models):
+            raise ImportError(
+                f"Available models attribute {self.available_models} not found in {self.module_path}"
+            )
+
+        self.available_tasks_attr = f"AVAILABLE_{self.name.upper()}_TASKS"
+        if not hasattr(self.module, self.available_tasks_attr):
+            self.available_tasks_attr = None
 
 
 class ModelRegistry:
-    """Registry for managing available MLIP calculators."""
+    """Registry for managing available MLIP calculators.
+
+    This version uses a configuration-driven approach to eliminate redundancy
+    and standardize model handling.
+
+    Models are discovered by looking for directories with ``__init__.py`` in the
+    ``models/`` package.
+    """
 
     def __init__(self):
         self._calculators: Dict[str, Type[BaseMLIPCalculator]] = {}
         self._factory_functions: Dict[str, callable] = {}
-        self._register_available_models()
+        self._model_info: Dict[str, Dict] = {}
+        self._model_availability: Dict[str, bool] = {}
+        self._model_configs: Dict[str, ModelConfig] = {}
+        self._discover_and_register_models()
 
-    def _register_available_models(self):
-        """Register all available models."""
-        if ORB_AVAILABLE:
-            self._calculators["orb"] = ORBCalculator
-            self._factory_functions["orb"] = create_orb_calculator
+    def _discover_and_register_models(self):
+        """Automatically discover and register available models.
 
-        if MACE_AVAILABLE:
-            self._calculators["mace"] = MACECalculator
-            self._factory_functions["mace"] = create_mace_calculator
+        Models are discovered by looking for directories with ``__init__.py`` in
+        the ``models/`` package.
 
-        if EQUIFORMER_AVAILABLE:
-            self._calculators["equiformer"] = EquiformerCalculator
-            self._factory_functions["equiformer"] = create_equiformer_calculator
+        If a model's calculator module can be imported, its calculator class and
+        factory function are registered and a success message is printed.
 
-        if UMA_AVAILABLE:
-            self._calculators["uma"] = UMACalculator
-            self._factory_functions["uma"] = create_uma_calculator
+        Otherwise, a warning message is printed and the model is skipped.
+        """
+
+        # Discover models in the models package by looking for directories with __init__.py
+        candidates = [
+            p.name
+            for p in Path(__file__).parent.iterdir()
+            if p.is_dir() and (p / "__init__.py").exists()
+        ]
+        for model_name in candidates:
+            self._model_availability[model_name] = False
+            try:
+                # Import the model package
+                package = import_module(f"lematerial_forgebench.models.{model_name}")
+                if not hasattr(package, "INFO"):
+                    logger.warning(f"Info for {model_name} not found")
+                    continue
+
+                # Create a model config from the INFO dictionary
+                config = ModelConfig(**package.INFO)
+                self._model_configs[model_name] = config
+
+                if not config.is_available:
+                    logger.warning(f"{model_name} not available")
+                    continue
+
+                # Get calculator class and factory function
+                calculator_class = getattr(package, config.calculator_class)
+                factory_function = getattr(package, config.factory_function)
+
+                # Register the model
+                self._calculators[model_name] = calculator_class
+                self._factory_functions[model_name] = factory_function
+
+                # Build model info
+                self._model_info[model_name] = self._build_model_info(config, package)
+
+                self._model_availability[model_name] = True
+                logger.info(f"Successfully registered {model_name} model")
+
+            except ImportError as e:
+                logger.warning(f"{model_name} not available: {e}")
+            except AttributeError as e:
+                logger.warning(f"Missing required components for {model_name}: {e}")
+
+    def _build_model_info(self, config: ModelConfig, package) -> Dict[str, Any]:
+        """Build model information dictionary."""
+        info = {
+            "class": config.calculator_class,
+            "description": config.description,
+            "supports_embeddings": config.supports_embeddings,
+            "supports_relaxation": config.supports_relaxation,
+            "default_model": config.default_model,
+            "default_task": config.default_task,
+            "is_available": config.is_available,
+            "available_models": [],
+            "available_tasks": [],
+        }
+
+        # Add available models if attribute exists
+        if config.available_models and hasattr(package, config.available_models):
+            info["available_models"] = getattr(package, config.available_models)
+
+        # Add available tasks if attribute exists
+        if config.available_tasks_attr and hasattr(
+            package, config.available_tasks_attr
+        ):
+            info["available_tasks"] = getattr(package, config.available_tasks_attr)
+
+        return info
 
     def get_available_models(self) -> list[str]:
         """Get list of available model types.
@@ -91,13 +196,28 @@ class ModelRegistry:
         """
         return list(self._calculators.keys())
 
+    def is_model_available(self, model_name: str) -> bool:
+        """Check if a specific model is available.
+
+        Parameters
+        ----------
+        model_name : str
+            Name of the model to check
+
+        Returns
+        -------
+        bool
+            True if model is available, False otherwise
+        """
+        return self._model_availability.get(model_name, False)
+
     def create_calculator(self, model_type: str, **kwargs) -> BaseMLIPCalculator:
         """Create a calculator for the specified model type.
 
         Parameters
         ----------
         model_type : str
-            Type of model ("orb", "mace", "equiformer", "uma")
+            Type of model (e.g., "orb", "mace", "equiformer", "uma")
         **kwargs
             Model-specific arguments
 
@@ -129,46 +249,26 @@ class ModelRegistry:
         Dict[str, Dict]
             Information about each available model
         """
-        info = {}
+        return {
+            name: info
+            for name, info in self._model_info.items()
+            if self.is_model_available(name)
+        }
 
-        if ORB_AVAILABLE:
-            info["orb"] = {
-                "class": "ORBCalculator",
-                "available_models": AVAILABLE_ORB_MODELS,
-                "description": "Orbital Materials' ORB force fields",
-                "supports_embeddings": True,
-                "supports_relaxation": True,
-            }
+    def get_model_config(self, model_name: str) -> Optional[ModelConfig]:
+        """Get configuration for a specific model.
 
-        if MACE_AVAILABLE:
-            info["mace"] = {
-                "class": "MACECalculator",
-                "available_models": AVAILABLE_MACE_MODELS,
-                "description": "MACE: Materials Accelerated by Chemical Embedding",
-                "supports_embeddings": True,
-                "supports_relaxation": True,
-            }
+        Parameters
+        ----------
+        model_name : str
+            Name of the model
 
-        if EQUIFORMER_AVAILABLE:
-            info["equiformer"] = {
-                "class": "EquiformerCalculator",
-                "available_models": ["custom"],
-                "description": "Equiformer v2: Transformer for molecules and materials",
-                "supports_embeddings": True,
-                "supports_relaxation": True,
-            }
-
-        if UMA_AVAILABLE:
-            info["uma"] = {
-                "class": "UMACalculator",
-                "available_models": AVAILABLE_UMA_MODELS,
-                "available_tasks": AVAILABLE_UMA_TASKS,
-                "description": "Universal Materials Accelerator by Meta",
-                "supports_embeddings": True,
-                "supports_relaxation": True,
-            }
-
-        return info
+        Returns
+        -------
+        Optional[ModelConfig]
+            Model configuration if available
+        """
+        return self._model_configs.get(model_name)
 
 
 # Global registry instance
@@ -225,49 +325,57 @@ def get_model_info() -> Dict[str, Dict]:
 
 def print_model_info():
     """Print information about available models."""
-    info = get_model_info()
+    from rich import print
+    from rich.console import Group
+    from rich.table import Table
 
-    print("Available MLIP Models:")
-    print("=" * 50)
+    info = get_model_info()
+    tables = []
+    max_width = 0
 
     for model_type, details in info.items():
-        print(f"\n{model_type.upper()}:")
-        print(f"  Class: {details['class']}")
-        print(f"  Description: {details['description']}")
-        print(f"  Supports embeddings: {details['supports_embeddings']}")
-        print(f"  Supports relaxation: {details['supports_relaxation']}")
+        if not max_width:
+            max_width = max(len(key) for key in details.keys())
 
-        if "available_models" in details:
-            print(f"  Available models: {details['available_models']}")
+        table = Table(
+            title=f"\n[bold blue]{model_type.upper()}[/bold blue]",
+            show_header=False,
+            title_justify="left",
+        )
+        table.add_column(width=max_width, justify="left")
+        table.add_column(justify="left")
 
-        if "available_tasks" in details:
-            print(f"  Available tasks: {details['available_tasks']}")
+        for key, value in details.items():
+            key = " ".join(word.capitalize() for word in key.split("_")).strip()
+            table.add_row(key, str(value))
 
+        tables.append(table)
 
-# Backward compatibility functions
-def get_orb_calculator(**kwargs):
-    """Get ORB calculator (backward compatibility)."""
-    if not ORB_AVAILABLE:
-        raise ImportError("ORB not available")
-    return get_calculator("orb", **kwargs)
-
-
-def get_mace_calculator(**kwargs):
-    """Get MACE calculator (backward compatibility)."""
-    if not MACE_AVAILABLE:
-        raise ImportError("MACE not available")
-    return get_calculator("mace", **kwargs)
+    print(Group(*tables))
 
 
-def get_equiformer_calculator(**kwargs):
-    """Get Equiformer calculator (backward compatibility)."""
-    if not EQUIFORMER_AVAILABLE:
-        raise ImportError("Equiformer v2 not available")
-    return get_calculator("equiformer", **kwargs)
+def get_equiformer_calculator(**kwargs) -> BaseMLIPCalculator:
+    """Get an Equiformer calculator."""
+    if not _registry.is_model_available("equiformer"):
+        raise ValueError("Equiformer is not available")
+    return _registry.create_calculator("equiformer", **kwargs)
 
 
-def get_uma_calculator(**kwargs):
-    """Get UMA calculator (backward compatibility)."""
-    if not UMA_AVAILABLE:
-        raise ImportError("UMA not available")
-    return get_calculator("uma", **kwargs)
+def get_mace_calculator(**kwargs) -> BaseMLIPCalculator:
+    """Get a MACE calculator."""
+    if not _registry.is_model_available("mace"):
+        raise ValueError("MACE is not available")
+    return _registry.create_calculator("mace", **kwargs)
+
+
+def get_orb_calculator(**kwargs) -> BaseMLIPCalculator:
+    """Get an ORB calculator."""
+    if not _registry.is_model_available("orb"):
+        raise ValueError("ORB is not available")
+    return _registry.create_calculator("orb", **kwargs)
+
+
+def get_uma_calculator(**kwargs) -> BaseMLIPCalculator:
+    """Get a UMA calculator."""
+    if not _registry.is_model_available("uma"):
+        raise ValueError("UMA is not available")

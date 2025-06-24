@@ -19,6 +19,15 @@ except ImportError:
     AVAILABLE_UMA_MODELS = []
     AVAILABLE_UMA_TASKS = []
 
+INFO = {
+    "name": "UMA",
+    "description": "Universal Models for Atoms by Meta",
+    "default_model": "uma-s-1",
+    "default_task": "omat",
+    "supports_embeddings": True,
+    "supports_relaxation": True,
+}
+
 __all__ = [
     "UMACalculator",
     "UMAEmbeddingExtractor",
@@ -27,4 +36,5 @@ __all__ = [
     "AVAILABLE_UMA_MODELS",
     "AVAILABLE_UMA_TASKS",
     "UMA_AVAILABLE",
+    "INFO",
 ]
