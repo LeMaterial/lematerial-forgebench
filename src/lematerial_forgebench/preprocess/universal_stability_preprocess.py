@@ -60,6 +60,8 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
         Whether to calculate formation energy
     calculate_energy_above_hull : bool
         Whether to calculate energy above hull
+    extract_embeddings : bool
+        Whether to extract embeddings
     name : str, optional
         Custom name for the preprocessor
     description : str, optional
@@ -76,6 +78,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
         relaxation_config: Dict[str, Any] = None,
         calculate_formation_energy: bool = True,
         calculate_energy_above_hull: bool = True,
+        extract_embeddings: bool = True,
         name: str | None = None,
         description: str | None = None,
         n_jobs: int = 1,
@@ -96,6 +99,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
             relaxation_config=relaxation_config or {"fmax": 0.02, "steps": 500},
             calculate_formation_energy=calculate_formation_energy,
             calculate_energy_above_hull=calculate_energy_above_hull,
+            extract_embeddings=extract_embeddings,
         )
 
         # Create calculator using the registry
