@@ -184,8 +184,7 @@ class BaseMetric(ABC):
         """
         return self.config.description or "No description provided."
 
-    @staticmethod
-    @abstractmethod
+
     def compute_structure(structure: Structure, **compute_args: Any) -> float:
         """Compute the metric for a single structure.
 
@@ -314,6 +313,7 @@ class BaseMetric(ABC):
     def compute(
         self,
         structures: list[Structure],
+        reference_df: pd.DataFrame | None,
     ) -> MetricResult:
         """Compute the metric on a batch of structures.
 
@@ -339,7 +339,7 @@ class BaseMetric(ABC):
                 # Serial computation
                 for idx, structure in enumerate(structures):
                     try:
-                        value = self.compute_structure(structure, **compute_args)
+                        value = self.compute_structure(structure, reference_df, **compute_args)
                         values.append(value)
                     except Exception as e:
                         failed_indices.append(idx)
@@ -376,15 +376,30 @@ class BaseMetric(ABC):
                         current_idx += len(batch_values)
 
             # Compute aggregate statistics
-            if values and not all(np.isnan(v) for v in values):
-                result_dict = self.aggregate_results(values)
-            else:
-                # Case where all values are NaN or empty
-                result_dict = {
-                    "metrics": {self.name: float("nan")},
-                    "primary_metric": self.name,
-                    "uncertainties": {},
-                }
+            print("values")
+            print(values)
+            try:
+                if values and not all(np.isnan(v) for v in values):
+                    result_dict = self.aggregate_results(values)
+                else:
+                    # Case where all values are NaN or empty
+                    result_dict = {
+                        "metrics": {self.name: float("nan")},
+                        "primary_metric": self.name,
+                        "uncertainties": {},
+                    }
+            except TypeError:
+                if values[0].values() and not all(np.isnan(v) for v in values[0].values()):
+                    print("returning result dict")
+                    print(self.aggregate_results)
+                    result_dict = self.aggregate_results(values[0])
+                else:
+                    # Case where all values are NaN or empty
+                    result_dict = {
+                        "metrics": {self.name: float("nan")},
+                        "primary_metric": self.name,
+                        "uncertainties": {},
+                    }
 
         except Exception as e:
             logger.error("Failed to compute metric", exc_info=True)
@@ -418,6 +433,7 @@ class BaseMetric(ABC):
     def __call__(
         self,
         structures: list[Structure] | list[dict] | pd.DataFrame | str | Path,
+        reference_df: pd.DataFrame | None,   
     ) -> MetricResult:
         """Convenient callable interface for computing the metric.
 
@@ -432,7 +448,7 @@ class BaseMetric(ABC):
             Object containing the metric value and computation metadata.
         """
         structures_list = format_structures(structures)
-        return self.compute(structures_list)
+        return self.compute(structures_list, reference_df)
 
     @classmethod
     def from_config(cls, config: MetricConfig) -> ClassVar:

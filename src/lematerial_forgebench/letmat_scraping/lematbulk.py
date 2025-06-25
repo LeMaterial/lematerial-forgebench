@@ -137,8 +137,11 @@ def process_items_parallel(dataset, chunk_size=1000, num_workers=None):
 if __name__ == "__main__":
     dataset_name = "Lematerial/LeMat-Bulk"
     name = "compatible_pbe"
-    split = "train"
+    split = "train"    
     dataset = load_dataset(dataset_name, name=name, split=split, streaming=False)
+
+    
+
     for i in np.arange(
         0, 5400000, 100000
     ):  # TODO had to skip 1800000-1900000 and 2300000-2400000 due to unknown errors, interpreter seems to die for no reason and provide no error message

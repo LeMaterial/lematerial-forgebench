@@ -6,7 +6,25 @@ import matplotlib.pyplot as plt
 from pymatgen.core import Composition, Element, Structure
 from scipy.spatial.distance import cdist
 from frechetdist import frdist
+import json
 
+def map_space_group_to_crystal_system(space_group: int):
+    if space_group <= 2 and space_group > 0:
+        return 1 # "triclinic"
+    elif space_group <= 15 and space_group > 2:
+        return 2 # "monoclinic"
+    elif space_group <= 74 and space_group > 15:
+        return 3 # "orthorhombic"
+    elif space_group <= 142 and space_group > 74:
+        return 4 # "tetragonal"
+    elif space_group <= 167 and space_group > 142:
+        return 5 # "trigonal"
+    elif space_group <= 194 and space_group > 167:
+        return 6 # "hexagonal"
+    elif space_group <= 230 and space_group > 194:
+        return 7 # "cubic"
+    else:
+        raise ValueError
 
 def one_hot_encode_composition(composition):
     one_hot_counts = np.zeros(118)
@@ -20,10 +38,17 @@ def one_hot_encode_composition(composition):
 def generate_probabilities(df, metric, metric_type = np.int64, return_2d_array = False):
     # create an empty list of space groups/crystal systems/compositions and fill in proportions/counts
     # depending on the application (as some samples will have zero of space group 1 etc)
+
+
     if metric_type == np.int64:
-        prob_dict = {}
-        for i in range(0, 230):
-            prob_dict[str(i+1)] = 0
+        if metric == "SpaceGroup": 
+            prob_dict = {}
+            for i in range(0, 230):
+                prob_dict[str(i+1)] = 0
+        if metric == "CrystalSystem":
+            prob_dict = {}
+            for i in range(0, 7):
+                prob_dict[str(i+1)] = 0
         
         probs = np.asarray(df.value_counts(metric) / len(df))
         indicies = np.asarray(df.value_counts(metric).index)
@@ -63,19 +88,26 @@ def compute_shannon_entropy(probability_vals):
     return H
 
 def compute_jensen_shannon_distance(
-    reference_data, generated_crystals, crystal_param, subcategory=None
+    reference_data, generated_crystals, crystal_param, metric_type
 ):
     """
     reference_data - letmatbulk dataframe
     generated_crystals - dataframe of generated crystals
     crystal_param - CrystalSystem, SpaceGroup, or LatticeConstant
-    subcategory - if looking at SpaceGroup, can specify only cubic crystal systems, for example. Defaults to None (and would therefore look at the distribution across all the space groups)
     """
-    # TODO this method will not work for lattice constants as it is currently written
-
-    generated_crystals_dist = generate_probabilities(generated_crystals, metric=crystal_param)
-    reference_data_dist = generate_probabilities(reference_data, metric=crystal_param)
-
+    generated_crystals_dist = generate_probabilities(generated_crystals, metric=crystal_param, 
+                                                     metric_type = metric_type)
+    if crystal_param not in ["CompositionCounts", "Composition"]: 
+        reference_data_dist = generate_probabilities(reference_data, metric=crystal_param,
+                                                    metric_type=metric_type)
+        
+    elif crystal_param == "CompositionCounts":
+        print(crystal_param)
+        with open('C:/Users/samue/lematerial-forgebench/data/composition_counts_distribution.json', 'r') as file:
+            reference_data_dist = json.load(file)
+    elif crystal_param == "Composition":
+        with open('C:/Users/samue/lematerial-forgebench/data/composition_distribution.json', 'r') as file:
+            reference_data_dist = json.load(file)
     gen_vals = np.array(list(generated_crystals_dist.values()))
     ref_vals = np.array(list(reference_data_dist.values()))
 
@@ -87,9 +119,8 @@ def gaussian_kernel(x, y, sigma=1.0):
 
 def compute_mmd(reference_data, generated_crystals, crystal_param, sigma=1.0):
 
-
-    generated_crystals_dist = generate_probabilities(generated_crystals, metric=crystal_param, return_2d_array=True)
-    reference_data_dist = generate_probabilities(reference_data, metric=crystal_param, return_2d_array=True)
+    generated_crystals_dist = np.atleast_2d(generated_crystals[crystal_param].to_numpy()).T
+    reference_data_dist = np.atleast_2d(reference_data[crystal_param].to_numpy()).T
 
     k_xx = gaussian_kernel(generated_crystals_dist, generated_crystals_dist, sigma)
     k_yy = gaussian_kernel(reference_data_dist, reference_data_dist, sigma)

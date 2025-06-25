@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 from lematerial_forgebench.preprocess.base import BasePreprocessor, PreprocessorConfig
 from lematerial_forgebench.utils.distribution_utils import one_hot_encode_composition 
 from pymatgen.core import Composition, Element, Structure
+from lematerial_forgebench.utils.distribution_utils import map_space_group_to_crystal_system
+
 
 @dataclass
 class DistributionPreprocessorConfig(PreprocessorConfig):
@@ -32,33 +34,30 @@ class DistributionPreprocessor(BasePreprocessor):
             n_jobs=self.config.n_jobs,
         )
 
-
     @staticmethod
     def process_structure(
-        structure: Structure,
+        structure: list,
     ) -> list:
-        """Process a single structure by relaxing it and computing e_above_hull.
+        """Process a sample of structures by turning them into a dataframe 
+        built of labeled structural properties for comparison to other distributions.
 
         Parameters
         ----------
-        structure : Structure
-            A pymatgen Structure object to process.
-        relaxer : BaseRelaxer
-            Relaxer object to use.
+        structure : list
+            A list of pymatgen Structure objects to process.
+
 
         Returns
         -------
-        Structure
-            The processed Structure with relaxed geometry and e_above_hull in properties.
+        list
+            The list of extracted properties from each structure.
 
-        Raises
-        ------
-        Exception
-            If relaxation fails or other processing errors occur.
         """
 
         one_hot_vectors = one_hot_encode_composition(structure.composition)
-        row = [structure.get_space_group_info()[1], structure.volume, structure.num_sites/structure.volume, one_hot_vectors[0],
-               one_hot_vectors[1]]
+        row = [structure.volume, structure.density, structure.num_sites/structure.volume,
+               structure.get_space_group_info()[1], 
+               map_space_group_to_crystal_system(structure.get_space_group_info()[1]),
+               one_hot_vectors[0], one_hot_vectors[1]]
         
         return row
