@@ -194,13 +194,16 @@ class MetricEvaluator:
         # each metric handles its own parallelization
         for metric_name, metric in self.metrics.items():
             try:
-                result = metric.compute(
-                    structures=structures,
-                    reference_df=reference_df,
-                )
+                if reference_df is None: 
+                    result = metric.compute(
+                        structures=structures
+                    )
+                else: 
+                    result = metric.compute(
+                        structures=structures,
+                        reference_df=reference_df,
+                    )
 
-                print("compute")
-                print(metric.compute)
                 metric_results[metric_name] = result
 
             except Exception as e:
