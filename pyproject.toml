@@ -88,8 +88,12 @@ find-links = [
 conflicts = [
     [
         { extra = "fairchem" },
-        { extra = "mace" },
         { extra = "orb" },
+        { extra = "equiformer" }
+    ],
+    [
+        { extra = "fairchem" },
+        { extra = "mace" },
         { extra = "equiformer" }
     ]
 ]
