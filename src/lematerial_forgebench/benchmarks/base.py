@@ -11,7 +11,8 @@ assess different aspects of generated materials.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-import pandas as pd 
+
+import pandas as pd
 from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.evaluator import (

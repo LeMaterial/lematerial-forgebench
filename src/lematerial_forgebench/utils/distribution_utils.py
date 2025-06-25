@@ -1,12 +1,13 @@
-import numpy as np 
-from sklearn.neighbors import KernelDensity
-from scipy.stats import gaussian_kde
-from scipy.spatial.distance import jensenshannon
-import matplotlib.pyplot as plt
-from pymatgen.core import Composition, Element, Structure
-from scipy.spatial.distance import cdist
-from frechetdist import frdist
 import json
+
+import matplotlib.pyplot as plt
+import numpy as np
+from frechetdist import frdist
+from pymatgen.core import Composition, Element, Structure
+from scipy.spatial.distance import cdist, jensenshannon
+from scipy.stats import gaussian_kde
+from sklearn.neighbors import KernelDensity
+
 
 def map_space_group_to_crystal_system(space_group: int):
     if space_group <= 2 and space_group > 0:

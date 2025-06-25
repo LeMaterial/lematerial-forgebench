@@ -10,8 +10,11 @@ import numpy as np
 
 from lematerial_forgebench.benchmarks.base import BaseBenchmark
 from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
-from lematerial_forgebench.metrics.distribution_metrics import JSDistance, MMD, FrechetDistance
-
+from lematerial_forgebench.metrics.distribution_metrics import (
+    MMD,
+    FrechetDistance,
+    JSDistance,
+)
 
 
 class DistributionBenchmark(BaseBenchmark):

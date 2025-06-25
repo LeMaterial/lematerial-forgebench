@@ -1,10 +1,14 @@
+from dataclasses import dataclass, field
+
 import numpy as np
 from datasets import load_dataset
-from dataclasses import dataclass, field
-from lematerial_forgebench.preprocess.base import BasePreprocessor, PreprocessorConfig
-from lematerial_forgebench.utils.distribution_utils import one_hot_encode_composition 
 from pymatgen.core import Composition, Element, Structure
-from lematerial_forgebench.utils.distribution_utils import map_space_group_to_crystal_system
+
+from lematerial_forgebench.preprocess.base import BasePreprocessor, PreprocessorConfig
+from lematerial_forgebench.utils.distribution_utils import (
+    map_space_group_to_crystal_system,
+    one_hot_encode_composition,
+)
 
 
 @dataclass

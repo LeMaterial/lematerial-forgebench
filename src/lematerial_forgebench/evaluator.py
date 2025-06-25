@@ -6,8 +6,9 @@ metrics and combining their results.
 
 import time
 from dataclasses import dataclass
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult

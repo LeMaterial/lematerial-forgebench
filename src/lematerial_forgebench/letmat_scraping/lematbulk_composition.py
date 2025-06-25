@@ -1,12 +1,16 @@
-from multiprocessing import Pool, cpu_count
-from datasets import load_dataset
-from pymatgen.core import Structure
-from tqdm import tqdm
-from lematerial_forgebench.utils.distribution_utils import generate_probabilities, one_hot_encode_composition
-from pymatgen.core import Composition
-import numpy as np
 import json
-import pandas as pd 
+from multiprocessing import Pool, cpu_count
+
+import numpy as np
+import pandas as pd
+from datasets import load_dataset
+from pymatgen.core import Composition, Structure
+from tqdm import tqdm
+
+from lematerial_forgebench.utils.distribution_utils import (
+    generate_probabilities,
+    one_hot_encode_composition,
+)
 
 if __name__ == '__main__':
     dataset_name = "Lematerial/LeMat-Bulk"

@@ -1,7 +1,8 @@
+from multiprocessing import Pool, cpu_count
+
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
-import numpy as np
-from multiprocessing import Pool, cpu_count
 
 
 def scale_individual_row(row):
