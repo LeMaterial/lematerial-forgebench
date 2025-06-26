@@ -103,10 +103,10 @@ def compute_jensen_shannon_distance(
                                                     metric_type=metric_type)
         
     elif crystal_param == "CompositionCounts":
-        with open('C:/Users/samue/lematerial-forgebench/data/lematbulk_composition_counts_distribution.json', 'r') as file:
+        with open('data/lematbulk_composition_counts_distribution.json', 'r') as file:
             reference_data_dist = json.load(file)
     elif crystal_param == "Composition":
-        with open('C:/Users/samue/lematerial-forgebench/data/lematbulk_composition_distribution.json', 'r') as file:
+        with open('data/lematbulk_composition_distribution.json', 'r') as file:
             reference_data_dist = json.load(file)
     gen_vals = np.array(list(generated_crystals_dist.values()))
     ref_vals = np.array(list(reference_data_dist.values()))
