@@ -380,8 +380,6 @@ class BaseMetric(ABC):
                         current_idx += len(batch_values)
 
             # Compute aggregate statistics
-            print("values")
-            print(values)
             try:
                 if values and not all(np.isnan(v) for v in values):
                     result_dict = self.aggregate_results(values)
@@ -394,8 +392,6 @@ class BaseMetric(ABC):
                     }
             except TypeError:
                 if values[0].values() and not all(np.isnan(v) for v in values[0].values()):
-                    print("returning result dict")
-                    print(self.aggregate_results)
                     result_dict = self.aggregate_results(values[0])
                 else:
                     # Case where all values are NaN or empty

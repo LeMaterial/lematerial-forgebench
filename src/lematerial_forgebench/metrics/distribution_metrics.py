@@ -103,23 +103,18 @@ class JSDistance(BaseMetric):
         dist_metrics = {}
         for quant in quantities:
             if quant in reference_df.columns:
-                # print(quant)
-                # print(type(quant))
                 if isinstance(reference_df[quant].iloc[0], np.float64):
                     pass
                 else:
                     js = compute_jensen_shannon_distance(reference_df, structure, quant,
                                                          metric_type=type(reference_df[quant].iloc[0]))
                     dist_metrics[quant] = js
-                    print(dist_metrics)
         
         for quant in ["CompositionCounts", "Composition"]:
-            print(quant)
-            print(type(quant))
+
             js = compute_jensen_shannon_distance(reference_df, structure, quant,
                                                 metric_type=type(structure[quant].iloc[0]))
             dist_metrics[quant] = js
-            print(dist_metrics)
         return dist_metrics 
 
     def aggregate_results(self, values: dict[str, float]) -> Dict[str, Any]:
@@ -208,7 +203,6 @@ class MMD(BaseMetric):
         float
             MMD 
         """
-        print("starting MMD")
         np.random.seed(32)
         if len(reference_df) > 10000: 
             ref_ints = np.random.randint(0,len(reference_df), 10000)
@@ -224,15 +218,12 @@ class MMD(BaseMetric):
         quantities = strut_sample_df.columns
         for quant in quantities:
             if quant in ref_sample_df.columns:
-                print(quant)
-                print(type(quant))
                 if isinstance(ref_sample_df[quant].iloc[0], np.int64):
                     pass
                 else:
                     try:
                         mmd = compute_mmd(ref_sample_df, strut_sample_df, quant)
                         dist_metrics[quant] = mmd
-                        print(dist_metrics)
 
                         dist_metrics[quant] = mmd
                     except ValueError:
@@ -367,10 +358,8 @@ class FrechetDistance(BaseMetric):
             Dictionary with aggregated metrics.
         """
         # Filter out NaN values
-        print("filtering")
-        print(values)
+
         valid_values = [v for v in values if not np.isnan(v)]
-        print("made it here")
 
         if not valid_values:
             return {
