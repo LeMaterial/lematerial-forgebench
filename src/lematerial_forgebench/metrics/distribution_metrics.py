@@ -266,22 +266,7 @@ class MMD(BaseMetric):
 
 class FrechetDistance(BaseMetric): 
 
-    """Calculate shannon entropy for a target distribution.
 
-    This metric compares a set of properties for a target structure (crystal system, 
-    space group, elemental composition, lattice constants, and wykoff positions) to 
-    a database of structures and determines the similarity of that crystal to the 
-    distribution in that database
-
-    Parameters
-    ----------
-    a : float, 
-    b : bool, 
-    c : str, optional
-    d : str,
-    e : bool, 
-    f : int, default=x
-    """
 
     def __init__(
         self,
@@ -311,9 +296,7 @@ class FrechetDistance(BaseMetric):
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
         return {
-            "tolerance": self.config.tolerance,
-            "strict": self.config.strict,
-            "bv_analyzer": self.bv_analyzer,
+
         }
 
     @staticmethod
@@ -323,17 +306,7 @@ class FrechetDistance(BaseMetric):
     ) -> float:
         """Compute the similarity of the structure to a target distribution.
 
-        Parameters
-        ----------
-        structure : Structure
-            A pymatgen Structure object to evaluate. TODO list of structures? may already 
-            be what this is primed to deal with? 
 
-
-        Returns
-        -------
-        float
-            Jensen-Shannon Distance
         """
 
         quantities = structure.columns
@@ -364,11 +337,9 @@ class FrechetDistance(BaseMetric):
         if not valid_values:
             return {
                 "metrics": {
-                    "charge_neutrality_error": float("nan"),
-                    "charge_neutral_ratio": 0.0,
+                    "FrechetDistance": float("nan"),
                 },
-                "primary_metric": "charge_neutrality_error",
-                "uncertainties": {},
+
             }
 
         # Count how many structures are within tolerance
@@ -380,13 +351,8 @@ class FrechetDistance(BaseMetric):
 
         return {
             "metrics": {
-                "charge_neutrality_error": mean_abs_deviation,
-                "charge_neutral_ratio": charge_neutral_ratio,
+                "FrechetDistance": mean_abs_deviation,
+
             },
-            "primary_metric": "charge_neutrality_error",
-            "uncertainties": {
-                "charge_neutrality_error": {
-                    "std": np.std(valid_values) if len(valid_values) > 1 else 0.0
-                }
+            "primary_metric": "FrechetDistance",
             },
-        }
