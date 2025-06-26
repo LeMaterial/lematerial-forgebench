@@ -265,38 +265,27 @@ class MMD(BaseMetric):
 
 
 class FrechetDistance(BaseMetric): 
-
-
-
     def __init__(
         self,
-        tolerance: float = 0.1,
-        strict: bool = False,
         name: str | None = None,
         description: str | None = None,
-        lower_is_better: bool = True,
         n_jobs: int = 1,
     ):
         super().__init__(
             name=name or "Distribution",
             description=description
-            or "Measures how close a structure is the target distribution",
-            lower_is_better=lower_is_better,
+            or "Measures distance between two reference distributions",
             n_jobs=n_jobs,
         )
         self.config = DistributionMetricConfig(
             name=self.config.name,
             description=self.config.description,
-            lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
-            tolerance=tolerance,
-            strict=strict,
         )
     
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
         return {
-
         }
 
     @staticmethod
@@ -308,12 +297,12 @@ class FrechetDistance(BaseMetric):
 
 
         """
-
+        dist_metrics = {}
         quantities = structure.columns
         for quant in quantities:
             if quant in reference_df.columns:
-                mmd = compute_frechetdist(reference_df, structure, quant)
-                dist_metrics = {quant:mmd}
+                frechetdist = compute_frechetdist(reference_df, structure, quant)
+                dist_metrics[quant] = frechetdist
         
         return dist_metrics 
 
@@ -342,16 +331,10 @@ class FrechetDistance(BaseMetric):
 
             }
 
-        # Count how many structures are within tolerance
-        within_tolerance = sum(1 for v in valid_values if v <= self.config.tolerance)
-        charge_neutral_ratio = within_tolerance / len(valid_values)
-
-        # Calculate mean absolute deviation
-        mean_abs_deviation = np.mean(valid_values)
 
         return {
             "metrics": {
-                "FrechetDistance": mean_abs_deviation,
+                "FrechetDistance": values,
 
             },
             "primary_metric": "FrechetDistance",
