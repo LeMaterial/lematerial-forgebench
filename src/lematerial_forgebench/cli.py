@@ -199,28 +199,17 @@ def main(input: str, config_name: str, output: str):
 
         elif benchmark_type == "stability":
             # before running the benchmark, we need to preprocess the structures
+            ppc = config.get("preprocessor_config", {})
             stability_preprocessor = UniversalStabilityPreprocessor(
-                model_type=config.get("preprocessor_config", {}).get(
-                    "model_type", "orb"
-                ),
-                model_config=config.get("preprocessor_config", {}).get(
-                    "model_config", {}
-                ),
-                relax_structures=config.get("preprocessor_config", {}).get(
-                    "relax_structures", True
-                ),
-                relaxation_config=config.get("preprocessor_config", {}).get(
-                    "relaxation_config", {}
-                ),
-                calculate_formation_energy=config.get("preprocessor_config", {}).get(
-                    "calculate_formation_energy", True
-                ),
-                calculate_energy_above_hull=config.get("preprocessor_config", {}).get(
+                model_type=ppc.get("model_type", "orb"),
+                model_config=ppc.get("model_config", {}),
+                relax_structures=ppc.get("relax_structures", True),
+                relaxation_config=ppc.get("relaxation_config", {}),
+                calculate_formation_energy=ppc.get("calculate_formation_energy", True),
+                calculate_energy_above_hull=ppc.get(
                     "calculate_energy_above_hull", True
                 ),
-                extract_embeddings=config.get("preprocessor_config", {}).get(
-                    "extract_embeddings", True
-                ),
+                extract_embeddings=ppc.get("extract_embeddings", True),
             )
             # Use the preprocessor to process structures
             preprocessor_result = stability_preprocessor(structures)
