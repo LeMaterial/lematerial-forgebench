@@ -1,18 +1,18 @@
 """Tests for validity metrics implementation."""
 
+import pickle
+
 import numpy as np
+import pandas as pd
 import pytest
 from pymatgen.core.structure import Structure
 from pymatgen.util.testing import PymatgenTest
 
-from lematerial_forgebench.metrics.distribution_metrics import (
-    JSDistance, MMD
-)
+from lematerial_forgebench.metrics.distribution_metrics import MMD, JSDistance
 from lematerial_forgebench.preprocess.distribution_preprocess import (
     DistributionPreprocessor,
 )
-import pandas as pd 
-import pickle 
+
 
 @pytest.fixture
 def valid_structures():
@@ -33,7 +33,7 @@ def test_JSDistance_metric(valid_structures):
     test_df = pd.DataFrame(preprocessor_result.processed_structures, columns = ["Volume", "Density(g/cm^3)", "Density(atoms/A^3)", 
                                                                             "SpaceGroup", "CrystalSystem", "CompositionCounts",
                                                                             "Composition"])
-    with open("data/lematbulk_properties.pkl", "rb") as f:
+    with open("data/small_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)
     metric = JSDistance()
     result = metric([test_df], test_lemat)
@@ -60,7 +60,7 @@ def test_MMD_metric(valid_structures):
                                                                             "SpaceGroup", "CrystalSystem", "CompositionCounts",
                                                                             "Composition"])
 
-    with open("data/lematbulk_properties.pkl", "rb") as f:
+    with open("data/small_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)
     metric = MMD()
     result = metric([test_df], test_lemat)
