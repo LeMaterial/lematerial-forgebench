@@ -54,8 +54,8 @@ def generate_probabilities(df, metric, metric_type=np.int64, return_2d_array=Fal
                 prob_dict[str(i + 1)] = 0
 
         probs = np.asarray(df.value_counts(metric) / len(df))
-        indicies = np.asarray(df.value_counts(metric).index)
-        strut_list = np.concatenate(([indicies], [probs]), axis=0).T
+        indices = np.asarray(df.value_counts(metric).index)
+        strut_list = np.concatenate(([indices], [probs]), axis=0).T
         strut_list = strut_list[strut_list[:, 0].argsort()]
         if return_2d_array:
             return strut_list

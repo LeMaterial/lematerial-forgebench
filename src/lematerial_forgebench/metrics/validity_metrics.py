@@ -153,13 +153,13 @@ class ChargeNeutralityMetric(BaseMetric):
             return 1.0
         except ValueError:
             # this means the bv_sum calculation has predicted this structure is NOT metallic. Therefore, we can try and assign oxidation states using PMG's
-            # oxidation state functions, which do not return oxidation states for metallic structuers.
+            # oxidation state functions, which do not return oxidation states for metallic structures.
             logger.warning(
                 "the bond valence sum calculation yielded values that were not zero meaning this is not predicted to be a metallic structure"
             )
 
             try:
-                # Try to determine oxidation states - good first pass, if this can be done within pymatgen, it will almost certianly be a structure that is charge balanced
+                # Try to determine oxidation states - good first pass, if this can be done within pymatgen, it will almost certainly be a structure that is charge balanced
                 structure_with_oxi = bv_analyzer.get_oxi_state_decorated_structure(
                     structure
                 )
