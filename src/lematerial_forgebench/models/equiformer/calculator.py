@@ -30,8 +30,6 @@ class EquiformerCalculator(BaseMLIPCalculator):
     def __init__(
         self,
         model_path: str,
-        max_neigh: int = 50,
-        radius: float = 6.0,
         device: str = "cpu",
         **kwargs,
     ):
@@ -41,8 +39,6 @@ class EquiformerCalculator(BaseMLIPCalculator):
             )
 
         self.model_path = model_path
-        self.max_neigh = max_neigh
-        self.radius = radius
         super().__init__(device=device, **kwargs)
 
     def _setup_model(self, **kwargs):
@@ -149,8 +145,6 @@ class EquiformerCalculator(BaseMLIPCalculator):
 
 def create_equiformer_calculator(
     model_path: str,
-    max_neigh: int = 50,
-    radius: float = 6.0,
     device: str = "cpu",
     **kwargs,
 ) -> EquiformerCalculator:
@@ -160,10 +154,6 @@ def create_equiformer_calculator(
     ----------
     model_path : str
         Path to Equiformer v2 checkpoint
-    max_neigh : int
-        Maximum number of neighbors
-    radius : float
-        Cutoff radius for neighbor search
     device : str
         Device for computation
     **kwargs
@@ -176,8 +166,6 @@ def create_equiformer_calculator(
     """
     return EquiformerCalculator(
         model_path=model_path,
-        max_neigh=max_neigh,
-        radius=radius,
         device=device,
         **kwargs,
     )

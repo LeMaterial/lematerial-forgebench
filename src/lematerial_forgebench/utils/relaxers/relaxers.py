@@ -211,77 +211,8 @@ class EquiformerRelaxer(MLIPRelaxer):
         # Extract Equiformer-specific parameters
         model_path = kwargs.pop("model_path")  # Required parameter
         device = kwargs.pop("device", "cpu")
-        max_neigh = kwargs.pop("max_neigh", 50)
-        radius = kwargs.pop("radius", 6.0)
 
         # Create Equiformer calculator
-        calculator = get_calculator(
-            "equiformer",
-            model_path=model_path,
-            device=device,
-            max_neigh=max_neigh,
-            radius=radius,
-        )
+        calculator = get_calculator("equiformer", model_path=model_path, device=device)
 
         super().__init__(calculator, **kwargs)
-
-
-# Legacy ORB relaxer implementation (for backward compatibility)
-class LegacyOrbRelaxer(BaseVASPRelaxer):
-    """Legacy ORB relaxer implementation."""
-
-    def __init__(
-        self,
-        fmax: float = 0.02,
-        steps: int = 500,
-        device: str = "cpu",
-        model_type: str = "orb_v3_conservative_inf_omat",
-        **kwargs,
-    ):
-        self.fmax = fmax
-        self.steps = steps
-        self.device = device
-        self.model_type = model_type
-
-        # Set up ORB calculator
-        model_func = getattr(pretrained, model_type)
-        self.orbff = model_func(
-            device=device,
-            compile=False,
-            precision="float32-high",
-        ).eval()
-        self.calc = ORBASECalculator(self.orbff, device=device)
-
-    def relax(self, structure: Structure, relax: bool = True) -> RelaxationResult:
-        """Relax a structure using legacy ORB implementation."""
-
-        try:
-            if not structure.is_valid():
-                return RelaxationResult(
-                    success=False,
-                    message="Invalid crystal structure",
-                )
-
-            # Convert to ASE atoms
-            atoms = structure.to_ase_atoms()
-            atoms.calc = self.calc
-
-            if relax:
-                dyn = FIRE(FrechetCellFilter(atoms), logfile=None)
-                dyn.run(fmax=self.fmax, steps=self.steps)
-
-            # Get results
-            final_energy = atoms.get_potential_energy()
-            final_structure = AseAtomsAdaptor.get_structure(atoms)
-
-            return RelaxationResult(
-                success=True,
-                energy=final_energy,
-                structure=final_structure,
-            )
-        except Exception as e:
-            logger.error(f"Legacy ORB relaxation failed: {str(e)}")
-            return RelaxationResult(
-                success=False,
-                message=str(e),
-            )
