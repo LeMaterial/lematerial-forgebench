@@ -98,7 +98,7 @@ def process_item_action(item):
     sites = get_inequivalent_site_info(strut)
 
     # except:
-        # pass
+    # pass
 
     return [LeMatID, sites, species, valences_calculated]
 
@@ -137,10 +137,8 @@ def process_items_parallel(dataset, chunk_size=1000, num_workers=None):
 if __name__ == "__main__":
     dataset_name = "Lematerial/LeMat-Bulk"
     name = "compatible_pbe"
-    split = "train"    
+    split = "train"
     dataset = load_dataset(dataset_name, name=name, split=split, streaming=False)
-
-    
 
     for i in np.arange(
         0, 5400000, 100000

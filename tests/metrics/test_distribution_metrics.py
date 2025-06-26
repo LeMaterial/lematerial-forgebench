@@ -30,9 +30,18 @@ def test_JSDistance_metric(valid_structures):
     """Test JSDistance_metric on valid structures."""
     distribution_preprocessor = DistributionPreprocessor()
     preprocessor_result = distribution_preprocessor(valid_structures)
-    test_df = pd.DataFrame(preprocessor_result.processed_structures, columns = ["Volume", "Density(g/cm^3)", "Density(atoms/A^3)", 
-                                                                            "SpaceGroup", "CrystalSystem", "CompositionCounts",
-                                                                            "Composition"])
+    test_df = pd.DataFrame(
+        preprocessor_result.processed_structures,
+        columns=[
+            "Volume",
+            "Density(g/cm^3)",
+            "Density(atoms/A^3)",
+            "SpaceGroup",
+            "CrystalSystem",
+            "CompositionCounts",
+            "Composition",
+        ],
+    )
     with open("data/small_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)
     metric = JSDistance()
@@ -51,14 +60,22 @@ def test_JSDistance_metric(valid_structures):
         assert 0.0 <= val <= 1.0
 
 
-
 def test_MMD_metric(valid_structures):
     """Test MMD_metric on valid structures."""
     distribution_preprocessor = DistributionPreprocessor()
     preprocessor_result = distribution_preprocessor(valid_structures)
-    test_df = pd.DataFrame(preprocessor_result.processed_structures, columns = ["Volume", "Density(g/cm^3)", "Density(atoms/A^3)", 
-                                                                            "SpaceGroup", "CrystalSystem", "CompositionCounts",
-                                                                            "Composition"])
+    test_df = pd.DataFrame(
+        preprocessor_result.processed_structures,
+        columns=[
+            "Volume",
+            "Density(g/cm^3)",
+            "Density(atoms/A^3)",
+            "SpaceGroup",
+            "CrystalSystem",
+            "CompositionCounts",
+            "Composition",
+        ],
+    )
 
     with open("data/small_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)

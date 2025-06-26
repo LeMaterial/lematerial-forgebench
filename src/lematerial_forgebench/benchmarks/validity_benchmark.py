@@ -169,11 +169,10 @@ class ValidityBenchmark(BaseBenchmark):
         if isinstance(overall_validity_ratio, dict):
             overall_validity_ratio = overall_validity_ratio.get("metrics", {})
         else:
-            overall_validity_ratio = overall_validity_ratio.metrics 
+            overall_validity_ratio = overall_validity_ratio.metrics
         overall_validity_ratio = overall_validity_ratio.get(
             "valid_structures_ratio", 0.0
         )
-
 
         return {
             "overall_validity_score": overall_score,

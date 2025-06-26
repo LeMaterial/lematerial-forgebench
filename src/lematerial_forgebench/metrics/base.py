@@ -184,7 +184,6 @@ class BaseMetric(ABC):
         """
         return self.config.description or "No description provided."
 
-
     def compute_structure(structure: Structure, **compute_args: Any) -> float:
         """Compute the metric for a single structure.
 
@@ -339,10 +338,12 @@ class BaseMetric(ABC):
                 # Serial computation
                 for idx, structure in enumerate(structures):
                     try:
-                        if reference_df is None: 
+                        if reference_df is None:
                             value = self.compute_structure(structure, **compute_args)
                         else:
-                            value = self.compute_structure(structure, reference_df, **compute_args)
+                            value = self.compute_structure(
+                                structure, reference_df, **compute_args
+                            )
 
                         values.append(value)
                     except Exception as e:
@@ -391,7 +392,9 @@ class BaseMetric(ABC):
                         "uncertainties": {},
                     }
             except TypeError:
-                if values[0].values() and not all(np.isnan(v) for v in values[0].values()):
+                if values[0].values() and not all(
+                    np.isnan(v) for v in values[0].values()
+                ):
                     result_dict = self.aggregate_results(values[0])
                 else:
                     # Case where all values are NaN or empty
@@ -433,7 +436,7 @@ class BaseMetric(ABC):
     def __call__(
         self,
         structures: list[Structure] | list[dict] | pd.DataFrame | str | Path,
-        reference_df: pd.DataFrame | None = None,   
+        reference_df: pd.DataFrame | None = None,
     ) -> MetricResult:
         """Convenient callable interface for computing the metric.
 
@@ -452,7 +455,6 @@ class BaseMetric(ABC):
             return self.compute(structures_list)
         else:
             return self.compute(structures_list, reference_df)
-
 
     @classmethod
     def from_config(cls, config: MetricConfig) -> ClassVar:

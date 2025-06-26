@@ -170,7 +170,7 @@ class MetricEvaluator:
     def evaluate(
         self,
         structures: list[Structure],
-        reference_df: pd.DataFrame | None = None,  
+        reference_df: pd.DataFrame | None = None,
     ) -> EvaluationResult:
         """Evaluate all metrics on the given structures.
 
@@ -178,8 +178,8 @@ class MetricEvaluator:
         ----------
         structures : list[Structure]
             Structures to evaluate.
-        reference_df: pd.DataFrame, optional 
-            A reference distribution to compare a sample of structures to. 
+        reference_df: pd.DataFrame, optional
+            A reference distribution to compare a sample of structures to.
 
         Returns
         -------
@@ -194,11 +194,9 @@ class MetricEvaluator:
         # each metric handles its own parallelization
         for metric_name, metric in self.metrics.items():
             try:
-                if reference_df is None: 
-                    result = metric.compute(
-                        structures=structures
-                    )
-                else: 
+                if reference_df is None:
+                    result = metric.compute(structures=structures)
+                else:
                     result = metric.compute(
                         structures=structures,
                         reference_df=reference_df,
@@ -258,8 +256,8 @@ class MetricEvaluator:
                             f"Unknown aggregation method: {self.config.aggregation_method}"
                         )
         except TypeError:
-            pass        
-        
+            pass
+
         return EvaluationResult(
             metric_results=metric_results,
             combined_value=combined_value,

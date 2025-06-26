@@ -31,21 +31,21 @@ class DistributionMetricConfig(MetricConfig):
 
     Parameters
     ----------
-    xy : 
-    xz : , 
+    xy :
+    xz : ,
     """
 
     xy: float = 0.1
     xz: bool = False
 
-class JSDistance(BaseMetric): 
 
+class JSDistance(BaseMetric):
     """Calculate Jensen-Shannon distance between two distributions.
 
-    This metric compares a set of distribution wide properties (crystal system, 
-    space group, elemental composition, lattice constants, and wykoff positions) 
-    between two samples of crystal structures and determines the degree of similarity 
-    between those two distributions for the particular structural property. 
+    This metric compares a set of distribution wide properties (crystal system,
+    space group, elemental composition, lattice constants, and wykoff positions)
+    between two samples of crystal structures and determines the degree of similarity
+    between those two distributions for the particular structural property.
 
     Parameters
     ----------
@@ -69,34 +69,30 @@ class JSDistance(BaseMetric):
             description=self.config.description,
             n_jobs=self.config.n_jobs,
         )
-    
+
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
-        return {
-        }
+        return {}
 
     @staticmethod
-    def compute_structure(
-        structure: pd.DataFrame,
-        reference_df: str 
-    ) -> dict:
+    def compute_structure(structure: pd.DataFrame, reference_df: str) -> dict:
         """Compute the similarity of the structure to a target distribution.
 
         Parameters
         ----------
-        structure : pandas DataFrame 
-            Contains the values of the structural properties of interest for 
-            each of the structures in the distribution. This dataframe is 
+        structure : pandas DataFrame
+            Contains the values of the structural properties of interest for
+            each of the structures in the distribution. This dataframe is
             calculated by "src/lematerial_forgebench/preprocess/distribution_preprocess.py"
             which specifies the format, column names etc used here for compatibility with
-            the reference datasets. When changing the reference dataset, ensure the 
-            column names etc correspond to those found in the above script. 
-        
+            the reference datasets. When changing the reference dataset, ensure the
+            column names etc correspond to those found in the above script.
+
         Returns
         -------
-        dict 
-            Jensen-Shannon Distances, where the keys are the structural property 
-            and the values are the JS Distances. 
+        dict
+            Jensen-Shannon Distances, where the keys are the structural property
+            and the values are the JS Distances.
         """
 
         quantities = structure.columns
@@ -106,16 +102,23 @@ class JSDistance(BaseMetric):
                 if isinstance(reference_df[quant].iloc[0], np.float64):
                     pass
                 else:
-                    js = compute_jensen_shannon_distance(reference_df, structure, quant,
-                                                         metric_type=type(reference_df[quant].iloc[0]))
+                    js = compute_jensen_shannon_distance(
+                        reference_df,
+                        structure,
+                        quant,
+                        metric_type=type(reference_df[quant].iloc[0]),
+                    )
                     dist_metrics[quant] = js
-        
-        for quant in ["CompositionCounts", "Composition"]:
 
-            js = compute_jensen_shannon_distance(reference_df, structure, quant,
-                                                metric_type=type(structure[quant].iloc[0]))
+        for quant in ["CompositionCounts", "Composition"]:
+            js = compute_jensen_shannon_distance(
+                reference_df,
+                structure,
+                quant,
+                metric_type=type(structure[quant].iloc[0]),
+            )
             dist_metrics[quant] = js
-        return dist_metrics 
+        return dist_metrics
 
     def aggregate_results(self, values: dict[str, float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -123,7 +126,7 @@ class JSDistance(BaseMetric):
         Parameters
         ----------
         values : dict[str, float]
-            Jensen-Shannon Distance values for each structural property. 
+            Jensen-Shannon Distance values for each structural property.
 
         Returns
         -------
@@ -146,18 +149,17 @@ class JSDistance(BaseMetric):
                 "Jensen_Shannon_Distance": values,
             },
             "primary_metric": "Jensen_Shannon_Distance",
-            "uncertainties": {}
+            "uncertainties": {},
         }
 
 
-class MMD(BaseMetric): 
-
+class MMD(BaseMetric):
     """Calculate MMD between two distributions.
 
-    This metric compares a set of distribution wide properties (crystal system, 
-    space group, elemental composition, lattice constants, and wykoff positions) 
-    between two samples of crystal structures and determines the degree of similarity 
-    between those two distributions for the particular structural property. 
+    This metric compares a set of distribution wide properties (crystal system,
+    space group, elemental composition, lattice constants, and wykoff positions)
+    between two samples of crystal structures and determines the degree of similarity
+    between those two distributions for the particular structural property.
 
     """
 
@@ -178,39 +180,35 @@ class MMD(BaseMetric):
             description=self.config.description,
             n_jobs=self.config.n_jobs,
         )
-    
+
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
-        return {
-        }
+        return {}
 
     @staticmethod
-    def compute_structure(
-        structure: pd.DataFrame,
-        reference_df: str 
-    ) -> float:
+    def compute_structure(structure: pd.DataFrame, reference_df: str) -> float:
         """Compute the similarity of the structure to a target distribution.
 
         Parameters
         ----------
         structure : Structure
-            A pymatgen Structure object to evaluate. TODO list of structures? may already 
-            be what this is primed to deal with? 
+            A pymatgen Structure object to evaluate. TODO list of structures? may already
+            be what this is primed to deal with?
 
 
         Returns
         -------
         float
-            MMD 
+            MMD
         """
         np.random.seed(32)
-        if len(reference_df) > 10000: 
-            ref_ints = np.random.randint(0,len(reference_df), 10000)
+        if len(reference_df) > 10000:
+            ref_ints = np.random.randint(0, len(reference_df), 10000)
             ref_sample_df = reference_df.iloc[ref_ints]
         else:
             ref_sample_df = reference_df
-        if len(structure) > 10000: 
-            strut_ints = np.random.randint(0,len(structure), 10000)
+        if len(structure) > 10000:
+            strut_ints = np.random.randint(0, len(structure), 10000)
             strut_sample_df = structure.iloc[strut_ints]
         else:
             strut_sample_df = structure
@@ -228,8 +226,8 @@ class MMD(BaseMetric):
                         dist_metrics[quant] = mmd
                     except ValueError:
                         pass
-        
-        return dist_metrics 
+
+        return dist_metrics
 
     def aggregate_results(self, values: dict[str, float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -237,7 +235,7 @@ class MMD(BaseMetric):
         Parameters
         ----------
         values : dict[str, float]
-            Jensen-Shannon Distance values for each structural property. 
+            Jensen-Shannon Distance values for each structural property.
 
         Returns
         -------
@@ -260,11 +258,11 @@ class MMD(BaseMetric):
                 "MMD": values,
             },
             "primary_metric": "MMD",
-            "uncertainties": {}
+            "uncertainties": {},
         }
 
 
-class FrechetDistance(BaseMetric): 
+class FrechetDistance(BaseMetric):
     def __init__(
         self,
         name: str | None = None,
@@ -282,29 +280,22 @@ class FrechetDistance(BaseMetric):
             description=self.config.description,
             n_jobs=self.config.n_jobs,
         )
-    
+
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
-        return {
-        }
+        return {}
 
     @staticmethod
-    def compute_structure(
-        structure: pd.DataFrame,
-        reference_df: str 
-    ) -> float:
-        """Compute the similarity of the structure to a target distribution.
-
-
-        """
+    def compute_structure(structure: pd.DataFrame, reference_df: str) -> float:
+        """Compute the similarity of the structure to a target distribution."""
         dist_metrics = {}
         quantities = structure.columns
         for quant in quantities:
             if quant in reference_df.columns:
                 frechetdist = compute_frechetdist(reference_df, structure, quant)
                 dist_metrics[quant] = frechetdist
-        
-        return dist_metrics 
+
+        return dist_metrics
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -328,14 +319,13 @@ class FrechetDistance(BaseMetric):
                 "metrics": {
                     "FrechetDistance": float("nan"),
                 },
-
             }
 
-
-        return {
-            "metrics": {
-                "FrechetDistance": values,
-
+        return (
+            {
+                "metrics": {
+                    "FrechetDistance": values,
+                },
+                "primary_metric": "FrechetDistance",
             },
-            "primary_metric": "FrechetDistance",
-            },
+        )

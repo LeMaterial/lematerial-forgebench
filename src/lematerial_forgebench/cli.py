@@ -173,14 +173,9 @@ def main(input: str, config_name: str, output: str):
             coord_tolerance = coord_config.get("tolerance", 0.2)
 
             # Create custom metrics with configuration
-            ChargeNeutralityMetric(
-                tolerance=charge_tolerance, strict=charge_strict
-            )
+            ChargeNeutralityMetric(tolerance=charge_tolerance, strict=charge_strict)
 
-            MinimumInteratomicDistanceMetric(
-                scaling_factor=distance_scaling
-            )
-
+            MinimumInteratomicDistanceMetric(scaling_factor=distance_scaling)
 
             CoordinationEnvironmentMetric(
                 nn_method=coord_nn_method, tolerance=coord_tolerance

@@ -6,9 +6,7 @@ from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from tqdm import tqdm
 
 
-def lematbulk_item_to_structure(
-    item: dict 
-):
+def lematbulk_item_to_structure(item: dict):
     sites = item["species_at_sites"]
     coords = item["cartesian_site_positions"]
     cell = item["lattice_vectors"]
@@ -18,7 +16,8 @@ def lematbulk_item_to_structure(
     )
 
     return structure
-    
+
+
 def map_space_group_to_crystal_system(space_group: int):
     if space_group <= 2 and space_group > 0:
         return "triclinic"
@@ -37,14 +36,14 @@ def map_space_group_to_crystal_system(space_group: int):
     else:
         raise ValueError
 
-def process_item(item):
 
+def process_item(item):
     """
-    This function extracts the density of a crystal (in units of atoms/volume) and 
+    This function extracts the density of a crystal (in units of atoms/volume) and
     adds it to a list that will eventually include all LeMat-Bulk crystals.
     """
-    
-    LeMatID = item['immutable_id']
+
+    LeMatID = item["immutable_id"]
     strut = lematbulk_item_to_structure(item)
 
     g_cm3_density = strut.density
@@ -54,19 +53,26 @@ def process_item(item):
     space_group = strut.get_space_group_info()[1]
     crystal_system = map_space_group_to_crystal_system(space_group=space_group)
 
-    return [LeMatID, volume, round(g_cm3_density, 2),
-            round(atomic_density, 2), space_group, crystal_system]
+    return [
+        LeMatID,
+        volume,
+        round(g_cm3_density, 2),
+        round(atomic_density, 2),
+        space_group,
+        crystal_system,
+    ]
+
 
 def process_items_parallel(dataset, chunk_size=10000, num_workers=None):
     if num_workers is None:
         num_workers = cpu_count()
-    
+
     def chunks():
         for i in range(0, len(dataset), chunk_size):
             chunk = [dataset[j] for j in range(i, min(i + chunk_size, len(dataset)))]
             for item in chunk:
                 yield item
-    
+
     total_items = len(dataset)
     with Pool(processes=num_workers) as pool:
         # Using imap instead of map for memory efficiency
@@ -75,10 +81,11 @@ def process_items_parallel(dataset, chunk_size=10000, num_workers=None):
                 pbar.update(1)
                 yield result
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     dataset_name = "Lematerial/LeMat-Bulk"
     name = "compatible_pbe"
-    split = "train"    
+    split = "train"
     dataset = load_dataset(dataset_name, name=name, split=split, streaming=False)
     # Process and handle results as they come
     print(f"Processing {len(dataset)} structures using {cpu_count()} workers...")
@@ -89,6 +96,15 @@ if __name__ == '__main__':
     print("Creating DataFrame and saving to CSV...")
     import pandas as pd
 
-    df = pd.DataFrame(results, columns=["LeMatID", "Volume", "Density(g/cm^3)", "Density(atoms/A^3)",
-                                        "SpaceGroup", "CrystalSystem"])
+    df = pd.DataFrame(
+        results,
+        columns=[
+            "LeMatID",
+            "Volume",
+            "Density(g/cm^3)",
+            "Density(atoms/A^3)",
+            "SpaceGroup",
+            "CrystalSystem",
+        ],
+    )
     df.to_pickle("data/lematbulk_properties.pkl")

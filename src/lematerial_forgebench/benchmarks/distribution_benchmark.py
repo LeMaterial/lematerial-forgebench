@@ -18,7 +18,7 @@ from lematerial_forgebench.metrics.distribution_metrics import (
 
 
 class DistributionBenchmark(BaseBenchmark):
-    """Benchmark for evaluating quantitative similarity of two distributions of 
+    """Benchmark for evaluating quantitative similarity of two distributions of
     materials structures."""
 
     def __init__(
@@ -34,8 +34,8 @@ class DistributionBenchmark(BaseBenchmark):
         name : str
             Name of the benchmark.
         distribution_functions : list[str], optional
-            A list of strings containing the distribution functions to compare. If none, 
-            defaults to all currently encoded. 
+            A list of strings containing the distribution functions to compare. If none,
+            defaults to all currently encoded.
         description : str, optional
             Description of the benchmark.
         metadata : dict, optional
@@ -78,7 +78,6 @@ class DistributionBenchmark(BaseBenchmark):
         #     weights={"FrechetDistance": 1.0},
         #     aggregation_method="weighted_mean",
         # )
-
 
         # Create benchmark metadata
         benchmark_metadata = {
@@ -141,9 +140,7 @@ class DistributionBenchmark(BaseBenchmark):
         print("MMD_results")
         if MMD_results:
             # Main metastability score
-            final_scores["MMD"] = safe_float(
-                MMD_results.get("combined_value")
-            )
+            final_scores["MMD"] = safe_float(MMD_results.get("combined_value"))
 
         # FrechetDistance_results = evaluator_results.get("FrechetDistance")
         # if FrechetDistance_results:
