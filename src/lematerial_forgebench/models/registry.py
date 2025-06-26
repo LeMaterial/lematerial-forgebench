@@ -214,10 +214,15 @@ class ModelRegistry:
     def create_calculator(self, model_name: str, **kwargs) -> BaseMLIPCalculator:
         """Create a calculator for the specified model type.
 
+        You can see which models are available in your current version of ``forgebench``
+        using :func:`~lematerial_forgebench.models.registry.get_available_models`
+
         Parameters
         ----------
         model_name : str
-            Name of the model (e.g., "orb", "mace", "equiformer", "uma")
+            Name of the model (e.g., "orb", "mace", "equiformer", "uma").
+            Use :func:`~lematerial_forgebench.models.registry.get_available_models`
+            to see which models are available.
         **kwargs
             Model-specific arguments
 
