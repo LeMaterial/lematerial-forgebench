@@ -17,8 +17,10 @@ class UniversalStabilityPreprocessorConfig(PreprocessorConfig):
 
     Parameters
     ----------
-    model_type : str
-        Type of MLIP to use ("orb", "mace", "equiformer", "uma")
+    model_name : str
+        Name of the MLIP to use ("orb", "mace", "equiformer", "uma")
+        Use :func:`~lematerial_forgebench.models.registry.get_available_models`
+        to see which models are available.
     model_config : dict
         Configuration for the specific model
     relax_structures : bool
@@ -31,7 +33,7 @@ class UniversalStabilityPreprocessorConfig(PreprocessorConfig):
         Whether to calculate energy above hull
     """
 
-    model_type: str = "orb"
+    model_name: str = "orb"
     model_config: Dict[str, Any] = field(default_factory=dict)
     relax_structures: bool = True
     relaxation_config: Dict[str, Any] = field(default_factory=dict)
@@ -72,7 +74,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
 
     def __init__(
         self,
-        model_type: str = "orb",
+        model_name: str = "orb",
         model_config: Dict[str, Any] = None,
         relax_structures: bool = True,
         relaxation_config: Dict[str, Any] = None,
@@ -84,8 +86,8 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
         n_jobs: int = 1,
     ):
         super().__init__(
-            name=name or f"UniversalStabilityPreprocessor_{model_type}",
-            description=description or f"Stability preprocessing using {model_type}",
+            name=name or f"UniversalStabilityPreprocessor_{model_name}",
+            description=description or f"Stability preprocessing using {model_name}",
             n_jobs=n_jobs,
         )
 
@@ -93,7 +95,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
             name=self.config.name,
             description=self.config.description,
             n_jobs=self.config.n_jobs,
-            model_type=model_type,
+            model_name=model_name,
             model_config=model_config or {},
             relax_structures=relax_structures,
             relaxation_config=relaxation_config or {"fmax": 0.02, "steps": 500},
@@ -104,11 +106,11 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
 
         # Create calculator using the registry
         try:
-            self.calculator = get_calculator(model_type, **self.config.model_config)
+            self.calculator = get_calculator(model_name, **self.config.model_config)
         except ValueError as e:
             available_models = list_available_models()
             raise ValueError(
-                f"Model type '{model_type}' not supported. "
+                f"Model type '{model_name}' not supported. "
                 f"Available models: {available_models}"
             ) from e
 

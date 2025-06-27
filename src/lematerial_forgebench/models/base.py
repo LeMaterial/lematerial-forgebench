@@ -49,15 +49,15 @@ class CalculationResult:
         Total energy in eV
     forces : np.ndarray
         Forces on atoms in eV/Å with shape (n_atoms, 3)
-    stress : np.ndarray
-        Stress tensor in eV/Å³ with shape (3, 3)
+    stress : np.ndarray | None
+        Stress tensor in eV/Å³ with shape (3, 3) or None if not available
     metadata : dict
         Additional calculation metadata
     """
 
     energy: float
     forces: np.ndarray
-    stress: np.ndarray
+    stress: np.ndarray | None = None
     metadata: Dict[str, Any] = None
 
 

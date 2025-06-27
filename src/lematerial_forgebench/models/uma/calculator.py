@@ -1,11 +1,14 @@
 """UMA model calculator implementation."""
 
+from copy import deepcopy
+
 import numpy as np
 import torch
 from pymatgen.core.structure import Structure
 
 try:
     from fairchem.core import pretrained_mlip
+    from fairchem.core.calculate.ase_calculator import FAIRChemCalculator
 
     UMA_AVAILABLE = True
 except ImportError:
@@ -66,10 +69,14 @@ class UMACalculator(BaseMLIPCalculator):
             self.model.eval()
 
             # Create ASE calculator wrapper
-            self.ase_calc = UMAASECalculator(self.predictor, self.device)
+            self.ase_calc = FAIRChemCalculator(
+                predict_unit=self.predictor, task_name=self.task
+            )
 
             # Create embedding extractor
-            self.embedding_extractor = UMAEmbeddingExtractor(self.model, self.device)
+            self.embedding_extractor = UMAEmbeddingExtractor(
+                self.model, task=self.task, device=self.device
+            )
 
             logger.info(f"Successfully loaded UMA model: {self.model_name}")
 
@@ -91,10 +98,18 @@ class UMACalculator(BaseMLIPCalculator):
             Energy, forces, and metadata
         """
         atoms = self._structure_to_atoms(structure)
+
+        # FAIRChemCalculator checks changes in the atoms.info,
+        # but we use it for other purposes, causing their check to fail.
+        info_copy = deepcopy(atoms.info)
+        atoms.info = {}
+
         atoms.calc = self.ase_calc
 
         energy = atoms.get_potential_energy()
         forces = atoms.get_forces()
+
+        atoms.info = {**info_copy, **atoms.info}
 
         return CalculationResult(
             energy=energy,

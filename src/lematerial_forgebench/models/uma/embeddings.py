@@ -5,8 +5,8 @@ import torch
 from pymatgen.core.structure import Structure
 
 try:
-    import torch_scatter
-    from fairchem.core.utils.ase_conversion import atoms_to_data
+    from fairchem.core.datasets import data_list_collater
+    from fairchem.core.datasets.atomic_data import AtomicData
 
     UMA_AVAILABLE = True
 except ImportError:
@@ -18,9 +18,19 @@ from lematerial_forgebench.models.base import BaseEmbeddingExtractor
 class UMAEmbeddingExtractor(BaseEmbeddingExtractor):
     """Embedding extractor for UMA models."""
 
-    def __init__(self, model, device="cpu"):
+    def __init__(self, model, task="omat", device="cpu"):
         self.model = model
         self.device = device
+        self.task = task
+        self.features = {}
+        self.register_forward_hook()
+
+    def register_forward_hook(self):
+        def hook(module, input, output):
+            self.features["node_embeddings"] = input[1]["node_embedding"][:, 0, :]
+            return output
+
+        self.model.module.output_heads.energyandforcehead.register_forward_hook(hook)
 
     def extract_node_embeddings(self, structure: Structure) -> np.ndarray:
         """Extract per-atom embeddings from UMA model.
@@ -38,12 +48,13 @@ class UMAEmbeddingExtractor(BaseEmbeddingExtractor):
         atoms = structure.to_ase_atoms()
 
         # Convert to FAIRChem's AtomicData format
-        adata = atoms_to_data(atoms, device=self.device)
+        adata = AtomicData.from_ase(atoms, task_name=self.task).to(self.device)
+        batch = data_list_collater([adata], otf_graph=True)
 
-        out = self.model(adata, return_embeddings=True)
-        node_embeddings = out["node_embeddings"]
+        self.model(batch)
+        node_embeddings = self.features["node_embeddings"]
 
-        return node_embeddings.cpu().numpy()
+        return node_embeddings.detach().cpu().numpy()
 
     def extract_graph_embedding_with_pooling(
         self, structure: Structure, pooling_method: str = "mean"
@@ -63,20 +74,22 @@ class UMAEmbeddingExtractor(BaseEmbeddingExtractor):
             Graph-level embedding
         """
         atoms = structure.to_ase_atoms()
-        adata = atoms_to_data(atoms, device=self.device)
+        adata = AtomicData.from_ase(atoms, task_name=self.task).to(self.device)
+        batch = data_list_collater([adata], otf_graph=True)
 
-        out = self.model(adata, return_embeddings=True)
-        node_embeddings = out["node_embeddings"]
+        self.model(batch)
+        node_embeddings = self.features["node_embeddings"]
 
+        breakpoint()
         # Pool over atoms to get graph representation
-        if pooling_method == "mean":
-            graph_emb = torch_scatter.scatter_mean(node_embeddings, adata.batch, dim=0)
-        elif pooling_method == "sum":
-            graph_emb = torch_scatter.scatter_sum(node_embeddings, adata.batch, dim=0)
-        elif pooling_method == "max":
-            graph_emb = torch_scatter.scatter_max(node_embeddings, adata.batch, dim=0)[
-                0
-            ]
+        if pooling_method in {"mean", "sum", "max"}:
+            graph_emb = torch.scatter_reduce(
+                node_embeddings,
+                dim=0,
+                index=batch.batch,
+                reduce=pooling_method,
+                include_self=False,
+            )
         else:
             raise ValueError(f"Unknown pooling method: {pooling_method}")
 
@@ -86,26 +99,30 @@ class UMAEmbeddingExtractor(BaseEmbeddingExtractor):
 class UMAASECalculator:
     """ASE calculator wrapper for UMA."""
 
-    def __init__(self, predictor, device="cpu"):
+    def __init__(self, predictor, task="omat", device="cpu"):
         self.predictor = predictor
         self.device = device
+        self.task = task
         self.implemented_properties = ["energy", "forces"]
         self.results = {}
 
     def calculate(self, atoms, properties=None, system_changes=None):
         """Calculate properties using UMA."""
         # Convert to FAIRChem format
-        adata = atoms_to_data(atoms, device=self.device)
+        adata = AtomicData.from_ase(atoms, task_name=self.task).to(self.device)
+        batch = data_list_collater([adata], otf_graph=True)
 
         # Predict using UMA
-        predictions = self.predictor.predict(adata)
+        predictions = self.predictor.predict(batch)
 
         # Store results
         self.results = {}
         if "energy" in predictions:
-            self.results["energy"] = predictions["energy"].cpu().numpy().item()
+            self.results["energy"] = predictions["energy"].detach().cpu().numpy().item()
         if "forces" in predictions:
-            self.results["forces"] = predictions["forces"].cpu().numpy()
+            self.results["forces"] = predictions["forces"].detach().cpu().numpy()
+        if "stress" in predictions:
+            self.results["stress"] = predictions["stress"].detach().cpu().numpy()
 
     def get_potential_energy(self, atoms=None):
         if atoms is not None:
@@ -116,3 +133,8 @@ class UMAASECalculator:
         if atoms is not None:
             self.calculate(atoms)
         return self.results.get("forces", np.zeros((len(atoms), 3)))
+
+    def get_stress(self, atoms=None):
+        if atoms is not None:
+            self.calculate(atoms)
+        return self.results.get("stress", np.zeros((3, 3)))
