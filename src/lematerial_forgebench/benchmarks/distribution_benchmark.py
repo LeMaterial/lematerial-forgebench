@@ -15,6 +15,7 @@ from lematerial_forgebench.metrics.distribution_metrics import (
     FrechetDistance,
     JSDistance,
 )
+from lematerial_forgebench.utils.distribution_utils import safe_float
 
 
 class DistributionBenchmark(BaseBenchmark):
@@ -70,14 +71,14 @@ class DistributionBenchmark(BaseBenchmark):
             aggregation_method="weighted_mean",
         )
 
-        # FrechetDistance_metric = FrechetDistance()
-        # evaluator_configs["FrechetDistance"] = EvaluatorConfig(
-        #     name="FrechetDistance Analysis",
-        #     description="Calculates the Frechet Distance between two distributions",
-        #     metrics={"FrechetDistance": FrechetDistance_metric},
-        #     weights={"FrechetDistance": 1.0},
-        #     aggregation_method="weighted_mean",
-        # )
+        FrechetDistance_metric = FrechetDistance()
+        evaluator_configs["FrechetDistance"] = EvaluatorConfig(
+            name="FrechetDistance Analysis",
+            description="Calculates the Frechet Distance between two distributions",
+            metrics={"FrechetDistance": FrechetDistance_metric},
+            weights={"FrechetDistance": 1.0},
+            aggregation_method="weighted_mean",
+        )
 
         # Create benchmark metadata
         benchmark_metadata = {
@@ -108,18 +109,6 @@ class DistributionBenchmark(BaseBenchmark):
         dict[str, float]
             Final aggregated scores.
         """
-        import math
-
-        def safe_float(value):
-            """Safely convert value to float, handling None and NaN."""
-            return value
-            # if value is None:
-            #     raise ValueError
-
-            # float_val = float(value)
-            # if math.isnan(float_val):
-            #     raise ValueError
-            # return float_val
 
         final_scores = {
             "JSDistance": np.nan,
@@ -142,11 +131,11 @@ class DistributionBenchmark(BaseBenchmark):
             # Main metastability score
             final_scores["MMD"] = safe_float(MMD_results.get("combined_value"))
 
-        # FrechetDistance_results = evaluator_results.get("FrechetDistance")
-        # if FrechetDistance_results:
-        #     # E_hull score
-        #     final_scores["FrechetDistance"] = safe_float(
-        #         FrechetDistance_results.get("combined_value")
-        #     )
+        FrechetDistance_results = evaluator_results.get("FrechetDistance")
+        if FrechetDistance_results:
+            # E_hull score
+            final_scores["FrechetDistance"] = safe_float(
+                FrechetDistance_results.get("combined_value")
+            )
 
         return final_scores

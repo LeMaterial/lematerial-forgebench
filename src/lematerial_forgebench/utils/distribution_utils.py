@@ -9,6 +9,15 @@ from scipy.stats import gaussian_kde
 from sklearn.neighbors import KernelDensity
 
 
+def safe_float(value):
+    """Currently a no-op function.
+
+    This is a placeholder for a function that will safely convert a value to a float,
+    handling None and NaN.
+    """
+    return value
+
+
 def map_space_group_to_crystal_system(space_group: int):
     if space_group <= 2 and space_group > 0:
         return 1  # "triclinic"
