@@ -130,7 +130,6 @@ def test_evaluator_configuration():
 
     # Check evaluator configuration
     stability_evaluator = benchmark.evaluators["stability"]
-    # print(stability_evaluator)
     assert stability_evaluator.config.name == "stability"
     assert stability_evaluator.config.weights == {"stability": 1.0}
     assert stability_evaluator.config.aggregation_method == "weighted_mean"

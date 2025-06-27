@@ -6,7 +6,6 @@ from tqdm import tqdm
 
 
 def scale_individual_row(row):
-    # print(row)
     a = row["a"]
     b = row["b"]
     c = row["c"]
@@ -90,7 +89,6 @@ if __name__ == "__main__":
     except FileNotFoundError:
         results = []
         for result in scale_df_parallel(df):
-            # print(result)
             results.append(result)
 
         results_df = pd.DataFrame(
@@ -101,7 +99,6 @@ if __name__ == "__main__":
     if run_tests:
         results = []
         for result in test_dataset_fidelity_parallel(df, results_df):
-            # print(result)
             results.append(result)
         if sum(results) == len(results):
             print("All tests passed")

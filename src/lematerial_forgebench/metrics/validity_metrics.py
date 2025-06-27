@@ -402,8 +402,6 @@ class MinimumInteratomicDistanceMetric(BaseMetric):
                 ) * scaling_factor
                 actual_dist = all_distances[i, j]
 
-                # print(min_dist)
-
                 if actual_dist >= min_dist:
                     valid_pairs += 1
                 else:
@@ -958,7 +956,6 @@ class PhysicalPlausibilityMetric(BaseMetric):
         # Check 3: Format representation check
         if check_format:
             total_checks += 1
-            # try:
             # Try to convert to CIF format and back
             import io
 
@@ -967,9 +964,7 @@ class PhysicalPlausibilityMetric(BaseMetric):
             # Write to CIF
             cif_writer = CifWriter(structure)
             cif_string = "temp.cif"
-            # cif_string = io.StringIO()
             cif_writer.write_file(cif_string)
-            # cif_string.seek(0)
 
             # Parse back from CIF
             parser = CifParser(cif_string)
@@ -989,15 +984,10 @@ class PhysicalPlausibilityMetric(BaseMetric):
             ):
                 checks_passed += 1
             else:
-                # print('Format failed')
-
                 logger.debug(
                     f"Format check failed: original={structure.composition}, "
                     f"recovered={recovered_structure.composition}"
                 )
-            # except Exception as e:
-            #     print('Format failed')
-            #     logger.debug(f"Format check failed: {str(e)}")
 
         # Check 4: Symmetry check
         if check_symmetry:
@@ -1013,17 +1003,12 @@ class PhysicalPlausibilityMetric(BaseMetric):
                 if 0 < spacegroup <= 230:
                     checks_passed += 1
                 else:
-                    # print('Symmetry failed')
                     logger.debug(f"Symmetry check failed: spacegroup={spacegroup}")
             except Exception as e:
                 print("Symmetry failed")
                 logger.debug(f"Symmetry check failed: {str(e)}")
 
         # Return the ratio of passed checks
-        # print(checks_passed)
-        # print(total_checks)
-        # print(checks_passed/total_checks)
-
         if checks_passed / total_checks == 1.0:
             return 1.0
         else:

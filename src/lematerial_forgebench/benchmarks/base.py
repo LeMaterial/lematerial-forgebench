@@ -173,7 +173,6 @@ class BaseBenchmark(ABC):
             }
 
         final_scores = self.aggregate_evaluator_results(evaluator_results)
-        # print(final_scores)
         result_metadata = {
             "benchmark_name": self.config.name,
             "benchmark_description": self.config.description,
