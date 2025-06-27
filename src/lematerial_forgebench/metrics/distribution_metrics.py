@@ -39,24 +39,34 @@ class JSDistanceConfig(MetricConfig):
     reference_df : pandas dataframe
         dataframe with reference data to compare to the input sample of crystals
     """
-    reference_df: pd.DataFrame | str = "LeMaterial/LeMat-Bulk"    
+
+    reference_df: pd.DataFrame | str = "LeMaterial/LeMat-Bulk"
+
 
 class JSDistance(BaseMetric):
     """Calculate Jensen-Shannon distance between two distributions.
 
     This metric compares a set of distribution wide properties (crystal system,
-    space group, elemental composition, lattice constants, and wykoff positions)
+    space group, elemental composition, lattice constants, and Wyckoff positions)
     between two samples of crystal structures and determines the degree of similarity
     between those two distributions for the particular structural property.
 
     Parameters
     ----------
-
+    reference_df : pandas dataframe
+        dataframe with reference data to compare to the input sample of crystals
+        This dataframe is calculated by "src/lematerial_forgebench/preprocess/distribution_preprocess.py"
+    name : str, optional
+        Name of the metric
+    description : str, optional
+        Description of the metric
+    n_jobs : int, optional
+        Number of jobs to run in parallel
     """
 
     def __init__(
         self,
-        reference_df: pd.DataFrame, 
+        reference_df: pd.DataFrame,
         name: str | None = None,
         description: str | None = None,
         n_jobs: int = 1,
@@ -71,14 +81,12 @@ class JSDistance(BaseMetric):
             name=self.config.name,
             description=self.config.description,
             n_jobs=self.config.n_jobs,
-            reference_df=reference_df
+            reference_df=reference_df,
         )
 
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
-        return {
-            "reference_df": self.config.reference_df
-        }
+        return {"reference_df": self.config.reference_df}
 
     @staticmethod
     def compute_structure(structure: pd.DataFrame, **compute_args: Any) -> dict:
@@ -110,6 +118,7 @@ class JSDistance(BaseMetric):
             and the values are the JS Distances.
         """
         reference_df = compute_args.get("reference_df")
+        breakpoint()
         if reference_df is None:
             raise ValueError(
                 "a `reference_df` arg is required to compute the JSDistance"
@@ -172,6 +181,7 @@ class JSDistance(BaseMetric):
             "uncertainties": {},
         }
 
+
 @dataclass
 class MMDConfig(MetricConfig):
     """Configuration for the MMD metric.
@@ -181,7 +191,9 @@ class MMDConfig(MetricConfig):
     reference_df : pandas dataframe
         dataframe with reference data to compare to the input sample of crystals
     """
-    reference_df: pd.DataFrame | str = "LeMaterial/LeMat-Bulk"    
+
+    reference_df: pd.DataFrame | str = "LeMaterial/LeMat-Bulk"
+
 
 class MMD(BaseMetric):
     """Calculate MMD between two distributions.
@@ -195,7 +207,7 @@ class MMD(BaseMetric):
 
     def __init__(
         self,
-        reference_df: pd.DataFrame, 
+        reference_df: pd.DataFrame,
         name: str | None = None,
         description: str | None = None,
         n_jobs: int = 1,
@@ -210,15 +222,12 @@ class MMD(BaseMetric):
             name=self.config.name,
             description=self.config.description,
             n_jobs=self.config.n_jobs,
-            reference_df=reference_df
+            reference_df=reference_df,
         )
 
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
-        return {
-            "reference_df": self.config.reference_df
-        }
-
+        return {"reference_df": self.config.reference_df}
 
     @staticmethod
     def compute_structure(structure: pd.DataFrame, reference_df: str) -> float:
@@ -296,6 +305,7 @@ class MMD(BaseMetric):
             "uncertainties": {},
         }
 
+
 @dataclass
 class FrechetDistanceConfig(MetricConfig):
     """Configuration for the MMD metric.
@@ -305,7 +315,9 @@ class FrechetDistanceConfig(MetricConfig):
     reference_df : pandas dataframe
         dataframe with reference data to compare to the input sample of crystals
     """
-    reference_df: pd.DataFrame | str = "LeMaterial/LeMat-Bulk"    
+
+    reference_df: pd.DataFrame | str = "LeMaterial/LeMat-Bulk"
+
 
 class FrechetDistance(BaseMetric):
     def __init__(
@@ -325,15 +337,12 @@ class FrechetDistance(BaseMetric):
             name=self.config.name,
             description=self.config.description,
             n_jobs=self.config.n_jobs,
-            reference_df=reference_df
+            reference_df=reference_df,
         )
 
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
-        return {
-            "reference_df": self.config.reference_df
-        }
-
+        return {"reference_df": self.config.reference_df}
 
     @staticmethod
     def compute_structure(structure: pd.DataFrame, reference_df: pd.DataFrame) -> float:
