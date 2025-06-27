@@ -215,12 +215,7 @@ if __name__ == "__main__":
     target_columns = ["LeMatID", "Sites", "Species", "ValencesCalculated"]
 
     for i in np.arange(0, 5_400_000, 100_000):
-        if i == 5_300_000:
-            dataset_temp = dataset.select(range(i, i + 35_299))
-            print(dataset_temp[0])
-        else:
-            dataset_temp = dataset.select(range(i, i + 100_000))
-            print(dataset_temp[0])
+        dataset_temp = dataset.select(range(i, min(len(dataset), i + 100_000)))
 
         # Process and handle results as they come
         print(
