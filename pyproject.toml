@@ -79,10 +79,10 @@ dev-dependencies = [
     "botocore>=1.36.20",
 ]
 find-links = [
-  "https://data.pyg.org/whl/torch-2.6.0+cu124.html",
-  "https://data.pyg.org/whl/torch-2.6.0+cpu.html",
-  "https://data.pyg.org/whl/torch-2.4.0+cu124.html",
-  "https://data.pyg.org/whl/torch-2.4.0+cpu.html",
+    "https://data.pyg.org/whl/torch-2.6.0+cu124.html",
+    "https://data.pyg.org/whl/torch-2.6.0+cpu.html",
+    "https://data.pyg.org/whl/torch-2.4.0+cu124.html",
+    "https://data.pyg.org/whl/torch-2.4.0+cpu.html",
 ]
 conflicts = [
     [
@@ -103,4 +103,3 @@ material-hasher = { git = "https://github.com/lematerial/material-hasher.git" }
 
 [tool.ruff.lint]
 extend-select = ["I"]
-ignore = ["F401"]
