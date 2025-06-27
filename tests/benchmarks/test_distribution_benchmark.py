@@ -1,14 +1,18 @@
 """Tests for validity benchmark."""
 
-from pymatgen.core.structure import Structure
-from pymatgen.util.testing import PymatgenTest
 import pickle
-from lematerial_forgebench.benchmarks.distribution_benchmark import DistributionBenchmark
+
+import pandas as pd
+import pytest
+from pymatgen.util.testing import PymatgenTest
+
+from lematerial_forgebench.benchmarks.distribution_benchmark import (
+    DistributionBenchmark,
+)
 from lematerial_forgebench.preprocess.distribution_preprocess import (
     DistributionPreprocessor,
 )
-import pandas as pd 
-import pytest
+
 
 @pytest.fixture
 def valid_structures():

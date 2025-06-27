@@ -6,12 +6,12 @@ This module implements a benchmark that compares two distributions of crystal st
 from typing import Any, Dict
 
 import numpy as np
-import pandas as pd 
+import pandas as pd
+
 from lematerial_forgebench.benchmarks.base import BaseBenchmark
 from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
 from lematerial_forgebench.metrics.distribution_metrics import (
     MMD,
-    FrechetDistance,
     JSDistance,
 )
 from lematerial_forgebench.utils.distribution_utils import safe_float
@@ -144,10 +144,13 @@ class DistributionBenchmark(BaseBenchmark):
 
 
 if __name__ == '__main__':
-    import pickle 
-    from pymatgen.core.structure import Structure
+    import pickle
+
     from pymatgen.util.testing import PymatgenTest
-    from lematerial_forgebench.preprocess.distribution_preprocess import DistributionPreprocessor
+
+    from lematerial_forgebench.preprocess.distribution_preprocess import (
+        DistributionPreprocessor,
+    )
     
     with open("data/small_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)
