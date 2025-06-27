@@ -1,18 +1,51 @@
 """
 Herfindahl-Hirschman Index (HHI) metrics for material supply risk assessment.
 
-This module implements metrics for evaluating the concentration of element production
-and reserves, which can indicate supply risk for materials generation.
+This module implements metrics for evaluating the concentration of element
+production and reserves, which can indicate supply risk for materials
+generation.
 """
 
+import sys
 from abc import ABC
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import numpy as np
 from pymatgen.core import Composition, Structure
 
-from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
+from lematerial_forgebench.metrics.base import (
+    BaseMetric,
+    MetricConfig,
+    MetricResult,
+)
+
+
+def _load_hhi_data():
+    """Load HHI data from data_props.py file."""
+    try:
+        # Get the root directory (go up from metrics folder to
+        # lematerial_forgebench to src to root)
+        current_file = Path(__file__).resolve()
+        root_dir = current_file.parent.parent.parent.parent  # Go up to root
+        data_props_path = root_dir / "data" / "data_props.py"
+
+        if not data_props_path.exists():
+            raise ImportError(f"data_props.py not found at {data_props_path}")
+
+        # Add root directory to path and import
+        if str(root_dir) not in sys.path:
+            sys.path.insert(0, str(root_dir))
+
+        from data.data_props import hhi_production, hhi_reserve
+
+        return hhi_production, hhi_reserve
+    except ImportError as e:
+        raise ImportError(
+            f"Could not import HHI data from data.data_props: {e}. "
+            "Make sure the data_props.py file is in the root/data directory."
+        )
 
 
 @dataclass
@@ -22,7 +55,7 @@ class HHIMetricConfig(MetricConfig):
     Parameters
     ----------
     scale_to_0_10 : bool, default=True
-        If True, divide the classical 0–10,000 HHI by 1000 to get the 0–10
+        If True, divide the classical 0 to 10,000 HHI by 1000 to get the 0 to 10
         convenience scale used in the MatterGen paper.
     """
 
@@ -132,7 +165,8 @@ class BaseHHIMetric(BaseMetric, ABC):
         result : MetricResult, optional
             Previously computed result. If None, will compute fresh.
         include_failed : bool, default=False
-            Whether to include structures that failed computation (with NaN values).
+            Whether to include structures that failed computation (with NaN
+            values).
 
         Returns
         -------
@@ -143,7 +177,7 @@ class BaseHHIMetric(BaseMetric, ABC):
         --------
         >>> metric = HHIProductionMetric()
         >>> structures = [...]  # Your structures
-        >>> structure_values = metric.get_individual_values_with_structures(structures)
+        >>> structure_values = metric.get_individual_values_with_structures
         >>> # Sort by HHI value to find lowest risk
         >>> structure_values.sort(key=lambda x: x[2])
         >>> print(f"Lowest risk structure has HHI = {structure_values[0][2]}")
@@ -197,14 +231,26 @@ class BaseHHIMetric(BaseMetric, ABC):
             comp = Composition(structure.composition).fractional_composition
 
             # Calculate weighted HHI
-            hhi = sum(comp[el] * hhi_table[el.symbol] for el in comp)
+            # For missing elements, assign maximum HHI value
+            # (10000 unscaled / 10 scaled)
+            max_hhi_value = 10.0 if scale_to_0_10 else 10000.0
 
-            # Scale if requested
-            return hhi / 1000 if scale_to_0_10 else hhi
+            hhi = 0.0
+            for el in comp:
+                element_symbol = el.symbol
+                if element_symbol in hhi_table:
+                    element_hhi = hhi_table[element_symbol]
+                    # Apply scaling if requested
+                    if scale_to_0_10:
+                        element_hhi = element_hhi / 1000.0
+                else:
+                    # Element not found in HHI table - assign maximum risk value
+                    element_hhi = max_hhi_value
 
-        except KeyError as e:
-            # Element not found in HHI table
-            raise ValueError(f"Element {e} not found in HHI lookup table")
+                hhi += comp[el] * element_hhi
+
+            return hhi
+
         except Exception as e:
             # Other computation errors
             raise ValueError(f"Failed to compute HHI: {str(e)}")
@@ -221,8 +267,9 @@ class BaseHHIMetric(BaseMetric, ABC):
         -------
         dict[str, Any]
             Dictionary containing aggregated metrics and uncertainties.
-            Individual values are preserved and accessible through MetricResult.individual_values
-            and also included in the metrics dictionary as 'individual_hhi_values'.
+            Individual values are preserved and accessible through
+            MetricResult.individual_values and also included in the metrics
+            dictionary as 'individual_hhi_values'.
         """
         valid_values = [v for v in values if not np.isnan(v)]
 
@@ -271,12 +318,15 @@ class BaseHHIMetric(BaseMetric, ABC):
             f"{self.name.lower()}_low_risk_count_2": low_risk_count_2,
             f"{self.name.lower()}_low_risk_count_3": low_risk_count_3,
             f"{self.name.lower()}_low_risk_count_5": low_risk_count_5,
-            f"{self.name.lower()}_low_risk_fraction_2": low_risk_count_2
-            / len(valid_values),
-            f"{self.name.lower()}_low_risk_fraction_3": low_risk_count_3
-            / len(valid_values),
-            f"{self.name.lower()}_low_risk_fraction_5": low_risk_count_5
-            / len(valid_values),
+            f"{self.name.lower()}_low_risk_fraction_2": (
+                low_risk_count_2 / len(valid_values)
+            ),
+            f"{self.name.lower()}_low_risk_fraction_3": (
+                low_risk_count_3 / len(valid_values)
+            ),
+            f"{self.name.lower()}_low_risk_fraction_5": (
+                low_risk_count_5 / len(valid_values)
+            ),
             # Count metrics
             "total_structures_evaluated": len(valid_values),
             "failed_structures_count": len(values) - len(valid_values),
@@ -285,9 +335,9 @@ class BaseHHIMetric(BaseMetric, ABC):
         uncertainties = {
             primary_metric_name: {
                 "std": std_hhi,
-                "std_error": std_hhi / np.sqrt(len(valid_values))
-                if valid_values
-                else 0.0,
+                "std_error": (
+                    std_hhi / np.sqrt(len(valid_values)) if valid_values else 0
+                ),
             }
         }
 
@@ -304,6 +354,10 @@ class HHIProductionMetric(BaseHHIMetric):
     This metric evaluates the concentration of element production sources,
     indicating supply risk based on market concentration.
     Higher values indicate more concentrated supply chains and higher risk.
+
+    Elements not found in the HHI production data are automatically assigned
+    the maximum HHI value (10000 unscaled / 10 scaled), representing maximum
+    supply risk for rare or untracked elements.
     """
 
     def __init__(
@@ -326,39 +380,17 @@ class HHIProductionMetric(BaseHHIMetric):
         n_jobs : int, default=1
             Number of parallel jobs to run.
         """
-        # Import HHI production data
-        try:
-            import os
-            from pathlib import Path
-
-            # Get the root directory (go up from metrics folder to lematerial_forgebench to src to root)
-            current_file = Path(__file__).resolve()
-            root_dir = current_file.parent.parent.parent.parent  # Go up to root
-            data_props_path = root_dir / "data" / "data_props.py"
-
-            if not data_props_path.exists():
-                raise ImportError(f"data_props.py not found at {data_props_path}")
-
-            # Add root directory to path and import
-            import sys
-
-            if str(root_dir) not in sys.path:
-                sys.path.insert(0, str(root_dir))
-
-            from data.data_props import hhi_production
-        except ImportError as e:
-            raise ImportError(
-                f"Could not import hhi_production from data.data_props: {e}. "
-                "Make sure the data_props.py file is in the root/data directory."
-            )
+        # Load HHI data
+        hhi_production, _ = _load_hhi_data()
 
         super().__init__(
             hhi_table=hhi_production,
             name=name or "HHIProduction",
             description=description
             or (
-                "Herfindahl-Hirschman Index for element production concentration. "
-                "Higher values indicate more concentrated supply chains and higher supply risk."
+                "Herfindahl-Hirschman Index for element production "
+                "concentration. Higher values indicate more concentrated "
+                "supply chains and higher supply risk."
             ),
             scale_to_0_10=scale_to_0_10,
             n_jobs=n_jobs,
@@ -371,6 +403,10 @@ class HHIReserveMetric(BaseHHIMetric):
     This metric evaluates the concentration of element reserves,
     indicating long-term supply risk based on reserve distribution.
     Higher values indicate more concentrated reserves and higher long-term risk.
+
+    Elements not found in the HHI reserve data are automatically assigned
+    the maximum HHI value (10000 unscaled / 10 scaled), representing maximum
+    supply risk for rare or untracked elements.
     """
 
     def __init__(
@@ -393,31 +429,8 @@ class HHIReserveMetric(BaseHHIMetric):
         n_jobs : int, default=1
             Number of parallel jobs to run.
         """
-        # Import HHI reserve data
-        try:
-            import os
-            from pathlib import Path
-
-            # Get the root directory (go up from metrics folder to lematerial_forgebench to src to root)
-            current_file = Path(__file__).resolve()
-            root_dir = current_file.parent.parent.parent.parent  # Go up to root
-            data_props_path = root_dir / "data" / "data_props.py"
-
-            if not data_props_path.exists():
-                raise ImportError(f"data_props.py not found at {data_props_path}")
-
-            # Add root directory to path and import
-            import sys
-
-            if str(root_dir) not in sys.path:
-                sys.path.insert(0, str(root_dir))
-
-            from data.data_props import hhi_reserve
-        except ImportError as e:
-            raise ImportError(
-                f"Could not import hhi_reserve from data.data_props: {e}. "
-                "Make sure the data_props.py file is in the root/data directory."
-            )
+        # Load HHI data
+        _, hhi_reserve = _load_hhi_data()
 
         super().__init__(
             hhi_table=hhi_reserve,
@@ -425,7 +438,8 @@ class HHIReserveMetric(BaseHHIMetric):
             description=description
             or (
                 "Herfindahl-Hirschman Index for element reserve concentration. "
-                "Higher values indicate more concentrated reserves and higher long-term supply risk."
+                "Higher values indicate more concentrated reserves and higher "
+                "long-term supply risk."
             ),
             scale_to_0_10=scale_to_0_10,
             n_jobs=n_jobs,
@@ -444,22 +458,43 @@ def compound_hhi(formula: str, hhi_table: dict, scale_to_0_10: bool = True) -> f
     hhi_table : dict[str, int]
         Per-element HHI values (either production or reserve).
     scale_to_0_10 : bool, optional
-        If True, divide the classical 0–10,000 HHI by 1000 to get the 0–10
+        If True, divide the classical 0 to 10,000 HHI by 1000 to get the 0 to 10
         convenience scale used in the MatterGen paper.
 
     Returns
     -------
     float
         The weighted HHI value for the compound.
+        Elements not found in hhi_table are assigned maximum HHI value
+        (10000/10).
 
     Examples
     --------
-    >>> from data.data_props import hhi_production, hhi_reserve
+    >>> hhi_production, hhi_reserve = _load_hhi_data()
     >>> compound_hhi("Nd2Fe14B", hhi_production)
     5.234
     >>> compound_hhi("LiFePO4", hhi_reserve, scale_to_0_10=False)
     3456.7
+    >>> compound_hhi("UPt3", hhi_production)  # U might not be in table
+    8.5  # High value due to rare U
     """
     comp = Composition(formula).fractional_composition
-    hhi = sum(comp[el] * hhi_table[el.symbol] for el in comp)
-    return hhi / 1000 if scale_to_0_10 else hhi
+
+    # For missing elements, assign maximum HHI value
+    max_hhi_value = 10.0 if scale_to_0_10 else 10000.0
+
+    hhi = 0.0
+    for el in comp:
+        element_symbol = el.symbol
+        if element_symbol in hhi_table:
+            element_hhi = hhi_table[element_symbol]
+            # Apply scaling if requested
+            if scale_to_0_10:
+                element_hhi = element_hhi / 1000.0
+        else:
+            # Element not found in HHI table - assign maximum risk value
+            element_hhi = max_hhi_value
+
+        hhi += comp[el] * element_hhi
+
+    return hhi
