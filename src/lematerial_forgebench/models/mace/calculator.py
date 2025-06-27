@@ -1,16 +1,6 @@
 """MACE model calculator implementation."""
 
-import numpy as np
-import torch
 from pymatgen.core.structure import Structure
-
-try:
-    from mace.calculators import MACECalculator as MACEASECalculator
-    from mace.calculators import mace_mp, mace_off
-
-    MACE_AVAILABLE = True
-except ImportError:
-    MACE_AVAILABLE = False
 
 from lematerial_forgebench.models.base import (
     BaseMLIPCalculator,
@@ -21,6 +11,22 @@ from lematerial_forgebench.models.base import (
 )
 from lematerial_forgebench.models.mace.embeddings import MACEEmbeddingExtractor
 from lematerial_forgebench.utils.logging import logger
+
+try:
+    from mace.calculators import MACECalculator as MACEASECalculator
+    from mace.calculators import mace_mp, mace_off
+
+    MACE_AVAILABLE = True
+except ImportError:
+    MACE_AVAILABLE = False
+
+try:
+    from mace.calculators import MACECalculator as MACEASECalculator
+    from mace.calculators import mace_mp, mace_off
+
+    MACE_AVAILABLE = True
+except ImportError:
+    MACE_AVAILABLE = False
 
 
 class MACECalculator(BaseMLIPCalculator):

@@ -1,17 +1,27 @@
 """ORB embedding extraction utilities."""
 
 import numpy as np
-import torch
-from orb_models.forcefield import atomic_system
 from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.models.base import BaseEmbeddingExtractor
+
+try:
+    from orb_models.forcefield import atomic_system
+
+    ORB_AVAILABLE = True
+except ImportError:
+    ORB_AVAILABLE = False
 
 
 class ORBEmbeddingExtractor(BaseEmbeddingExtractor):
     """Embedding extractor for ORB models."""
 
     def __init__(self, model, device="cpu"):
+        if not ORB_AVAILABLE:
+            raise ImportError(
+                "ORB is not available. Please install it with: uv pip install orb-models"
+            )
+
         super().__init__(model, device)
         self.system_config = model._system_config
 

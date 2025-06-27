@@ -1,10 +1,9 @@
 import json
-from multiprocessing import Pool, cpu_count
 
 import numpy as np
 import pandas as pd
 from datasets import load_dataset
-from pymatgen.core import Composition, Structure
+from pymatgen.core import Composition
 from tqdm import tqdm
 
 from lematerial_forgebench.utils.distribution_utils import (

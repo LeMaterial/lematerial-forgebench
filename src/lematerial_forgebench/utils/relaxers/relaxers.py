@@ -2,14 +2,9 @@
 
 import tempfile
 
-from ase.filters import FrechetCellFilter
-from ase.optimize import FIRE
-from orb_models.forcefield import pretrained
-from orb_models.forcefield.calculator import ORBCalculator as ORBASECalculator
 from pymatgen.core import Structure
 from pymatgen.entries.compatibility import MaterialsProject2020Compatibility
 from pymatgen.entries.computed_entries import ComputedStructureEntry
-from pymatgen.io.ase import AseAtomsAdaptor
 from pymatgen.io.vasp.inputs import Incar, Poscar
 from pymatgen.io.vasp.sets import MPRelaxSet
 

@@ -1,12 +1,9 @@
 import json
 
-import matplotlib.pyplot as plt
 import numpy as np
 from frechetdist import frdist
-from pymatgen.core import Composition, Element, Structure
+from pymatgen.core import Element
 from scipy.spatial.distance import cdist, jensenshannon
-from scipy.stats import gaussian_kde
-from sklearn.neighbors import KernelDensity
 
 
 def safe_float(value):

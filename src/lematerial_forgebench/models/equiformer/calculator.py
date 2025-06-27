@@ -1,15 +1,6 @@
 """Equiformer v2 model calculator implementation."""
 
-import numpy as np
-import torch
 from pymatgen.core.structure import Structure
-
-try:
-    from fairchem.core import OCPCalculator as EquiformerASECalculator
-
-    EQUIFORMER_AVAILABLE = True
-except ImportError:
-    EQUIFORMER_AVAILABLE = False
 
 from lematerial_forgebench.models.base import (
     BaseMLIPCalculator,
@@ -23,6 +14,13 @@ from lematerial_forgebench.models.equiformer.embeddings import (
 )
 from lematerial_forgebench.utils.logging import logger
 
+try:
+    from fairchem.core import OCPCalculator as EquiformerASECalculator
+
+    EQUIFORMER_AVAILABLE = True
+except ImportError:
+    EQUIFORMER_AVAILABLE = False
+
 
 class EquiformerCalculator(BaseMLIPCalculator):
     """Equiformer v2 calculator for energy/force calculations and embedding extraction."""
@@ -35,7 +33,7 @@ class EquiformerCalculator(BaseMLIPCalculator):
     ):
         if not EQUIFORMER_AVAILABLE:
             raise ImportError(
-                "Equiformer v2 is not available. Please install OCP and equiformer_v2."
+                "Equiformer v2 is not available. You may run uv sync --extra equiformer to install it."
             )
 
         self.model_path = model_path

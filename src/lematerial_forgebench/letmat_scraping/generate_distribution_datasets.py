@@ -1,3 +1,4 @@
+# ruff: noqa
 from multiprocessing import Pool, cpu_count
 
 import matplotlib.pyplot as plt

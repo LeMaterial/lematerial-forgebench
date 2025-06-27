@@ -1,9 +1,5 @@
 """ORB model calculator implementation."""
 
-import numpy as np
-import torch
-from orb_models.forcefield import pretrained
-from orb_models.forcefield.calculator import ORBCalculator as ORBASECalculator
 from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.models.base import (
@@ -16,6 +12,14 @@ from lematerial_forgebench.models.base import (
 from lematerial_forgebench.models.orb.embeddings import ORBEmbeddingExtractor
 from lematerial_forgebench.utils.logging import logger
 
+try:
+    from orb_models.forcefield import pretrained
+    from orb_models.forcefield.calculator import ORBCalculator as ORBASECalculator
+
+    ORB_AVAILABLE = True
+except ImportError:
+    ORB_AVAILABLE = False
+
 
 class ORBCalculator(BaseMLIPCalculator):
     """ORB calculator for energy/force calculations and embedding extraction."""
@@ -27,6 +31,11 @@ class ORBCalculator(BaseMLIPCalculator):
         precision: str = "float32-high",
         **kwargs,
     ):
+        if not ORB_AVAILABLE:
+            raise ImportError(
+                "ORB is not available. You may run uv sync --extra orb to install it."
+            )
+
         self.model_type = model_type
         super().__init__(device=device, precision=precision, **kwargs)
 

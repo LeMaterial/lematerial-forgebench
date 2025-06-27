@@ -20,6 +20,7 @@ from pymatgen.analysis.local_env import (
 from pymatgen.core import Composition
 from pymatgen.core.periodic_table import Element
 from pymatgen.core.structure import Structure
+from pymatgen.io.cif import CifParser, CifWriter
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
 from lematerial_forgebench.utils.logging import logger
@@ -957,9 +958,6 @@ class PhysicalPlausibilityMetric(BaseMetric):
         if check_format:
             total_checks += 1
             # Try to convert to CIF format and back
-            import io
-
-            from pymatgen.io.cif import CifParser, CifWriter
 
             # Write to CIF
             cif_writer = CifWriter(structure)

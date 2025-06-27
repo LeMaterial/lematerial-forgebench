@@ -1,6 +1,5 @@
 """Tests for stability benchmark."""
 
-import numpy as np
 from pymatgen.util.testing import PymatgenTest
 
 from lematerial_forgebench.benchmarks.stability_benchmark import StabilityBenchmark

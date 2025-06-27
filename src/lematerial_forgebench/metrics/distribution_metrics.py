@@ -4,25 +4,18 @@ This module implements distribution metrics that quantify the degree of similari
 between a set of structures sampled from a generative model and a database of materials.
 """
 
-import time
-from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from dataclasses import dataclass
+from typing import Any, Dict
 
 import numpy as np
 import pandas as pd
-from pymatgen.analysis.bond_valence import BVAnalyzer
-from pymatgen.analysis.local_env import CrystalNN, VoronoiNN
-from pymatgen.core.periodic_table import Element
-from pymatgen.core.structure import Structure
 
-from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
+from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig
 from lematerial_forgebench.utils.distribution_utils import (
     compute_frechetdist,
     compute_jensen_shannon_distance,
     compute_mmd,
-    compute_shannon_entropy,
 )
-from lematerial_forgebench.utils.logging import logger
 
 
 @dataclass

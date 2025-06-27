@@ -7,7 +7,6 @@ from lematerial_forgebench.utils.oxidation_state import (
     build_oxi_dict_probs,
     build_oxi_state_map,
     build_sorted_oxi_dict,
-    oxi_state_map,
 )
 
 if __name__ == "__main__":

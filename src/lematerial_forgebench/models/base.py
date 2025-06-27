@@ -6,7 +6,7 @@ into the benchmark framework.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Tuple, Union
 
 import numpy as np
 import torch
@@ -17,7 +17,6 @@ from lematerial_forgebench.preprocess.reference_energies import (
     get_energy_above_hull,
     get_formation_energy_from_composition_energy,
 )
-from lematerial_forgebench.utils.logging import logger
 
 
 @dataclass

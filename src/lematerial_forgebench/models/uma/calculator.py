@@ -2,17 +2,7 @@
 
 from copy import deepcopy
 
-import numpy as np
-import torch
 from pymatgen.core.structure import Structure
-
-try:
-    from fairchem.core import pretrained_mlip
-    from fairchem.core.calculate.ase_calculator import FAIRChemCalculator
-
-    UMA_AVAILABLE = True
-except ImportError:
-    UMA_AVAILABLE = False
 
 from lematerial_forgebench.models.base import (
     BaseMLIPCalculator,
@@ -22,10 +12,17 @@ from lematerial_forgebench.models.base import (
     get_formation_energy_from_total_energy,
 )
 from lematerial_forgebench.models.uma.embeddings import (
-    UMAASECalculator,
     UMAEmbeddingExtractor,
 )
 from lematerial_forgebench.utils.logging import logger
+
+try:
+    from fairchem.core import pretrained_mlip
+    from fairchem.core.calculate.ase_calculator import FAIRChemCalculator
+
+    UMA_AVAILABLE = True
+except ImportError:
+    UMA_AVAILABLE = False
 
 
 class UMACalculator(BaseMLIPCalculator):
@@ -42,7 +39,7 @@ class UMACalculator(BaseMLIPCalculator):
         if not UMA_AVAILABLE:
             raise ImportError(
                 "UMA/FAIRChem is not available. Please install it with: "
-                "pip install fairchem-core>=2.1.0"
+                "uv pip install fairchem-core>=2.1.0"
             )
 
         self.model_name = model_name

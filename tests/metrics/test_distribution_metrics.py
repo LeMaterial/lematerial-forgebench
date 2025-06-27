@@ -5,7 +5,6 @@ import pickle
 import numpy as np
 import pandas as pd
 import pytest
-from pymatgen.core.structure import Structure
 from pymatgen.util.testing import PymatgenTest
 
 from lematerial_forgebench.metrics.distribution_metrics import MMD, JSDistance

@@ -11,7 +11,6 @@ from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
 from lematerial_forgebench.metrics.validity_metrics import (
     ChargeNeutralityMetric,
     CompositeValidityMetric,
-    # CoordinationEnvironmentMetric,
     MinimumInteratomicDistanceMetric,
     PhysicalPlausibilityMetric,
 )
