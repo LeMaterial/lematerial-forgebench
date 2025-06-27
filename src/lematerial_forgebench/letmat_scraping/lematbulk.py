@@ -9,7 +9,7 @@ from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 from tqdm import tqdm
 
 
-def get_inequivalent_site_info(structure):
+def get_inequivalent_site_info(structure: Structure) -> dict:
     """Gets the symmetrically inequivalent sites as found by the
     SpacegroupAnalyzer class from Pymatgen.
 
@@ -42,7 +42,19 @@ def get_inequivalent_site_info(structure):
     }
 
 
-def lematbulk_item_to_structure(item: dict):
+def lematbulk_item_to_structure(item: dict) -> Structure:
+    """Convert a LeMat-Bulk item to a pymatgen Structure object.
+
+    Parameters
+    ----------
+    item : dict
+        The item to convert.
+
+    Returns
+    -------
+    Structure
+        The pymatgen Structure object.
+    """
     sites = item["species_at_sites"]
     coords = item["cartesian_site_positions"]
     cell = item["lattice_vectors"]
@@ -54,7 +66,32 @@ def lematbulk_item_to_structure(item: dict):
     return structure
 
 
-def map_space_group_to_crystal_system(space_group: int):
+def map_space_group_to_crystal_system(space_group: int) -> str:
+    """Map a space group number to a crystal system.
+
+    Crystal systems are defined as follows:
+    - Triclinic: 2 <= space_group <= 15
+    - Monoclinic: 15 < space_group <= 74
+    - Orthorhombic: 74 < space_group <= 142
+    - Tetragonal: 142 < space_group <= 167
+    - Trigonal: 167 < space_group <= 194
+    - Hexagonal: 194 < space_group <= 230
+
+    Parameters
+    ----------
+    space_group : int
+        The space group number to map.
+
+    Returns
+    -------
+    str
+        The crystal system corresponding to the space group number.
+
+    Raises
+    ------
+    ValueError
+        If the space group number is not in the range of valid space group numbers.
+    """
     if space_group <= 2 and space_group > 0:
         return "triclinic"
     elif space_group <= 15 and space_group > 2:
@@ -74,11 +111,20 @@ def map_space_group_to_crystal_system(space_group: int):
 
 
 def process_item_action(item):
-    """
-    as its currently written, this function extracts the density of a crystal
-    (in units of atoms/volume) and adds it to a list that will eventually include
+    """Extracts the density of a crystal (in units of atoms/volume)
+    and adds it to a list that will eventually include
     all LeMat-Bulk crystals. However, it can be amended to find any associated value
     (e.g. oxidation state) by editing the function and the accumulation list.
+
+    Parameters
+    ----------
+    item : dict
+        The item to process.
+
+    Returns
+    -------
+    list[Any]
+        The result of the processing of the item.
     """
     LeMatID = item["immutable_id"]
     strut = lematbulk_item_to_structure(item)
@@ -97,13 +143,22 @@ def process_item_action(item):
     species = strut.species
     sites = get_inequivalent_site_info(strut)
 
-    # except:
-    # pass
-
     return [LeMatID, sites, species, valences_calculated]
 
 
 def process_item_wrapper(item):
+    """Process an item.
+
+    Parameters
+    ----------
+    item : dict
+        The item to process.
+
+    Returns
+    -------
+    list[Any]
+        The result of the processing of the item.
+    """
     LeMatID = item["immutable_id"]
     try:
         result = func_timeout(
@@ -116,6 +171,22 @@ def process_item_wrapper(item):
 
 
 def process_items_parallel(dataset, chunk_size=1000, num_workers=None):
+    """Process items in parallel.
+
+    Parameters
+    ----------
+    dataset : Dataset
+        The dataset to process.
+    chunk_size : int, optional
+        The size of the chunks to process.
+    num_workers : int, optional
+        The number of workers to use.
+
+    Yields
+    ------
+    list[list[Any]]
+        A list of lists, each containing the results of the processing of a chunk of the dataset.
+    """
     if num_workers is None:
         num_workers = cpu_count()
 
@@ -135,20 +206,22 @@ def process_items_parallel(dataset, chunk_size=1000, num_workers=None):
 
 
 if __name__ == "__main__":
+    import pandas as pd
+
     dataset_name = "Lematerial/LeMat-Bulk"
     name = "compatible_pbe"
     split = "train"
     dataset = load_dataset(dataset_name, name=name, split=split, streaming=False)
+    target_columns = ["LeMatID", "Sites", "Species", "ValencesCalculated"]
 
-    for i in np.arange(
-        0, 5400000, 100000
-    ):  # TODO had to skip 1800000-1900000 and 2300000-2400000 due to unknown errors, interpreter seems to die for no reason and provide no error message
-        if i == 5300000:
-            dataset_temp = dataset.select(range(i, i + 35299))
+    for i in np.arange(0, 5_400_000, 100_000):
+        if i == 5_300_000:
+            dataset_temp = dataset.select(range(i, i + 35_299))
             print(dataset_temp[0])
         else:
-            dataset_temp = dataset.select(range(i, i + 100000))
+            dataset_temp = dataset.select(range(i, i + 100_000))
             print(dataset_temp[0])
+
         # Process and handle results as they come
         print(
             f"Processing {len(dataset_temp)} structures using {cpu_count()} workers..."
@@ -158,12 +231,6 @@ if __name__ == "__main__":
             results.append(result)
 
         print("Creating DataFrame and saving to pkl...")
-        import pandas as pd
 
-        # df = pd.DataFrame(results, columns=["LeMatID", "SpaceGroup", "CrystalSystem",
-        #                                "a", "b", "c", "alpha", "beta", "gamma", "density"])
-
-        df = pd.DataFrame(
-            results, columns=["LeMatID", "Sites", "Species", "ValencesCalculated"]
-        )
+        df = pd.DataFrame(results, columns=target_columns)
         df.to_pickle("lematbulk_oxi_full_" + str(i) + ".pkl")
