@@ -12,6 +12,7 @@ assess different aspects of generated materials.
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+import pandas as pd
 from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.evaluator import (
@@ -137,6 +138,7 @@ class BaseBenchmark(ABC):
     def evaluate(
         self,
         structures: list[Structure],
+        reference_df: pd.DataFrame | None = None,
     ) -> BenchmarkResult:
         """Run the complete benchmark evaluation.
 
@@ -154,10 +156,9 @@ class BaseBenchmark(ABC):
         for name, evaluator in self.evaluators.items():
             result = evaluator.evaluate(
                 structures=structures,
+                reference_df=reference_df,
             )
-            # print(result.metric_results)
-            # print(result.combined_value)
-            # print(type(result))
+
             evaluator_results[name] = {
                 "combined_value": result.combined_value,
                 **{
@@ -172,7 +173,7 @@ class BaseBenchmark(ABC):
             }
 
         final_scores = self.aggregate_evaluator_results(evaluator_results)
-        print(final_scores)
+        # print(final_scores)
         result_metadata = {
             "benchmark_name": self.config.name,
             "benchmark_description": self.config.description,

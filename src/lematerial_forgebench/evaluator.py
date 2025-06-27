@@ -8,6 +8,7 @@ import time
 from dataclasses import dataclass
 
 import numpy as np
+import pandas as pd
 from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
@@ -169,6 +170,7 @@ class MetricEvaluator:
     def evaluate(
         self,
         structures: list[Structure],
+        reference_df: pd.DataFrame | None = None,
     ) -> EvaluationResult:
         """Evaluate all metrics on the given structures.
 
@@ -176,6 +178,8 @@ class MetricEvaluator:
         ----------
         structures : list[Structure]
             Structures to evaluate.
+        reference_df: pd.DataFrame, optional
+            A reference distribution to compare a sample of structures to.
 
         Returns
         -------
@@ -190,9 +194,14 @@ class MetricEvaluator:
         # each metric handles its own parallelization
         for metric_name, metric in self.metrics.items():
             try:
-                result = metric.compute(
-                    structures=structures,
-                )
+                if reference_df is None:
+                    result = metric.compute(structures=structures)
+                else:
+                    result = metric.compute(
+                        structures=structures,
+                        reference_df=reference_df,
+                    )
+
                 metric_results[metric_name] = result
 
             except Exception as e:
@@ -211,41 +220,43 @@ class MetricEvaluator:
 
         # Combine results if weights provided
         combined_value = None
+        try:
+            if self.config.weights is not None:
+                values = []
+                weights = []
+                all_uncertainties = {}
 
-        if self.config.weights is not None:
-            values = []
-            weights = []
-            all_uncertainties = {}
+                for metric_name, metric in self.config.metrics.items():
+                    result = metric_results[metric_name]
+                    if not np.isnan(result.value):
+                        value = result.value
 
-            for metric_name, metric in self.config.metrics.items():
-                result = metric_results[metric_name]
-                if not np.isnan(result.value):
-                    value = result.value
+                        values.append(value)
+                        weights.append(self.config.weights[metric_name])
 
-                    values.append(value)
-                    weights.append(self.config.weights[metric_name])
+                        if result.uncertainties:
+                            for key, val in result.uncertainties.items():
+                                if key not in all_uncertainties:
+                                    all_uncertainties[key] = []
+                                all_uncertainties[key].append(val)
 
-                    if result.uncertainties:
-                        for key, val in result.uncertainties.items():
-                            if key not in all_uncertainties:
-                                all_uncertainties[key] = []
-                            all_uncertainties[key].append(val)
+                if values:
+                    weights = np.array(weights) / np.sum(weights)  # Normalize weights
 
-            if values:
-                weights = np.array(weights) / np.sum(weights)  # Normalize weights
-
-                if self.config.aggregation_method == "weighted_sum":
-                    combined_value = np.sum(np.array(values) * weights)
-                elif self.config.aggregation_method == "weighted_mean":
-                    combined_value = np.average(values, weights=weights)
-                elif self.config.aggregation_method == "min":
-                    combined_value = np.min(values)
-                elif self.config.aggregation_method == "max":
-                    combined_value = np.max(values)
-                else:
-                    raise ValueError(
-                        f"Unknown aggregation method: {self.config.aggregation_method}"
-                    )
+                    if self.config.aggregation_method == "weighted_sum":
+                        combined_value = np.sum(np.array(values) * weights)
+                    elif self.config.aggregation_method == "weighted_mean":
+                        combined_value = np.average(values, weights=weights)
+                    elif self.config.aggregation_method == "min":
+                        combined_value = np.min(values)
+                    elif self.config.aggregation_method == "max":
+                        combined_value = np.max(values)
+                    else:
+                        raise ValueError(
+                            f"Unknown aggregation method: {self.config.aggregation_method}"
+                        )
+        except TypeError:
+            pass
 
         return EvaluationResult(
             metric_results=metric_results,
