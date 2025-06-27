@@ -526,7 +526,7 @@ class TestErrorHandling:
                 assert isinstance(result, float)
                 assert not np.isnan(result)
                 assert result > 0
-            except Exception as e:
+            except Exception:
                 # If this fails, it might be due to missing elements in data_props
                 # which is fine for this test
                 pass
