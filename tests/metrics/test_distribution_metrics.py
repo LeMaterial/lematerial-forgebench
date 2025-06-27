@@ -24,8 +24,15 @@ def valid_structures():
     ]
     return structures
 
+@pytest.fixture
+def reference_data():
+    "create reference dataset"
+    with open("data/small_lematbulk.pkl", "rb") as f:
+        reference_df = pickle.load(f)
 
-def test_JSDistance_metric(valid_structures):
+    return reference_df 
+
+def test_JSDistance_metric(valid_structures, reference_data):
     """Test JSDistance_metric on valid structures."""
     distribution_preprocessor = DistributionPreprocessor()
     preprocessor_result = distribution_preprocessor(valid_structures)
@@ -41,10 +48,9 @@ def test_JSDistance_metric(valid_structures):
             "Composition",
         ],
     )
-    with open("data/small_lematbulk.pkl", "rb") as f:
-        test_lemat = pickle.load(f)
-    metric = JSDistance()
-    result = metric([test_df], test_lemat)
+
+    metric = JSDistance(reference_data)
+    result = metric([test_df])
 
     # Check computation didn't fail
     assert len(result.failed_indices) == 0
@@ -59,7 +65,7 @@ def test_JSDistance_metric(valid_structures):
         assert 0.0 <= val <= 1.0
 
 
-def test_MMD_metric(valid_structures):
+def test_MMD_metric(valid_structures, reference_data):
     """Test MMD_metric on valid structures."""
     distribution_preprocessor = DistributionPreprocessor()
     preprocessor_result = distribution_preprocessor(valid_structures)
@@ -76,10 +82,8 @@ def test_MMD_metric(valid_structures):
         ],
     )
 
-    with open("data/small_lematbulk.pkl", "rb") as f:
-        test_lemat = pickle.load(f)
-    metric = MMD()
-    result = metric([test_df], test_lemat)
+    metric = MMD(reference_data)
+    result = metric([test_df])
     # Check computation didn't fail
     assert len(result.failed_indices) == 0
 

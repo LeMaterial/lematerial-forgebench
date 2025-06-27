@@ -43,7 +43,7 @@ class BenchmarkConfig:
     description: str
     evaluator_configs: dict[str, EvaluatorConfig]
     metadata: dict[str, any] | None = None
-
+    reference_df: pd.DataFrame | None = None 
 
 @dataclass
 class BenchmarkResult:
@@ -92,12 +92,14 @@ class BaseBenchmark(ABC):
         description: str,
         evaluator_configs: dict[str, EvaluatorConfig],
         metadata: dict[str, any] | None = None,
+        reference_df: pd.DataFrame | None = None,
     ):
         self.config = BenchmarkConfig(
             name=name,
             description=description,
             evaluator_configs=evaluator_configs,
             metadata=metadata or {},
+            reference_df=reference_df,
         )
 
         # Create evaluators from configs
