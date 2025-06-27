@@ -312,7 +312,7 @@ class BaseMetric(ABC):
     def compute(
         self,
         structures: list[Structure],
-        reference_df: pd.DataFrame | None = None,
+        **compute_args: Any,
     ) -> MetricResult:
         """Compute the metric on a batch of structures.
 
@@ -338,13 +338,7 @@ class BaseMetric(ABC):
                 # Serial computation
                 for idx, structure in enumerate(structures):
                     try:
-                        if reference_df is None:
-                            value = self.compute_structure(structure, **compute_args)
-                        else:
-                            value = self.compute_structure(
-                                structure, reference_df, **compute_args
-                            )
-
+                        value = self.compute_structure(structure, **compute_args)
                         values.append(value)
                     except Exception as e:
                         failed_indices.append(idx)
@@ -436,7 +430,7 @@ class BaseMetric(ABC):
     def __call__(
         self,
         structures: list[Structure] | list[dict] | pd.DataFrame | str | Path,
-        reference_df: pd.DataFrame | None = None,
+        **compute_args: Any,
     ) -> MetricResult:
         """Convenient callable interface for computing the metric.
 
@@ -445,16 +439,16 @@ class BaseMetric(ABC):
         structures : list[Structure] | list[dict] | pd.DataFrame | str | Path
             Structures to evaluate in various supported formats.
 
+        **compute_args : Any
+            Additional keyword arguments for the compute_structure method.
+
         Returns
         -------
         MetricResult
             Object containing the metric value and computation metadata.
         """
         structures_list = format_structures(structures)
-        if reference_df is None:
-            return self.compute(structures_list)
-        else:
-            return self.compute(structures_list, reference_df)
+        return self.compute(structures_list, **compute_args)
 
     @classmethod
     def from_config(cls, config: MetricConfig) -> ClassVar:

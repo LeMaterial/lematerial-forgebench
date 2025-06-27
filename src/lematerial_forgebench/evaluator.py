@@ -79,37 +79,40 @@ class MetricEvaluator:
 
     Example
     -------
-    >>> metrics = {
-    ...     "StructuralDiversity": MetricConfig(
-    ...         name="StructuralDiversity",
-    ...         description="Structural diversity metric",
-    ...         metric=StructuralDiversityMetric(),
-    ...     ),
-    ...     "CompositionDiversity": MetricConfig(
-    ...         name="CompositionDiversity",
-    ...         description="Composition diversity metric",
-    ...         metric=CompositionDiversityMetric(),
-    ...     ),
-    ...     "Novelty": MetricConfig(
-    ...         name="Novelty",
-    ...         description="Novelty metric",
-    ...         metric=NoveltyMetric(),
-    ...     )
-    ... }
-    >>> weights = {
-    ...     "StructuralDiversity": 0.4,
-    ...     "CompositionDiversity": 0.4,
-    ...     "Novelty": 0.2
-    ... }
-    >>> evaluator = MetricEvaluator(
-    ...     metrics=metrics,
-    ...     weights=weights,
-    ...     aggregation_method="weighted_mean"
-    ... )
-    >>> result = evaluator.evaluate(structures)
-    >>> print(f"Combined score: {result.combined_value:.3f}")
-    >>> for name, res in result.metric_results.items():
-    ...     print(f"{name}: {res.value:.3f}")
+
+    .. code-block:: python
+
+        metrics = {
+            "StructuralDiversity": MetricConfig(
+                name="StructuralDiversity",
+                description="Structural diversity metric",
+                metric=StructuralDiversityMetric(),
+            ),
+            "CompositionDiversity": MetricConfig(
+                name="CompositionDiversity",
+                description="Composition diversity metric",
+                metric=CompositionDiversityMetric(),
+            ),
+            "Novelty": MetricConfig(
+                name="Novelty",
+                description="Novelty metric",
+                metric=NoveltyMetric(),
+            )
+        }
+        weights = {
+            "StructuralDiversity": 0.4,
+            "CompositionDiversity": 0.4,
+            "Novelty": 0.2
+        }
+        evaluator = MetricEvaluator(
+            metrics=metrics,
+            weights=weights,
+            aggregation_method="weighted_mean"
+        )
+        result = evaluator.evaluate(structures)
+        print(f"Combined score: {result.combined_value:.3f}")
+        for name, res in result.metric_results.items():
+            print(f"{name}: {res.value:.3f}")
     """
 
     def __init__(

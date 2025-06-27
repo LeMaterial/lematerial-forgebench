@@ -2,6 +2,18 @@
 
 This module implements distribution metrics that quantify the degree of similarity
 between a set of structures sampled from a generative model and a database of materials.
+
+.. note::
+
+    Example usage to be improved ⬇️
+
+.. code-block:: python
+
+    from lematerial_forgebench.metrics.distribution_metrics import JSDistance
+    from lematerial_forgebench.metrics.base import MetricEvaluator
+
+    metric = JSDistance()
+    evaluator = MetricEvaluator(metric)
 """
 
 from dataclasses import dataclass
@@ -68,8 +80,13 @@ class JSDistance(BaseMetric):
         return {}
 
     @staticmethod
-    def compute_structure(structure: pd.DataFrame, reference_df: str) -> dict:
+    def compute_structure(structure: pd.DataFrame, **compute_args: Any) -> dict:
         """Compute the similarity of the structure to a target distribution.
+
+        Important
+        ---------
+        This metric expects a `reference_df` to be passed to the `compute_structure` method.
+        The `reference_df` is a pandas dataframe that contains
 
         Parameters
         ----------
@@ -80,6 +97,10 @@ class JSDistance(BaseMetric):
             which specifies the format, column names etc used here for compatibility with
             the reference datasets. When changing the reference dataset, ensure the
             column names etc correspond to those found in the above script.
+        **compute_args : Any
+            Required: reference_df
+            Optional: None
+            This is used to pass the reference dataframe to the compute_structure method.
 
         Returns
         -------
@@ -87,6 +108,11 @@ class JSDistance(BaseMetric):
             Jensen-Shannon Distances, where the keys are the structural property
             and the values are the JS Distances.
         """
+        reference_df = compute_args.get("reference_df")
+        if reference_df is None:
+            raise ValueError(
+                "a `reference_df` arg is required to compute the JSDistance"
+            )
 
         quantities = structure.columns
         dist_metrics = {}
@@ -279,7 +305,7 @@ class FrechetDistance(BaseMetric):
         return {}
 
     @staticmethod
-    def compute_structure(structure: pd.DataFrame, reference_df: str) -> float:
+    def compute_structure(structure: pd.DataFrame, reference_df: pd.DataFrame) -> float:
         """Compute the similarity of the structure to a target distribution."""
         dist_metrics = {}
         quantities = structure.columns
