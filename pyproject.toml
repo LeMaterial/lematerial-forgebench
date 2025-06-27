@@ -42,9 +42,7 @@ orb = [
     "torch-cluster==1.6.3+pt26cu124; sys_platform != 'darwin'",
     "torch-spline-conv==1.2.2+pt26cu124; sys_platform != 'darwin'",
 ]
-fairchem = [
-    "fairchem-core>=2.1.0",
-]
+fairchem = ["fairchem-core>=2.1.0"]
 equiformer = [
     "torch==2.4.0",
     "fairchem-core==1.10.0",
@@ -90,13 +88,13 @@ conflicts = [
     [
         { extra = "fairchem" },
         { extra = "orb" },
-        { extra = "equiformer" }
+        { extra = "equiformer" },
     ],
     [
         { extra = "fairchem" },
         { extra = "mace" },
-        { extra = "equiformer" }
-    ]
+        { extra = "equiformer" },
+    ],
 ]
 
 [tool.uv.sources]
