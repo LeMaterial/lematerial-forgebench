@@ -328,7 +328,6 @@ class HHIProductionMetric(BaseHHIMetric):
         """
         # Import HHI production data
         try:
-            import os
             from pathlib import Path
 
             # Get the root directory (go up from metrics folder to lematerial_forgebench to src to root)
@@ -395,7 +394,6 @@ class HHIReserveMetric(BaseHHIMetric):
         """
         # Import HHI reserve data
         try:
-            import os
             from pathlib import Path
 
             # Get the root directory (go up from metrics folder to lematerial_forgebench to src to root)

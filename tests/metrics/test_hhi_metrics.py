@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from pymatgen.core import Lattice, Structure
+from pymatgen.core import Structure
 
 from lematerial_forgebench.metrics.base import MetricResult
 from lematerial_forgebench.metrics.hhi_metrics import (
@@ -100,7 +100,6 @@ class TestHHIProductionMetric:
         assert result > 0  # HHI should be positive
 
         # For pure Fe, should equal scaled Fe HHI value
-        import os
         from pathlib import Path
 
         # Get the root directory (go up from test file to tests to root)
@@ -138,7 +137,6 @@ class TestHHIProductionMetric:
         assert result > 0
 
         # Should be weighted average of Na and Cl HHI values
-        import os
         from pathlib import Path
 
         # Get the root directory (go up from test file to tests to root)
@@ -372,7 +370,6 @@ class TestHHIReserveMetric:
         assert result > 0
 
         # For pure Fe, should equal scaled Fe HHI reserve value
-        import os
         from pathlib import Path
 
         # Get the root directory (go up from test file to tests to root)
@@ -411,7 +408,6 @@ class TestCompoundHHIFunction:
 
     def test_compound_hhi_simple(self):
         """Test compound HHI function with simple compounds."""
-        import os
         from pathlib import Path
 
         # Get the root directory (go up from test file to tests to root)
@@ -424,7 +420,7 @@ class TestCompoundHHIFunction:
         if str(root_dir) not in sys.path:
             sys.path.insert(0, str(root_dir))
 
-        from data.data_props import hhi_production, hhi_reserve
+        from data.data_props import hhi_production
 
         # Test with a simple compound
         result = compound_hhi("NaCl", hhi_production)
@@ -438,7 +434,6 @@ class TestCompoundHHIFunction:
 
     def test_compound_hhi_complex(self):
         """Test compound HHI function with complex compounds."""
-        import os
         from pathlib import Path
 
         # Get the root directory (go up from test file to tests to root)
@@ -467,7 +462,6 @@ class TestCompoundHHIFunction:
 
     def test_compound_hhi_consistency(self):
         """Test that standalone function gives same results as metric."""
-        import os
         from pathlib import Path
 
         # Get the root directory (go up from test file to tests to root)

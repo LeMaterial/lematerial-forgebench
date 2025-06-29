@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Set
 import numpy as np
 from datasets import load_dataset
 from material_hasher.hasher.bawl import BAWLHasher
-from pymatgen.analysis.local_env import EconNN, NearNeighbors
+from pymatgen.analysis.local_env import EconNN
 from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig
