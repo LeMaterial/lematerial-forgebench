@@ -16,13 +16,15 @@ between a set of structures sampled from a generative model and a database of ma
     evaluator = MetricEvaluator(metric)
 """
 
+import time
 from dataclasses import dataclass
 from typing import Any, Dict
 
 import numpy as np
 import pandas as pd
+from pymatgen.core import Structure
 
-from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig
+from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
 from lematerial_forgebench.utils.distribution_utils import (
     compute_frechetdist,
     compute_jensen_shannon_distance,
@@ -88,8 +90,7 @@ class JSDistance(BaseMetric):
         """Get the attributes for the compute_structure method."""
         return {"reference_df": self.config.reference_df}
 
-    @staticmethod
-    def compute_structure(structure: pd.DataFrame, **compute_args: Any) -> dict:
+    def compute(self, structures: list[Structure], **compute_args: Any) -> MetricResult:
         """Compute the similarity of the structure to a target distribution.
 
         Important
@@ -99,7 +100,7 @@ class JSDistance(BaseMetric):
 
         Parameters
         ----------
-        structure : pandas DataFrame
+        structure : Structure
             Contains the values of the structural properties of interest for
             each of the structures in the distribution. This dataframe is
             calculated by "src/lematerial_forgebench/preprocess/distribution_preprocess.py"
@@ -117,13 +118,22 @@ class JSDistance(BaseMetric):
             Jensen-Shannon Distances, where the keys are the structural property
             and the values are the JS Distances.
         """
+
+        start_time = time.time()
+        all_properties = [
+            structure.properties.get("distribution_properties", {})
+            for structure in structures
+        ]
+
+        df_all_properties = pd.DataFrame(all_properties)
+
         reference_df = compute_args.get("reference_df")
         if reference_df is None:
             raise ValueError(
                 "a `reference_df` arg is required to compute the JSDistance"
             )
 
-        quantities = structure.columns
+        quantities = list(df_all_properties.columns)
         dist_metrics = {}
         for quant in quantities:
             if quant in reference_df.columns:
@@ -132,7 +142,7 @@ class JSDistance(BaseMetric):
                 else:
                     js = compute_jensen_shannon_distance(
                         reference_df,
-                        structure,
+                        df_all_properties,
                         quant,
                         metric_type=type(reference_df[quant].iloc[0]),
                     )
@@ -141,12 +151,37 @@ class JSDistance(BaseMetric):
         for quant in ["CompositionCounts", "Composition"]:
             js = compute_jensen_shannon_distance(
                 reference_df,
-                structure,
+                df_all_properties,
                 quant,
-                metric_type=type(structure[quant].iloc[0]),
+                metric_type=type(df_all_properties[quant].iloc[0]),
             )
             dist_metrics[quant] = js
-        return dist_metrics
+
+        end_time = time.time()
+        computation_time = end_time - start_time
+
+        # This metric is used by default for ranking and comparison purposes
+        dist_metrics["Average_Jensen_Shannon_Distance"] = np.mean(
+            list(dist_metrics.values())
+        )
+
+        return MetricResult(
+            metrics=dist_metrics,
+            primary_metric="Average_Jensen_Shannon_Distance",
+            uncertainties={},
+            config=self.config,
+            computation_time=computation_time,
+            n_structures=len(structures),
+            individual_values=None,  # Grouped metric
+            failed_indices=[],
+            warnings=[],
+        )
+
+    @staticmethod
+    def compute_structure(structure: Structure, **compute_args: Any) -> dict:
+        raise NotImplementedError(
+            "This method is not supported for this metric because it is a batch metric"
+        )
 
     def aggregate_results(self, values: dict[str, float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -228,33 +263,42 @@ class MMD(BaseMetric):
         """Get the attributes for the compute_structure method."""
         return {"reference_df": self.config.reference_df}
 
-    @staticmethod
-    def compute_structure(structure: pd.DataFrame, reference_df: str) -> float:
-        """Compute the similarity of the structure to a target distribution.
+    def compute(self, structures: list[Structure], **compute_args: Any) -> MetricResult:
+        """Compute the similarity of a sample of structures to a target distribution.
 
         Parameters
         ----------
-        structure : Structure
-            A pymatgen Structure object to evaluate. TODO list of structures? may already
-            be what this is primed to deal with?
+        structures : list[Structure]
+            A list of pymatgen Structure objects to evaluate.
 
 
         Returns
         -------
-        float
-            MMD
+        dict[str, float]
+            MMD values for each structural property.
         """
+        start_time = time.time()
         np.random.seed(32)
+
+        all_properties = [
+            structure.properties.get("distribution_properties", {})
+            for structure in structures
+        ]
+        df_all_properties = pd.DataFrame(all_properties)
+        reference_df = compute_args.get("reference_df")
+        if reference_df is None:
+            raise ValueError("a `reference_df` arg is required to compute the MMD")
+
         if len(reference_df) > 10000:
             ref_ints = np.random.randint(0, len(reference_df), 10000)
             ref_sample_df = reference_df.iloc[ref_ints]
         else:
             ref_sample_df = reference_df
-        if len(structure) > 10000:
-            strut_ints = np.random.randint(0, len(structure), 10000)
-            strut_sample_df = structure.iloc[strut_ints]
+        if len(df_all_properties) > 10000:
+            strut_ints = np.random.randint(0, len(df_all_properties), 10000)
+            strut_sample_df = df_all_properties.iloc[strut_ints]
         else:
-            strut_sample_df = structure
+            strut_sample_df = df_all_properties
         dist_metrics = {}
         quantities = strut_sample_df.columns
         for quant in quantities:
@@ -270,7 +314,27 @@ class MMD(BaseMetric):
                     except ValueError:
                         pass
 
-        return dist_metrics
+        end_time = time.time()
+
+        dist_metrics["Average_MMD"] = np.mean(list(dist_metrics.values()))
+
+        return MetricResult(
+            metrics=dist_metrics,
+            primary_metric="Average_MMD",
+            uncertainties={},
+            config=self.config,
+            computation_time=end_time - start_time,
+            n_structures=len(structures),
+            individual_values=None,  # Grouped metric
+            failed_indices=[],
+            warnings=[],
+        )
+
+    @staticmethod
+    def compute_structure(structure: Structure, **compute_args: Any) -> float:
+        raise NotImplementedError(
+            "This method is not supported for this metric because it is a batch metric"
+        )
 
     def aggregate_results(self, values: dict[str, float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
@@ -307,7 +371,7 @@ class MMD(BaseMetric):
 
 @dataclass
 class FrechetDistanceConfig(MetricConfig):
-    """Configuration for the MMD metric.
+    """Configuration for the FrechetDistance metric.
 
     Parameters
     ----------
@@ -343,17 +407,53 @@ class FrechetDistance(BaseMetric):
         """Get the attributes for the compute_structure method."""
         return {"reference_df": self.config.reference_df}
 
-    @staticmethod
-    def compute_structure(structure: pd.DataFrame, reference_df: pd.DataFrame) -> float:
-        """Compute the similarity of the structure to a target distribution."""
+    def compute(self, structures: list[Structure], **compute_args: Any) -> MetricResult:
+        """Compute the similarity of a sample of structures to a target distribution."""
+        start_time = time.time()
+
+        all_properties = [
+            structure.properties.get("distribution_properties", {})
+            for structure in structures
+        ]
+        df_all_properties = pd.DataFrame(all_properties)
+        reference_df = compute_args.get("reference_df")
+
+        if reference_df is None:
+            raise ValueError(
+                "a `reference_df` arg is required to compute the FrechetDistance"
+            )
+
         dist_metrics = {}
-        quantities = structure.columns
+        quantities = df_all_properties.columns
         for quant in quantities:
             if quant in reference_df.columns:
-                frechetdist = compute_frechetdist(reference_df, structure, quant)
+                frechetdist = compute_frechetdist(
+                    reference_df, df_all_properties, quant
+                )
                 dist_metrics[quant] = frechetdist
 
-        return dist_metrics
+        end_time = time.time()
+        dist_metrics["Average_FrechetDistance"] = np.mean(list(dist_metrics.values()))
+        breakpoint()
+
+        return MetricResult(
+            metrics=dist_metrics,
+            primary_metric="Average_FrechetDistance",
+            uncertainties={},
+            config=self.config,
+            computation_time=end_time - start_time,
+            n_structures=len(structures),
+            individual_values=None,  # Grouped metric
+            failed_indices=[],
+            warnings=[],
+        )
+
+    @staticmethod
+    def compute_structure(structure: Structure, **compute_args: Any) -> float:
+        """Compute the similarity of the structure to a target distribution."""
+        raise NotImplementedError(
+            "This method is not supported for this metric because it is a batch metric"
+        )
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values.
