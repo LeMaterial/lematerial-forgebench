@@ -118,7 +118,6 @@ class JSDistance(BaseMetric):
             and the values are the JS Distances.
         """
         reference_df = compute_args.get("reference_df")
-        breakpoint()
         if reference_df is None:
             raise ValueError(
                 "a `reference_df` arg is required to compute the JSDistance"
