@@ -39,18 +39,20 @@ def test_JSDistance_metric(valid_structures, reference_data):
     preprocessor_result = distribution_preprocessor(valid_structures)
 
     metric = JSDistance(reference_data)
-    result = metric(preprocessor_result.processed_structures)
+    result = metric.compute(
+        preprocessor_result.processed_structures, reference_df=reference_data
+    )
 
     # Check computation didn't fail
     assert len(result.failed_indices) == 0
 
     # Check result structure
-    assert "Jensen_Shannon_Distance" in result.metrics
+    assert "Average_Jensen_Shannon_Distance" in result.metrics
 
     # Check values
-    values = list(result.metrics["Jensen_Shannon_Distance"].values())
+    values = [val for key, val in result.metrics.items() if "Average" not in key]
     assert not np.any(np.isnan(values))
-    for val in result.metrics["Jensen_Shannon_Distance"].values():
+    for val in values:
         assert 0.0 <= val <= 1.0
 
 
@@ -60,15 +62,17 @@ def test_MMD_metric(valid_structures, reference_data):
     preprocessor_result = distribution_preprocessor(valid_structures)
 
     metric = MMD(reference_data)
-    result = metric(preprocessor_result.processed_structures)
+    result = metric.compute(
+        preprocessor_result.processed_structures, reference_df=reference_data
+    )
     # Check computation didn't fail
     assert len(result.failed_indices) == 0
 
     # Check result structure
-    assert "MMD" in result.metrics
+    assert "Average_MMD" in result.metrics
 
     # Check values
-    values = list(result.metrics["MMD"].values())
+    values = [val for key, val in result.metrics.items() if "Average" not in key]
     assert not np.any(np.isnan(values))
-    for val in result.metrics["MMD"].values():
+    for val in values:
         assert 0.0 <= val <= 1.0
