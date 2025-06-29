@@ -1,6 +1,6 @@
 """Distribution benchmark for material structures.
 
-This module implements a benchmark that compares two distributions of crystal structures. 
+This module implements a benchmark that compares two distributions of crystal structures.
 """
 
 from typing import Any, Dict
@@ -23,7 +23,7 @@ class DistributionBenchmark(BaseBenchmark):
 
     def __init__(
         self,
-        reference_df: pd.DataFrame, 
+        reference_df: pd.DataFrame,
         name: str = "DistributionBenchmark",
         description: str | None = None,
         metadata: Dict[str, Any] | None = None,
@@ -44,21 +44,22 @@ class DistributionBenchmark(BaseBenchmark):
         """
         if description is None:
             description = (
-                "Compares the distribution of structural parameters from a sample of " \
+                "Compares the distribution of structural parameters from a sample of "
                 "crystals to a reference distribution."
             )
-                
+
         # Initialize the JSDistance metric
         JSDistance_metric = JSDistance(reference_df=reference_df)
         # Set up evaluator configs
-        evaluator_configs = {"JSDistance": EvaluatorConfig(
+        evaluator_configs = {
+            "JSDistance": EvaluatorConfig(
                 name="JSDistance",
                 description="Calculates the JS Distance between two distributions",
                 metrics={"JSDistance": JSDistance_metric},
                 weights={"JSDistance": 1.0},
                 aggregation_method="weighted_mean",
-                )
-            }
+            )
+        }
 
         # Initialize the MMD metric
         MMD_metric = MMD(reference_df=reference_df)
@@ -143,7 +144,7 @@ class DistributionBenchmark(BaseBenchmark):
         return final_scores
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import pickle
 
     from pymatgen.util.testing import PymatgenTest
@@ -151,7 +152,7 @@ if __name__ == '__main__':
     from lematerial_forgebench.preprocess.distribution_preprocess import (
         DistributionPreprocessor,
     )
-    
+
     with open("data/small_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)
     test = PymatgenTest()
@@ -164,10 +165,19 @@ if __name__ == '__main__':
     distribution_preprocessor = DistributionPreprocessor()
     preprocessor_result = distribution_preprocessor(structures)
 
-    test_df = pd.DataFrame(preprocessor_result.processed_structures, columns = ["Volume", "Density(g/cm^3)", "Density(atoms/A^3)", 
-                                                                            "SpaceGroup", "CrystalSystem", "CompositionCounts",
-                                                                            "Composition"])
-    
+    test_df = pd.DataFrame(
+        preprocessor_result.processed_structures,
+        columns=[
+            "Volume",
+            "Density(g/cm^3)",
+            "Density(atoms/A^3)",
+            "SpaceGroup",
+            "CrystalSystem",
+            "CompositionCounts",
+            "Composition",
+        ],
+    )
+
     benchmark = DistributionBenchmark(reference_df=test_lemat)
     benchmark_result = benchmark.evaluate([test_df])
     print(benchmark_result.evaluator_results["JSDistance"]["JSDistance_value"])

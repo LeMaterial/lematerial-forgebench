@@ -8,7 +8,6 @@ import time
 from dataclasses import dataclass
 
 import numpy as np
-import pandas as pd
 from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig, MetricResult
@@ -170,19 +169,13 @@ class MetricEvaluator:
                 f"Unknown aggregation method: {self.config.aggregation_method}"
             )
 
-    def evaluate(
-        self,
-        structures: list[Structure],
-        reference_df: pd.DataFrame | None = None,
-    ) -> EvaluationResult:
+    def evaluate(self, structures: list[Structure]) -> EvaluationResult:
         """Evaluate all metrics on the given structures.
 
         Parameters
         ----------
         structures : list[Structure]
             Structures to evaluate.
-        reference_df: pd.DataFrame, optional
-            A reference distribution to compare a sample of structures to.
 
         Returns
         -------
@@ -197,14 +190,9 @@ class MetricEvaluator:
         # each metric handles its own parallelization
         for metric_name, metric in self.metrics.items():
             try:
-                if reference_df is None:
-                    result = metric.compute(structures=structures)
-                else:
-                    result = metric.compute(
-                        structures=structures,
-                        reference_df=reference_df,
-                    )
-
+                result = metric.compute(
+                    structures=structures, **metric._get_compute_attributes()
+                )
                 metric_results[metric_name] = result
 
             except Exception as e:

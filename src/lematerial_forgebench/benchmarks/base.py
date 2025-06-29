@@ -43,7 +43,8 @@ class BenchmarkConfig:
     description: str
     evaluator_configs: dict[str, EvaluatorConfig]
     metadata: dict[str, any] | None = None
-    reference_df: pd.DataFrame | None = None 
+    reference_df: pd.DataFrame | None = None
+
 
 @dataclass
 class BenchmarkResult:
@@ -137,11 +138,7 @@ class BaseBenchmark(ABC):
         """
         pass
 
-    def evaluate(
-        self,
-        structures: list[Structure],
-        reference_df: pd.DataFrame | None = None,
-    ) -> BenchmarkResult:
+    def evaluate(self, structures: list[Structure]) -> BenchmarkResult:
         """Run the complete benchmark evaluation.
 
         Parameters
@@ -158,7 +155,6 @@ class BaseBenchmark(ABC):
         for name, evaluator in self.evaluators.items():
             result = evaluator.evaluate(
                 structures=structures,
-                reference_df=reference_df,
             )
 
             evaluator_results[name] = {
