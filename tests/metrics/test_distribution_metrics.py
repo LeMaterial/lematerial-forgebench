@@ -3,7 +3,6 @@
 import pickle
 
 import numpy as np
-import pandas as pd
 import pytest
 from pymatgen.util.testing import PymatgenTest
 
@@ -24,33 +23,23 @@ def valid_structures():
     ]
     return structures
 
+
 @pytest.fixture
 def reference_data():
     "create reference dataset"
     with open("data/small_lematbulk.pkl", "rb") as f:
         reference_df = pickle.load(f)
 
-    return reference_df 
+    return reference_df
+
 
 def test_JSDistance_metric(valid_structures, reference_data):
     """Test JSDistance_metric on valid structures."""
     distribution_preprocessor = DistributionPreprocessor()
     preprocessor_result = distribution_preprocessor(valid_structures)
-    test_df = pd.DataFrame(
-        preprocessor_result.processed_structures,
-        columns=[
-            "Volume",
-            "Density(g/cm^3)",
-            "Density(atoms/A^3)",
-            "SpaceGroup",
-            "CrystalSystem",
-            "CompositionCounts",
-            "Composition",
-        ],
-    )
 
     metric = JSDistance(reference_data)
-    result = metric([test_df])
+    result = metric(preprocessor_result.processed_structures)
 
     # Check computation didn't fail
     assert len(result.failed_indices) == 0
@@ -69,21 +58,9 @@ def test_MMD_metric(valid_structures, reference_data):
     """Test MMD_metric on valid structures."""
     distribution_preprocessor = DistributionPreprocessor()
     preprocessor_result = distribution_preprocessor(valid_structures)
-    test_df = pd.DataFrame(
-        preprocessor_result.processed_structures,
-        columns=[
-            "Volume",
-            "Density(g/cm^3)",
-            "Density(atoms/A^3)",
-            "SpaceGroup",
-            "CrystalSystem",
-            "CompositionCounts",
-            "Composition",
-        ],
-    )
 
     metric = MMD(reference_data)
-    result = metric([test_df])
+    result = metric(preprocessor_result.processed_structures)
     # Check computation didn't fail
     assert len(result.failed_indices) == 0
 

@@ -2,7 +2,6 @@
 
 import pickle
 
-import pandas as pd
 import pytest
 from pymatgen.util.testing import PymatgenTest
 
@@ -25,13 +24,15 @@ def valid_structures():
     ]
     return structures
 
+
 @pytest.fixture
 def reference_data():
     "create reference dataset"
     with open("data/small_lematbulk.pkl", "rb") as f:
         reference_df = pickle.load(f)
 
-    return reference_df 
+    return reference_df
+
 
 class TestDistributionBenchmark:
     """Test suite for DistributionBenchmark class."""
@@ -50,7 +51,6 @@ class TestDistributionBenchmark:
         assert "MMD" in benchmark.evaluators
         # assert "FrechetDistance" in benchmark.evaluators
 
-
     def test_custom_initialization(self):
         """Test initialization with custom parameters."""
         benchmark = DistributionBenchmark(
@@ -65,8 +65,6 @@ class TestDistributionBenchmark:
         assert benchmark.config.description == "Custom description"
         assert benchmark.config.metadata["test_key"] == "test_value"
 
-
-
     def test_evaluate(self):
         """Test benchmark evaluation on structures."""
 
@@ -80,12 +78,8 @@ class TestDistributionBenchmark:
         distribution_preprocessor = DistributionPreprocessor()
         preprocessor_result = distribution_preprocessor(structures)
 
-        test_df = pd.DataFrame(preprocessor_result.processed_structures, columns = ["Volume", "Density(g/cm^3)", "Density(atoms/A^3)", 
-                                                                                "SpaceGroup", "CrystalSystem", "CompositionCounts",
-                                                                                "Composition"])
-        
         benchmark = DistributionBenchmark(reference_df=reference_data)
-        result = benchmark.evaluate([test_df])
+        result = benchmark.evaluate(preprocessor_result.processed_structures)
 
         # Check result format
         assert len(result.evaluator_results) == 2
@@ -93,10 +87,7 @@ class TestDistributionBenchmark:
         assert "MMD" in result.final_scores
         # assert "FrechetDistance" in result.final_scores
 
-
         # Check score ranges
         for name, score in result.final_scores.items():
             if "score" in name or "ratio" in name:
                 assert 0 <= score <= 1.0, f"{name} should be between 0 and 1"
-
-
