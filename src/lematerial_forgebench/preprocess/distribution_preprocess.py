@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from pymatgen.core import Structure
+
 from lematerial_forgebench.preprocess.base import BasePreprocessor, PreprocessorConfig
 from lematerial_forgebench.utils.distribution_utils import (
     map_space_group_to_crystal_system,
@@ -37,33 +39,38 @@ class DistributionPreprocessor(BasePreprocessor):
 
     @staticmethod
     def process_structure(
-        structure: list,
-    ) -> list:
+        structure: Structure,
+    ) -> Structure:
         """Process a sample of structures by turning them into a dataframe
         built of labeled structural properties for comparison to other distributions.
 
         Parameters
         ----------
-        structure : list
-            A list of pymatgen Structure objects to process.
+        structure : Structure
+            A pymatgen Structure object to process.
 
 
         Returns
         -------
-        list
-            The list of extracted properties from each structure.
+        Structure
+            The processed structure with the distribution properties added to the properties dictionary.
 
         """
 
         one_hot_vectors = one_hot_encode_composition(structure.composition)
-        row = [
-            structure.volume,
-            structure.density,
-            structure.num_sites / structure.volume,
-            structure.get_space_group_info()[1],
-            map_space_group_to_crystal_system(structure.get_space_group_info()[1]),
-            one_hot_vectors[0],
-            one_hot_vectors[1],
-        ]
 
-        return row
+        distribution_properties = {
+            "Volume": structure.volume,
+            "Density(g/cm^3)": structure.density,
+            "Density(atoms/A^3)": structure.num_sites / structure.volume,
+            "SpaceGroup": structure.get_space_group_info()[1],
+            "CrystalSystem": map_space_group_to_crystal_system(
+                structure.get_space_group_info()[1]
+            ),
+            "CompositionCounts": one_hot_vectors[0],
+            "Composition": one_hot_vectors[1],
+        }
+
+        structure.properties["distribution_properties"] = distribution_properties
+
+        return structure
