@@ -8,7 +8,9 @@ from lematerial_forgebench.metrics.conditional_generation import (
     BandgapPropertyTargetMetric,
     ContinuousTargetMetric,
     DiscreteTargetMetric,
+    MaxDensityTargetMetric,
     SpacegroupTargetMetric,
+    StableMagnets,
 )
 
 
@@ -93,8 +95,41 @@ def test_spacegroup_target_metric():
     metric = SpacegroupTargetMetric(target_sg=221)
     result = metric(structures)
 
-    assert result.metrics["success_rate"] == 1.0  # All structures are simple cubic
+    assert result.metrics["success_rate"] == 1.0
     assert result.metrics["mean_value"] == 221.0
+
+
+def test_max_density_target_metric():
+    """Test the max density target metric."""
+    structures = create_test_structures()
+
+    # Test basic functionality
+    metric = MaxDensityTargetMetric()
+    result = metric(structures)
+
+    # Check that metrics are present and have expected properties
+    assert "average_identity_distance" in result.metrics
+    assert (
+        result.metrics["average_identity_distance"] > 0.0
+    )  # Should be positive since it's density
+    assert (
+        result.metrics["success_rate"] is None
+    )  # No tolerance set, so no success rate
+
+    # Test with top_k parameter
+    metric_top_k = MaxDensityTargetMetric(top_k=2)
+    result_top_k = metric_top_k(structures)
+
+    # Should only consider top 2 densest structures
+    assert (
+        result_top_k.metrics["average_identity_distance"]
+        >= result.metrics["average_identity_distance"]
+    )
+
+    # Verify that individual values are densities
+    for value in result.individual_values:
+        assert value > 0.0  # Density should be positive
+        assert not np.isnan(value)  # No NaN values expected
 
 
 def test_bandgap_property_target():
@@ -181,6 +216,118 @@ def test_all_failed_structures():
     assert np.isnan(result.metrics[metric_name])
     assert result.n_structures == len(structures)
     assert len(result.individual_values) == len(structures)
-    assert all(v is None for v in result.individual_values)
+    assert all(np.isnan(v) for v in result.individual_values)
     assert len(result.failed_indices) == len(structures)
     assert all(i in result.failed_indices for i in range(len(structures)))
+
+
+# Mock the external model predictions to avoid actual model loading
+@pytest.fixture(autouse=True)
+def mock_model_predictions(monkeypatch):
+    def mock_bandgap_predict(*args, **kwargs):
+        # Return a fixed bandgap value for testing
+        return 2.0
+
+    def mock_hhi_compute(*args, **kwargs):
+        # Return fixed HHI values for testing
+        return 0.3
+
+    monkeypatch.setattr(
+        "lematerial_forgebench.metrics.conditional_generation.BandgapPropertyTargetMetric.value_extractor",
+        mock_bandgap_predict,
+    )
+    monkeypatch.setattr(
+        "lematerial_forgebench.metrics.conditional_generation.HHIProductionMetric.compute_structure",
+        mock_hhi_compute,
+    )
+    monkeypatch.setattr(
+        "lematerial_forgebench.metrics.conditional_generation.HHIReserveMetric.compute_structure",
+        mock_hhi_compute,
+    )
+
+
+def test_stable_magnets_initialization():
+    """Test that StableMagnets initializes correctly with various parameters."""
+    metric = StableMagnets(min_bandgap=1.0, max_bandgap=3.0, hhi_value=0.35, top_k=10)
+
+    assert metric.config.min_bandgap == 1.0
+    assert metric.config.max_bandgap == 3.0
+    assert metric.config.hhi_value == 0.35
+    assert metric.config.top_k == 10
+    assert metric.config.target_theory == "PBE"
+    assert "MEGNet" in metric.config.model
+
+
+def test_stable_magnets_compute_structure():
+    """Test that compute_structure returns expected dictionary format."""
+    metric = StableMagnets(min_bandgap=1.0, max_bandgap=3.0, hhi_value=0.35)
+
+    # Create a simple test structure
+    lattice = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+    species = ["Si"]
+    coords = [[0, 0, 0]]
+    structure = Structure(lattice, species, coords)
+
+    result = metric.compute_structure(structure, **metric._get_compute_attributes())
+
+    assert isinstance(result, dict)
+    assert "bandgap" in result
+    assert "hhi_production" in result
+    assert "hhi_reserve" in result
+    assert result["bandgap"] == 2.0  # From our mock
+    assert result["hhi_production"] == 0.3  # From our mock
+    assert result["hhi_reserve"] == 0.3  # From our mock
+
+
+def test_stable_magnets_aggregate_results():
+    """Test that aggregate_results correctly evaluates conditions."""
+    metric = StableMagnets(min_bandgap=1.0, max_bandgap=3.0, hhi_value=0.35)
+
+    # Create test results that should pass our criteria
+    test_results = [
+        {
+            "bandgap": 2.0,  # Within range [1.0, 3.0]
+            "hhi_production": 0.3,  # Below 0.35
+            "hhi_reserve": 0.3,  # Below 0.35
+        },
+        {
+            "bandgap": 1.5,  # Within range [1.0, 3.0]
+            "hhi_production": 0.2,  # Below 0.35
+            "hhi_reserve": 0.2,  # Below 0.35
+        },
+    ]
+
+    result = metric.aggregate_results(test_results)
+
+    assert "metrics" in result
+    assert "success_rate" in result["metrics"]
+    assert result["metrics"]["success_rate"] == 1.0  # All samples pass
+    assert result["primary_metric"] == "success_rate"
+
+
+def test_stable_magnets_failing_conditions():
+    """Test that aggregate_results correctly identifies failing conditions."""
+    metric = StableMagnets(min_bandgap=1.0, max_bandgap=3.0, hhi_value=0.35)
+
+    # Create test results where some fail our criteria
+    test_results = [
+        {
+            "bandgap": 0.5,  # Below min_bandgap
+            "hhi_production": 0.3,
+            "hhi_reserve": 0.3,
+        },
+        {
+            "bandgap": 2.0,  # Good
+            "hhi_production": 0.4,  # Above hhi_value
+            "hhi_reserve": 0.3,
+        },
+        {
+            "bandgap": 2.0,  # Good
+            "hhi_production": 0.3,
+            "hhi_reserve": 0.4,  # Above hhi_value
+        },
+    ]
+
+    result = metric.aggregate_results(test_results)
+
+    assert result["metrics"]["success_rate"] == 0.0  # No samples pass all criteria

@@ -163,6 +163,7 @@ class ContinuousTargetMetric(BaseMetric):
         "relative": lambda x, target: abs(x - target)
         / (abs(target) if target != 0 else 1.0),
         "squared": lambda x, target: (x - target) ** 2,
+        "identity": lambda x, target: x,
     }
 
     def __init__(
@@ -236,7 +237,13 @@ class ContinuousTargetMetric(BaseMetric):
             raise ValueError("No valid structures for continuous target metric.")
 
         if self.config.top_k is not None:
-            valid_values = np.sort(valid_values)[: self.config.top_k]
+            arg_sort = np.argsort(valid_values)
+            if self.config.lower_is_better:
+                valid_values = np.array(valid_values)[arg_sort[: self.config.top_k]]
+            else:
+                valid_values = np.array(valid_values)[
+                    arg_sort[::-1][: self.config.top_k]
+                ]
 
         # Count how many structures are within tolerance
         if self.config.tolerance is not None:
@@ -405,6 +412,43 @@ class SpacegroupTargetMetric(DiscreteTargetMetric):
         """Extract space group number from structure."""
         sga = SpacegroupAnalyzer(structure, symprec=symprec)
         return sga.get_space_group_number()
+
+
+class MaxDensityTargetMetric(ContinuousTargetMetric):
+    """Metric for evaluating if structures' density
+    is maximized.
+
+    Parameters
+    ----------
+    top_k : int | None = None
+        The number of best structures to consider for the metric.
+        If None, all structures are considered.
+    distance_metric : str, default="identity"
+        The metric to use for measuring distance to target.
+    """
+
+    def __init__(
+        self,
+        top_k: int | None = None,
+        name: str | None = None,
+        description: str | None = None,
+        n_jobs: int = 1,
+    ):
+        super().__init__(
+            target_value=0.0,  # Not used since we're maximizing
+            top_k=top_k,
+            distance_metric="identity",
+            name=name or "MaxDensity",
+            lower_is_better=False,
+            description=description
+            or "Measures density of structures and returns higher values for denser structures",
+            n_jobs=n_jobs,
+        )
+
+    @staticmethod
+    def compute_structure(structure: Structure, **kwargs) -> float:
+        """Compute the density of a structure."""
+        return structure.density
 
 
 @dataclass(kw_only=True)
