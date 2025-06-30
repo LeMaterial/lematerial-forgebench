@@ -271,10 +271,14 @@ class BaseHHIMetric(BaseMetric, ABC):
             MetricResult.individual_values and also included in the metrics
             dictionary as 'individual_hhi_values'.
         """
-        valid_values = [v for v in values if not np.isnan(v)]
+        values_array = np.array(values)
+        valid_mask = ~np.isnan(values_array)
+        valid_values = values_array[valid_mask]
 
-        if not valid_values:
-            primary_metric_name = f"{self.name.lower()}_mean"
+        prefix = self.name.lower()
+        primary_metric_name = f"{prefix}_mean"
+
+        if not valid_values.size:
             return {
                 "metrics": {
                     primary_metric_name: float("nan"),
@@ -285,25 +289,24 @@ class BaseHHIMetric(BaseMetric, ABC):
             }
 
         # Compute statistics
-        mean_hhi = np.mean(valid_values)
-        std_hhi = np.std(valid_values) if len(valid_values) > 1 else 0.0
-        min_hhi = np.min(valid_values)
-        max_hhi = np.max(valid_values)
+        mean_hhi = valid_values.mean()
+        std_hhi = valid_values.std() if valid_values.size > 1 else 0.0
+        min_hhi = valid_values.min()
+        max_hhi = valid_values.max()
         median_hhi = np.median(valid_values)
 
         # Calculate percentiles for risk assessment
-        percentile_25 = np.percentile(valid_values, 25)
-        percentile_75 = np.percentile(valid_values, 75)
+        percentile_25, median_hhi, percentile_75 = np.percentile(
+            valid_values, [25, 50, 75]
+        )
 
         # Count low-risk structures (below different thresholds)
         # These thresholds assume scaled (0-10) values
-        low_risk_count_2 = sum(1 for v in valid_values if v <= 2.0)
-        low_risk_count_3 = sum(1 for v in valid_values if v <= 3.0)
-        low_risk_count_5 = sum(1 for v in valid_values if v <= 5.0)
+        low_risk_count_2 = (valid_values <= 2.0).sum()
+        low_risk_count_3 = (valid_values <= 3.0).sum()
+        low_risk_count_5 = (valid_values <= 5.0).sum()
 
-        primary_metric_name = f"{self.name.lower()}_mean"
-        prefix = self.name.lower()
-        count_valid = len(valid_values)
+        count_valid = valid_values.size
 
         metrics = {
             # Individual values - in same order as input structures
