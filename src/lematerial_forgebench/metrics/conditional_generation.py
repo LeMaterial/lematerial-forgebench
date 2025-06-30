@@ -25,21 +25,31 @@ class DiscreteTargetConfig(MetricConfig):
     ----------
     target_value : Any
         The target discrete value to match.
-    tolerance : float, default=0.1
-        Tolerance for considering a match successful.
     """
 
     target_value: Any
-    tolerance: float = 0.1
 
 
 class DiscreteTargetMetric(BaseMetric):
-    """Generic metric for evaluating if structures match a target discrete value."""
+    """Generic metric for evaluating if structures match a target discrete value.
+
+    Parameters
+    ----------
+    target_value : Any
+        The target discrete value to match.
+    lower_is_better : bool, default=True
+        Whether a lower value is better.
+    name : str, default=None
+        The name of the metric.
+    description : str, default=None
+        The description of the metric.
+    n_jobs : int, default=1
+        The number of jobs to run in parallel.
+    """
 
     def __init__(
         self,
         target_value: Any,
-        tolerance: float = 0.1,
         lower_is_better: bool = True,
         name: str | None = None,
         description: str | None = None,
@@ -58,7 +68,6 @@ class DiscreteTargetMetric(BaseMetric):
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
             target_value=target_value,
-            tolerance=tolerance,
         )
 
     def _get_compute_attributes(self) -> dict[str, Any]:
@@ -81,7 +90,8 @@ class DiscreteTargetMetric(BaseMetric):
         Returns None if value extraction fails.
         """
         try:
-            return cls.value_extractor(structure, **kwargs)
+            value = cls.value_extractor(structure, **kwargs)
+            return float(value) if value is not None else np.nan
         except Exception as e:
             logger.warning(
                 f"Value extraction failed for structure {structure.formula}: {e}"
@@ -95,10 +105,9 @@ class DiscreteTargetMetric(BaseMetric):
         if not valid_values:
             raise ValueError("No valid structures for discrete target metric.")
 
-        # Convert values to success/failure based on tolerance
+        # Convert values to success/failure based on exact equality
         success_values = [
-            1.0 if abs(v - self.config.target_value) <= self.config.tolerance else 0.0
-            for v in valid_values
+            1.0 if v == self.config.target_value else 0.0 for v in valid_values
         ]
 
         success_rate = np.mean(success_values)
@@ -128,8 +137,12 @@ class ContinuousTargetConfig(MetricConfig):
     ----------
     target_value : float
         The target continuous value to match.
-    tolerance : float, default=0.1
+    tolerance : Optional[float], default=0.1
         Tolerance for deviations from target value.
+        If None, the metric returns the distance metric between the target value and the structure value.
+    top_k : int | None = None
+        The number of best structures to consider for the metric.
+        If None, all structures are considered.
     distance_metric : str, default="absolute"
         The metric to use for measuring distance to target.
         Options:
@@ -139,7 +152,8 @@ class ContinuousTargetConfig(MetricConfig):
     """
 
     target_value: float
-    tolerance: float = 0.1
+    tolerance: float | None = None
+    top_k: int | None = None
     distance_metric: str = "absolute"
 
 
@@ -156,13 +170,18 @@ class ContinuousTargetMetric(BaseMetric):
     def __init__(
         self,
         target_value: float,
-        tolerance: float = 0.1,
+        tolerance: float | None = None,
+        top_k: int | None = None,
         distance_metric: str = "absolute",
-        lower_is_better: bool = True,
         name: str | None = None,
         description: str | None = None,
         n_jobs: int = 1,
+        lower_is_better: bool | None = None,  # Added parameter
     ):
+        # If tolerance is None, the metric uses distance so lower is better
+        if lower_is_better is None:
+            lower_is_better = tolerance is None
+
         if distance_metric not in self.DISTANCE_METRICS:
             raise ValueError(
                 f"Invalid distance metric '{distance_metric}'. "
@@ -183,6 +202,7 @@ class ContinuousTargetMetric(BaseMetric):
             n_jobs=self.config.n_jobs,
             target_value=target_value,
             tolerance=tolerance,
+            top_k=top_k,
             distance_metric=distance_metric,
         )
 
@@ -223,9 +243,17 @@ class ContinuousTargetMetric(BaseMetric):
         if not valid_values:
             raise ValueError("No valid structures for continuous target metric.")
 
+        if self.config.top_k is not None:
+            valid_values = np.sort(valid_values)[: self.config.top_k]
+
         # Count how many structures are within tolerance
-        within_tolerance = sum(1 for v in valid_values if v <= self.config.tolerance)
-        success_rate = within_tolerance / len(valid_values)
+        if self.config.tolerance is not None:
+            within_tolerance = sum(
+                1 for v in valid_values if v <= self.config.tolerance
+            )
+            success_rate = within_tolerance / len(valid_values)
+        else:
+            success_rate = None
 
         # Calculate mean distance
         average_distance = np.mean(valid_values)
@@ -236,7 +264,9 @@ class ContinuousTargetMetric(BaseMetric):
                 metric_name: average_distance,
                 "success_rate": success_rate,
             },
-            "primary_metric": metric_name,
+            "primary_metric": metric_name
+            if self.config.tolerance is not None
+            else "success_rate",
             "uncertainties": {
                 metric_name: {
                     "std": np.std(valid_values) if len(valid_values) > 1 else 0.0
@@ -275,7 +305,6 @@ class BandgapPropertyTargetMetric(ContinuousTargetMetric):
         model: str = "MEGNet-MP-2019.4.1-BandGap-mfi",
         tolerance: float = 0.1,
         distance_metric: str = "absolute",
-        lower_is_better: bool = True,
         name: str | None = None,
         description: str | None = None,
         n_jobs: int = 1,
@@ -284,7 +313,6 @@ class BandgapPropertyTargetMetric(ContinuousTargetMetric):
             target_value=target_bandgap,
             tolerance=tolerance,
             distance_metric=distance_metric,
-            lower_is_better=lower_is_better,
             name=name or "Bandgap",
             description=description
             or f"Computes bandgap with {model} and compares to target bandgap {target_bandgap} eV",
@@ -353,7 +381,6 @@ class SpacegroupTargetMetric(DiscreteTargetMetric):
     ):
         super().__init__(
             target_value=target_sg,
-            tolerance=0,  # Space groups must match exactly
             lower_is_better=lower_is_better,
             name=name or f"SpacegroupMatch_{target_sg}",
             description=description
@@ -367,7 +394,6 @@ class SpacegroupTargetMetric(DiscreteTargetMetric):
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
             target_value=target_sg,
-            tolerance=0,  # Space groups must match exactly
             symprec=symprec,
         )
 
