@@ -126,7 +126,6 @@ class JSDistance(BaseMetric):
         ]
 
         df_all_properties = pd.DataFrame(all_properties)
-
         reference_df = compute_args.get("reference_df")
         if reference_df is None:
             raise ValueError(
@@ -418,27 +417,25 @@ class FrechetDistance(BaseMetric):
         df_all_properties = pd.DataFrame(all_properties)
         reference_df = compute_args.get("reference_df")
 
+
         if reference_df is None:
             raise ValueError(
                 "a `reference_df` arg is required to compute the FrechetDistance"
             )
 
         dist_metrics = {}
-        quantities = df_all_properties.columns
-        for quant in quantities:
-            if quant in reference_df.columns:
-                frechetdist = compute_frechetdist(
-                    reference_df, df_all_properties, quant
-                )
-                dist_metrics[quant] = frechetdist
+
+        frechetdist = compute_frechetdist(
+            reference_df, df_all_properties
+        )
+        dist_metrics["FrechetDistance"] = frechetdist
 
         end_time = time.time()
-        dist_metrics["Average_FrechetDistance"] = np.mean(list(dist_metrics.values()))
         breakpoint()
 
         return MetricResult(
             metrics=dist_metrics,
-            primary_metric="Average_FrechetDistance",
+            primary_metric="FrechetDistance",
             uncertainties={},
             config=self.config,
             computation_time=end_time - start_time,
@@ -487,3 +484,42 @@ class FrechetDistance(BaseMetric):
                 "primary_metric": "FrechetDistance",
             },
         )
+
+
+if __name__ == "__main__":
+    import pickle
+
+    from pymatgen.util.testing import PymatgenTest
+
+    from lematerial_forgebench.preprocess.distribution_preprocess import (
+        DistributionPreprocessor,
+    )
+
+    with open("data/small_lematbulk.pkl", "rb") as f:
+        test_lemat = pickle.load(f)
+    test = PymatgenTest()
+
+    structures = [
+        test.get_structure("Si"),
+        test.get_structure("LiFePO4"),
+    ]
+
+    distribution_preprocessor = DistributionPreprocessor()
+    preprocessor_result = distribution_preprocessor(structures)
+
+    metric = JSDistance(reference_df=test_lemat) 
+    default_args = metric._get_compute_attributes()
+    metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    print(metric_result.metrics)
+
+    metric = MMD(reference_df=test_lemat) 
+    default_args = metric._get_compute_attributes()
+    metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    print(metric_result.metrics)
+
+    metric = FrechetDistance(reference_df=test_lemat) 
+    default_args = metric._get_compute_attributes()
+    metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    print(metric_result.metrics)
+
+

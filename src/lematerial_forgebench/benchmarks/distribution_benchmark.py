@@ -121,22 +121,20 @@ class DistributionBenchmark(BaseBenchmark):
             "FrechetDistance": np.nan,
         }
 
-        # Extract stability results
+        # Extract JSDistance results
         JSDistance_results = evaluator_results.get("JSDistance")
         if JSDistance_results:
-            # Main stability ratio
             final_scores["JSDistance"] = JSDistance_results.get("combined_value")
 
-        # Extract metastability results if available
+        # Extract MMD results 
         MMD_results = evaluator_results.get("MMD")
         print("MMD_results")
         if MMD_results:
-            # Main metastability score
             final_scores["MMD"] = safe_float(MMD_results.get("combined_value"))
 
+        # Extract FrechetDistance results 
         FrechetDistance_results = evaluator_results.get("FrechetDistance")
         if FrechetDistance_results:
-            # E_hull score
             final_scores["FrechetDistance"] = safe_float(
                 FrechetDistance_results.get("combined_value")
             )
@@ -165,20 +163,7 @@ if __name__ == "__main__":
     distribution_preprocessor = DistributionPreprocessor()
     preprocessor_result = distribution_preprocessor(structures)
 
-    test_df = pd.DataFrame(
-        preprocessor_result.processed_structures,
-        columns=[
-            "Volume",
-            "Density(g/cm^3)",
-            "Density(atoms/A^3)",
-            "SpaceGroup",
-            "CrystalSystem",
-            "CompositionCounts",
-            "Composition",
-        ],
-    )
-
     benchmark = DistributionBenchmark(reference_df=test_lemat)
-    benchmark_result = benchmark.evaluate([test_df])
+    benchmark_result = benchmark.evaluate(preprocessor_result.processed_structures)
     print(benchmark_result.evaluator_results["JSDistance"]["JSDistance_value"])
     print(benchmark_result.evaluator_results["MMD"]["MMD_value"])

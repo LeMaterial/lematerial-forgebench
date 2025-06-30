@@ -1,4 +1,5 @@
 import json
+from scipy import linalg
 
 import numpy as np
 from frechetdist import frdist
@@ -144,8 +145,70 @@ def compute_mmd(reference_data, generated_crystals, crystal_param, sigma=1.0):
     mmd = np.mean(k_xx) + np.mean(k_yy) - 2 * np.mean(k_xy)
     return mmd
 
+def frechet_distance(
+    mu1: np.ndarray,
+    sigma1: np.ndarray,
+    mu2: np.ndarray,
+    sigma2: np.ndarray,
+    eps: float = 1e-6,
+) -> float:
+    """
+    Implemented from https://github.com/bioinf-jku/FCD/blob/master/fcd/utils.py
+    
+    Numpy implementation of the Frechet Distance.
+    The Frechet distance between two multivariate Gaussians X_1 ~ N(mu_1, C_1)
+    and X_2 ~ N(mu_2, C_2) is
+            d^2 = ||mu_1 - mu_2||^2 + Tr(C_1 + C_2 - 2*sqrt(C_1*C_2)).
+
+    Stable version by Dougal J. Sutherland.
+    Params:
+    -- mu1:     The mean of the activations of preultimate layer of the Graph 
+                embedding of the MLIP for the first distribution. 
+    -- mu2:     The mean of the activations of preultimate layer of the Graph 
+                embedding of the MLIP for the second distribution.
+    -- sigma1:  The covariance matrix of the activations of of the Graph 
+                embedding of the MLIP for the first distribution.
+    -- sigma2:  The covariance matrix of the activations of of the Graph 
+                embedding of the MLIP for the first distribution.
+    Returns:
+    --   : The Frechet Distance.
+    """
+
+    mu1 = np.atleast_1d(mu1)
+    mu2 = np.atleast_1d(mu2)
+
+    sigma1 = np.atleast_2d(sigma1)
+    sigma2 = np.atleast_2d(sigma2)
+
+    assert mu1.shape == mu2.shape, "Training and test mean vectors have different lengths"
+    assert sigma1.shape == sigma2.shape, "Training and test covariances have different dimensions"
+
+    diff = mu1 - mu2
+
+    # product might be almost singular
+    covmean, _ = linalg.sqrtm(sigma1.dot(sigma2), disp=False)
+    is_real = np.allclose(np.diagonal(covmean).imag, 0, atol=1e-3)
+
+    if not np.isfinite(covmean).all() or not is_real:
+        offset = np.eye(sigma1.shape[0]) * eps
+        covmean = linalg.sqrtm((sigma1 + offset).dot(sigma2 + offset))
+
+    assert isinstance(covmean, np.ndarray)
+    # numerical error might give slight imaginary component
+    if np.iscomplexobj(covmean):
+        if not np.allclose(np.diagonal(covmean).imag, 0, atol=1e-3):
+            m = np.max(np.abs(covmean.imag))
+            raise ValueError("Imaginary component {}".format(m))
+        covmean = covmean.real
+
+    tr_covmean = np.trace(covmean)
+
+    return float(diff.dot(diff) + np.trace(sigma1) + np.trace(sigma2) - 2 * tr_covmean)
 
 def compute_frechetdist(reference_data, generated_crystals, crystal_param):
+
+
+
     generated_crystals_dist = generate_probabilities(
         generated_crystals, metric=crystal_param, return_2d_array=True
     )
@@ -153,5 +216,8 @@ def compute_frechetdist(reference_data, generated_crystals, crystal_param):
         reference_data, metric=crystal_param, return_2d_array=True
     )
 
-    distance = frdist(reference_data_dist, generated_crystals_dist)
+    
+    
+    # distance = frdist(reference_data_dist, generated_crystals_dist)
+    distance = frechet_distance()
     return distance
