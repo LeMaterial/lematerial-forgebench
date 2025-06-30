@@ -17,34 +17,28 @@ from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig
 from lematerial_forgebench.utils.logging import logger
 
 
-@dataclass
-class BandgapPropertyTargetConfig(MetricConfig):
-    """Configuration for the ChargeNeutrality metric.
+@dataclass(kw_only=True)
+class DiscreteTargetConfig(MetricConfig):
+    """Configuration for the DiscreteTarget metric.
 
     Parameters
     ----------
+    target_value : Any
+        The target discrete value to match.
     tolerance : float, default=0.1
-        Tolerance for deviations from charge neutrality.
-    strict : bool, default=False
-        If True, oxidation states must be determinable for all atoms.
-        If False, will attempt to calculate oxidation states but pass
-        the structure if calculation fails.
+        Tolerance for considering a match successful.
     """
 
-    target_theory: str = "PBE"
-    target_bandgap: float = 1
-    model: str = "MEGNet-MP-2019.4.1-BandGap-mfi"
+    target_value: Any
     tolerance: float = 0.1
 
 
-class BandgapPropertyTargetMetric(BaseMetric):
-    """ """
+class DiscreteTargetMetric(BaseMetric):
+    """Generic metric for evaluating if structures match a target discrete value."""
 
     def __init__(
         self,
-        target_theory: str = "PBE",
-        target_bandgap: float = 1,
-        model: str = "MEGNet-MP-2019.4.1-BandGap-mfi",
+        target_value: Any,
         tolerance: float = 0.1,
         lower_is_better: bool = True,
         name: str | None = None,
@@ -52,115 +46,300 @@ class BandgapPropertyTargetMetric(BaseMetric):
         n_jobs: int = 1,
     ):
         super().__init__(
-            name=name or "Bandgap",
+            name=name or f"DiscreteTarget_{str(target_value)}",
             description=description
-            or "Computes bandgap with selected model and compares to target bandgap "
-            + model,
-            tolerance=0.1,
+            or f"Measures fraction of structures matching target value {str(target_value)}",
             lower_is_better=lower_is_better,
             n_jobs=n_jobs,
         )
-        self.config = BandgapPropertyTargetConfig(
+        self.config = DiscreteTargetConfig(
             name=self.config.name,
             description=self.config.description,
-            tolerance=self.config.tolerance,
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
-            target_theory=target_theory,
-            target_bandgap=target_bandgap,
+            target_value=target_value,
+            tolerance=tolerance,
         )
 
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
         return {
-            "target_theory": self.config.target_theory,
-            "target_bandgap": self.config.target_bandgap,
-            "model": self.config.model,
-            "tolerance": self.config.tolerance,
+            "cls": self.__class__,
         }
 
     @staticmethod
-    def compute_structure(
-        structure: Structure,
-        target_theory: str,
-        target_bandgap: float,
-        model: str,
-    ) -> float:
-        """
-        # density metric - sliding window??
+    def value_extractor(structure: Structure) -> Any:
+        """Extract the relevant discrete value from a structure.
 
-        Parameters
-        ----------
-
+        This method must be implemented by subclasses.
         """
-        print(model)
-        band_gap_model = load_model(model)
-        if target_theory == "PBE":
-            graph_attrs = torch.tensor([0])
-        elif target_theory == "HSE":
-            graph_attrs = torch.tensor([2])
-        bandgap = band_gap_model.predict_structure(
-            structure=structure, state_attr=graph_attrs
+        raise NotImplementedError("Subclasses must implement value_extractor")
+
+    @staticmethod  # TODO: Should this be a classmethod?
+    def compute_structure(structure: Structure, cls, **kwargs) -> float | None:
+        """Computes and returns the extracted value from the structure.
+        Returns None if value extraction fails.
+        """
+        try:
+            return cls.value_extractor(structure, **kwargs)
+        except Exception as e:
+            logger.warning(
+                f"Value extraction failed for structure {structure.formula}: {e}"
+            )
+            return None
+
+    def aggregate_results(self, values: list[float | None]) -> Dict[str, Any]:
+        """Aggregate results into final metric values."""
+        valid_values = [v for v in values if v is not None]
+
+        if not valid_values:
+            raise ValueError("No valid structures for discrete target metric.")
+
+        # Convert values to success/failure based on tolerance
+        success_values = [
+            1.0 if abs(v - self.config.target_value) <= self.config.tolerance else 0.0
+            for v in valid_values
+        ]
+
+        success_rate = np.mean(success_values)
+
+        return {
+            "metrics": {
+                "success_rate": success_rate,
+                "mean_value": np.mean(valid_values),
+            },
+            "primary_metric": "success_rate",
+            "uncertainties": {
+                "success_rate": {
+                    "std": np.std(success_values) if len(success_values) > 1 else 0.0
+                },
+                "mean_value": {
+                    "std": np.std(valid_values) if len(valid_values) > 1 else 0.0
+                },
+            },
+        }
+
+
+@dataclass(kw_only=True)
+class ContinuousTargetConfig(MetricConfig):
+    """Configuration for the ContinuousTarget metric.
+
+    Parameters
+    ----------
+    target_value : float
+        The target continuous value to match.
+    tolerance : float, default=0.1
+        Tolerance for deviations from target value.
+    distance_metric : str, default="absolute"
+        The metric to use for measuring distance to target.
+        Options:
+        - "absolute": Absolute difference |x - target|
+        - "relative": Relative difference |x - target|/|target|
+        - "squared": Squared difference (x - target)**2
+    """
+
+    target_value: float
+    tolerance: float = 0.1
+    distance_metric: str = "absolute"
+
+
+class ContinuousTargetMetric(BaseMetric):
+    """Generic metric for evaluating how close structures are to a target continuous value."""
+
+    DISTANCE_METRICS = {
+        "absolute": lambda x, target: abs(x - target),
+        "relative": lambda x, target: abs(x - target)
+        / (abs(target) if target != 0 else 1.0),
+        "squared": lambda x, target: (x - target) ** 2,
+    }
+
+    def __init__(
+        self,
+        target_value: float,
+        tolerance: float = 0.1,
+        distance_metric: str = "absolute",
+        lower_is_better: bool = True,
+        name: str | None = None,
+        description: str | None = None,
+        n_jobs: int = 1,
+    ):
+        if distance_metric not in self.DISTANCE_METRICS:
+            raise ValueError(
+                f"Invalid distance metric '{distance_metric}'. "
+                f"Must be one of: {list(self.DISTANCE_METRICS.keys())}"
+            )
+
+        super().__init__(
+            name=name or f"ContinuousTarget_{str(target_value)}",
+            description=description
+            or f"Measures {distance_metric} distance to target value {str(target_value)}",
+            lower_is_better=lower_is_better,
+            n_jobs=n_jobs,
+        )
+        self.config = ContinuousTargetConfig(
+            name=self.config.name,
+            description=self.config.description,
+            lower_is_better=self.config.lower_is_better,
+            n_jobs=self.config.n_jobs,
+            target_value=target_value,
+            tolerance=tolerance,
+            distance_metric=distance_metric,
         )
 
-        return np.abs(bandgap - target_bandgap)
+    def _get_compute_attributes(self) -> dict[str, Any]:
+        """Get the attributes for the compute_structure method."""
+        return {
+            "target_value": self.config.target_value,
+            "distance_metric": self.config.distance_metric,
+            "cls": self.__class__,
+        }
+
+    @staticmethod
+    def value_extractor(structure: Structure) -> float:
+        """Extract the relevant continuous value from a structure.
+
+        This method must be implemented by subclasses.
+        """
+        raise NotImplementedError("Subclasses must implement value_extractor")
+
+    @staticmethod
+    def compute_structure(
+        structure: Structure, target_value: float, distance_metric: str, cls, **kwargs
+    ) -> float:
+        """Computes the distance from the target value using the specified metric."""
+        try:
+            value = cls.value_extractor(structure, **kwargs)
+            return cls.DISTANCE_METRICS[distance_metric](value, target_value)
+        except Exception as e:
+            logger.warning(
+                f"Value extraction failed for structure {structure.formula}: {e}"
+            )
+            return float("nan")
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
-        """Aggregate results into final metric values.
-
-        Parameters
-        ----------
-        values : list[float]
-            Absolute deviations from charge neutrality for each structure.
-
-        Returns
-        -------
-        dict
-            Dictionary with aggregated metrics.
-        """
-        # Filter out NaN values
+        """Aggregate results into final metric values."""
         valid_values = [v for v in values if not np.isnan(v)]
 
         if not valid_values:
-            raise ValueError
+            raise ValueError("No valid structures for continuous target metric.")
 
         # Count how many structures are within tolerance
         within_tolerance = sum(1 for v in valid_values if v <= self.config.tolerance)
         success_rate = within_tolerance / len(valid_values)
 
-        # Calculate mean absolute deviation
-        average_property_proximity = np.mean(valid_values)
+        # Calculate mean distance
+        average_distance = np.mean(valid_values)
 
+        metric_name = f"average_{self.config.distance_metric}_distance"
         return {
             "metrics": {
-                "average_property_proximity": average_property_proximity,
+                metric_name: average_distance,
                 "success_rate": success_rate,
             },
-            "primary_metric": "average_property_proximity",
+            "primary_metric": metric_name,
             "uncertainties": {
-                "average_property_proximity": {
+                metric_name: {
                     "std": np.std(valid_values) if len(valid_values) > 1 else 0.0
                 }
             },
         }
 
 
-@dataclass
-class SpacegroupTargetConfig(MetricConfig):
+@dataclass(kw_only=True)
+class BandgapPropertyTargetConfig(ContinuousTargetConfig):
+    """Configuration for the BandgapPropertyTarget metric.
+
+    Parameters
+    ----------
+    target_theory : str, default="PBE"
+        The theory level for bandgap prediction ("PBE" or "HSE").
+    target_bandgap : float, default=1
+        Target bandgap value in eV.
+    model : str, default="MEGNet-MP-2019.4.1-BandGap-mfi"
+        The model to use for bandgap prediction.
+    tolerance : float, default=0.1
+        Tolerance for deviations from target bandgap.
+    """
+
+    target_theory: str = "PBE"
+    model: str = "MEGNet-MP-2019.4.1-BandGap-mfi"
+
+
+class BandgapPropertyTargetMetric(ContinuousTargetMetric):
+    """Metric for evaluating if structures match a target bandgap value."""
+
+    def __init__(
+        self,
+        target_theory: str = "PBE",
+        target_bandgap: float = 1,
+        model: str = "MEGNet-MP-2019.4.1-BandGap-mfi",
+        tolerance: float = 0.1,
+        distance_metric: str = "absolute",
+        lower_is_better: bool = True,
+        name: str | None = None,
+        description: str | None = None,
+        n_jobs: int = 1,
+    ):
+        super().__init__(
+            target_value=target_bandgap,
+            tolerance=tolerance,
+            distance_metric=distance_metric,
+            lower_is_better=lower_is_better,
+            name=name or "Bandgap",
+            description=description
+            or f"Computes bandgap with {model} and compares to target bandgap {target_bandgap} eV",
+            n_jobs=n_jobs,
+        )
+
+        self.config = BandgapPropertyTargetConfig(
+            name=self.config.name,
+            description=self.config.description,
+            lower_is_better=self.config.lower_is_better,
+            n_jobs=self.config.n_jobs,
+            target_value=target_bandgap,
+            tolerance=tolerance,
+            distance_metric=distance_metric,
+            target_theory=target_theory,
+            model=model,
+        )
+
+    def _get_compute_attributes(self) -> dict[str, Any]:
+        """Get the attributes for the compute_structure method."""
+        super_attrs = super()._get_compute_attributes()
+        return {
+            **super_attrs,
+            "target_theory": self.config.target_theory,
+            "model": self.config.model,
+        }
+
+    @staticmethod
+    def value_extractor(structure: Structure, model: str, target_theory: str) -> float:
+        """Extract bandgap value from structure using the configured model."""
+        band_gap_model = load_model(model)
+        graph_attrs = torch.tensor([0 if target_theory == "PBE" else 2])
+        return band_gap_model.predict_structure(
+            structure=structure, state_attr=graph_attrs
+        )
+
+
+@dataclass(kw_only=True)
+class SpacegroupTargetConfig(DiscreteTargetConfig):
     """Configuration for the SpacegroupTarget metric.
+
     Parameters
     ----------
     target_sg : int
         Target space group number.
     symprec : float, default=0.01
         Symmetry precision for SpacegroupAnalyzer.
+    tolerance : float, default=0.1
+        Tolerance for considering a match successful (not used for space groups).
     """
 
-    target_sg: int
     symprec: float = 0.01
 
 
-class SpacegroupTargetMetric(BaseMetric):
+class SpacegroupTargetMetric(DiscreteTargetMetric):
     """Checks if a structure has a target space group."""
 
     def __init__(
@@ -173,57 +352,35 @@ class SpacegroupTargetMetric(BaseMetric):
         n_jobs: int = 1,
     ):
         super().__init__(
+            target_value=target_sg,
+            tolerance=0,  # Space groups must match exactly
+            lower_is_better=lower_is_better,
             name=name or f"SpacegroupMatch_{target_sg}",
             description=description
             or f"Measures fraction of structures with space group {target_sg}",
-            lower_is_better=lower_is_better,
             n_jobs=n_jobs,
         )
+
         self.config = SpacegroupTargetConfig(
             name=self.config.name,
             description=self.config.description,
             lower_is_better=self.config.lower_is_better,
             n_jobs=self.config.n_jobs,
-            target_sg=target_sg,
+            target_value=target_sg,
+            tolerance=0,  # Space groups must match exactly
             symprec=symprec,
         )
 
     def _get_compute_attributes(self) -> dict[str, Any]:
         """Get the attributes for the compute_structure method."""
-        return {"target_sg": self.config.target_sg, "symprec": self.config.symprec}
+        super_attrs = super()._get_compute_attributes()
+        return {
+            **super_attrs,
+            "symprec": self.config.symprec,
+        }
 
     @staticmethod
-    def compute_structure(
-        structure: Structure, target_sg: int, symprec: float
-    ) -> float:
-        """Computes if the structure has the target space group.
-        Returns 1.0 if the space group matches the target, 0.0 otherwise.
-        """
-        try:
-            sga = SpacegroupAnalyzer(structure, symprec=symprec)
-            sg = sga.get_space_group_number()
-            return 1.0 if sg == target_sg else 0.0
-        except Exception as e:
-            logger.warning(
-                f"Spacegroup analysis failed for structure {structure.formula}: {e}"
-            )
-            return 0.0
-
-    def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
-        """Aggregate results into final metric values."""
-        valid_values = [v for v in values if not np.isnan(v)]
-
-        if not valid_values:
-            raise ValueError("No valid structures for space group metric.")
-
-        success_rate = np.mean(valid_values)
-
-        return {
-            "metrics": {"success_rate": success_rate},
-            "primary_metric": "success_rate",
-            "uncertainties": {
-                "success_rate": {
-                    "std": np.std(valid_values) if len(valid_values) > 1 else 0.0
-                }
-            },
-        }
+    def value_extractor(structure: Structure, symprec: float) -> int:
+        """Extract space group number from structure."""
+        sga = SpacegroupAnalyzer(structure, symprec=symprec)
+        return sga.get_space_group_number()

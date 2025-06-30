@@ -15,7 +15,7 @@ from lematerial_forgebench.utils.logging import logger
 ClassVar = TypeVar("ClassVar", bound="BaseMetric")
 
 
-@dataclass
+@dataclass(kw_only=True)
 class MetricConfig:
     """Base configuration for all metrics.
 
