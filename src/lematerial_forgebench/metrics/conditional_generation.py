@@ -14,6 +14,10 @@ from pymatgen.core.structure import Structure
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
 from lematerial_forgebench.metrics.base import BaseMetric, MetricConfig
+from lematerial_forgebench.metrics.hhi_metrics import (
+    HHIProductionMetric,
+    HHIReserveMetric,
+)
 from lematerial_forgebench.utils.logging import logger
 
 
@@ -85,18 +89,12 @@ class DiscreteTargetMetric(BaseMetric):
         raise NotImplementedError("Subclasses must implement value_extractor")
 
     @staticmethod  # TODO: Should this be a classmethod?
-    def compute_structure(structure: Structure, cls, **kwargs) -> float | None:
+    def compute_structure(structure: Structure, cls, **kwargs) -> float:
         """Computes and returns the extracted value from the structure.
         Returns None if value extraction fails.
         """
-        try:
-            value = cls.value_extractor(structure, **kwargs)
-            return float(value) if value is not None else np.nan
-        except Exception as e:
-            logger.warning(
-                f"Value extraction failed for structure {structure.formula}: {e}"
-            )
-            return None
+        value = cls.value_extractor(structure, **kwargs)
+        return float(value) if value is not None else np.nan
 
     def aggregate_results(self, values: list[float | None]) -> Dict[str, Any]:
         """Aggregate results into final metric values."""
@@ -227,14 +225,8 @@ class ContinuousTargetMetric(BaseMetric):
         structure: Structure, target_value: float, distance_metric: str, cls, **kwargs
     ) -> float:
         """Computes the distance from the target value using the specified metric."""
-        try:
-            value = cls.value_extractor(structure, **kwargs)
-            return cls.DISTANCE_METRICS[distance_metric](value, target_value)
-        except Exception as e:
-            logger.warning(
-                f"Value extraction failed for structure {structure.formula}: {e}"
-            )
-            return float("nan")
+        value = cls.value_extractor(structure, **kwargs)
+        return cls.DISTANCE_METRICS[distance_metric](value, target_value)
 
     def aggregate_results(self, values: list[float]) -> Dict[str, Any]:
         """Aggregate results into final metric values."""
@@ -304,6 +296,7 @@ class BandgapPropertyTargetMetric(ContinuousTargetMetric):
         target_bandgap: float = 1,
         model: str = "MEGNet-MP-2019.4.1-BandGap-mfi",
         tolerance: float = 0.1,
+        top_k: int | None = None,
         distance_metric: str = "absolute",
         name: str | None = None,
         description: str | None = None,
@@ -312,6 +305,7 @@ class BandgapPropertyTargetMetric(ContinuousTargetMetric):
         super().__init__(
             target_value=target_bandgap,
             tolerance=tolerance,
+            top_k=top_k,
             distance_metric=distance_metric,
             name=name or "Bandgap",
             description=description
@@ -326,6 +320,7 @@ class BandgapPropertyTargetMetric(ContinuousTargetMetric):
             n_jobs=self.config.n_jobs,
             target_value=target_bandgap,
             tolerance=tolerance,
+            top_k=top_k,
             distance_metric=distance_metric,
             target_theory=target_theory,
             model=model,
@@ -410,3 +405,138 @@ class SpacegroupTargetMetric(DiscreteTargetMetric):
         """Extract space group number from structure."""
         sga = SpacegroupAnalyzer(structure, symprec=symprec)
         return sga.get_space_group_number()
+
+
+@dataclass(kw_only=True)
+class StableMagnetsConfig(BandgapPropertyTargetConfig):
+    """Configuration for the StableMagnets metric.
+
+    Parameters
+    ----------
+    min_bandgap : float
+        Minimum target bandgap value in eV.
+    max_bandgap : float
+        Maximum target bandgap value in eV.
+    hhi_value : float
+        Maximum allowed HHI value for both production and reserves.
+    """
+
+    min_bandgap: float
+    max_bandgap: float
+    hhi_value: float
+    top_k: int | None = None
+
+
+class StableMagnets(BandgapPropertyTargetMetric):
+    """Metric for evaluating if structures match criteria for stable magnets.
+
+    This metric checks if structures have:
+    1. A bandgap within a specified range
+    2. HHI values (both production and reserves) below a threshold
+    """
+
+    def __init__(
+        self,
+        min_bandgap: float,
+        max_bandgap: float,
+        hhi_value: float,
+        top_k: int | None = None,
+        distance_metric: str = "absolute",
+        name: str | None = None,
+        description: str | None = None,
+        n_jobs: int = 1,
+    ):
+        # Initialize parent with min_bandgap as target value since we'll use it as reference
+        super().__init__(
+            target_bandgap=min_bandgap,  # actually not used
+            tolerance=0.0,
+            top_k=top_k,
+            distance_metric=distance_metric,
+            name=name or "StableMagnets",
+            description=description
+            or f"Evaluates structures for stable magnets criteria: bandgap [{min_bandgap}, {max_bandgap}] eV, HHI ≤ {hhi_value}",
+            n_jobs=n_jobs,
+        )
+
+        # Update config with StableMagnets specific parameters
+        self.config = StableMagnetsConfig(
+            name=self.config.name,
+            description=self.config.description,
+            lower_is_better=self.config.lower_is_better,
+            n_jobs=self.config.n_jobs,
+            target_value=min_bandgap,
+            tolerance=self.config.tolerance,
+            top_k=self.config.top_k,
+            distance_metric=self.config.distance_metric,
+            target_theory=self.config.target_theory,
+            model=self.config.model,
+            min_bandgap=min_bandgap,
+            max_bandgap=max_bandgap,
+            hhi_value=hhi_value,
+        )
+
+    @staticmethod
+    def value_extractor(
+        structure: Structure, model: str, target_theory: str
+    ) -> dict[str, float]:
+        """Extract the relevant continuous value from a structure."""
+        bandgap = BandgapPropertyTargetMetric.value_extractor(
+            structure, model, target_theory
+        )
+        hhi_production = HHIProductionMetric.compute_structure(
+            structure, model, target_theory
+        )
+        hhi_reserve = HHIReserveMetric.compute_structure(
+            structure, model, target_theory
+        )
+        return {
+            "bandgap": bandgap,
+            "hhi_production": hhi_production,
+            "hhi_reserve": hhi_reserve,
+        }
+
+    def _get_compute_attributes(self) -> dict[str, Any]:
+        """Get the attributes for the compute_structure method."""
+        return {
+            "model": self.config.model,
+            "target_theory": self.config.target_theory,
+            "cls": self.__class__,
+        }
+
+    @staticmethod
+    def compute_structure(structure: Structure, cls, **kwargs) -> dict[str, float]:
+        """Compute the relevant continuous value from a structure."""
+        values = cls.value_extractor(structure, **kwargs)
+        return {
+            "bandgap": values["bandgap"],
+            "hhi_production": values["hhi_production"],
+            "hhi_reserve": values["hhi_reserve"],
+        }
+
+    def aggregate_results(self, values: list[dict[str, float]]) -> Dict[str, Any]:
+        """Aggregate results into final metric values."""
+
+        def verifies_condition(values: dict[str, float]) -> bool:
+            return (
+                values["bandgap"] >= self.config.min_bandgap
+                and values["bandgap"] <= self.config.max_bandgap
+                and values["hhi_production"] <= self.config.hhi_value
+                and values["hhi_reserve"] <= self.config.hhi_value
+            )
+
+        valid_values = [v for v in values if v is not None]
+        success_rate = np.mean([verifies_condition(v) for v in valid_values])
+
+        return {
+            "metrics": {
+                "success_rate": success_rate,
+            },
+            "primary_metric": "success_rate",
+            "uncertainties": {
+                "success_rate": {
+                    "std": np.std([verifies_condition(v) for v in valid_values])
+                    if len(valid_values) > 1
+                    else 0.0
+                }
+            },
+        }
