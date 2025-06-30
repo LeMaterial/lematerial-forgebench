@@ -302,42 +302,36 @@ class BaseHHIMetric(BaseMetric, ABC):
         low_risk_count_5 = sum(1 for v in valid_values if v <= 5.0)
 
         primary_metric_name = f"{self.name.lower()}_mean"
+        prefix = self.name.lower()
+        count_valid = len(valid_values)
 
         metrics = {
             # Individual values - in same order as input structures
             "individual_hhi_values": values,
             # Basic statistics
             primary_metric_name: mean_hhi,
-            f"{self.name.lower()}_std": std_hhi,
-            f"{self.name.lower()}_min": min_hhi,
-            f"{self.name.lower()}_max": max_hhi,
-            f"{self.name.lower()}_median": median_hhi,
-            f"{self.name.lower()}_25th_percentile": percentile_25,
-            f"{self.name.lower()}_75th_percentile": percentile_75,
+            f"{prefix}_std": std_hhi,
+            f"{prefix}_min": min_hhi,
+            f"{prefix}_max": max_hhi,
+            f"{prefix}_median": median_hhi,
+            f"{prefix}_25th_percentile": percentile_25,
+            f"{prefix}_75th_percentile": percentile_75,
             # Risk assessment metrics
-            f"{self.name.lower()}_low_risk_count_2": low_risk_count_2,
-            f"{self.name.lower()}_low_risk_count_3": low_risk_count_3,
-            f"{self.name.lower()}_low_risk_count_5": low_risk_count_5,
-            f"{self.name.lower()}_low_risk_fraction_2": (
-                low_risk_count_2 / len(valid_values)
-            ),
-            f"{self.name.lower()}_low_risk_fraction_3": (
-                low_risk_count_3 / len(valid_values)
-            ),
-            f"{self.name.lower()}_low_risk_fraction_5": (
-                low_risk_count_5 / len(valid_values)
-            ),
+            f"{prefix}_low_risk_count_2": low_risk_count_2,
+            f"{prefix}_low_risk_count_3": low_risk_count_3,
+            f"{prefix}_low_risk_count_5": low_risk_count_5,
+            f"{prefix}_low_risk_fraction_2": (low_risk_count_2 / count_valid),
+            f"{prefix}_low_risk_fraction_3": (low_risk_count_3 / count_valid),
+            f"{prefix}_low_risk_fraction_5": (low_risk_count_5 / count_valid),
             # Count metrics
-            "total_structures_evaluated": len(valid_values),
-            "failed_structures_count": len(values) - len(valid_values),
+            "total_structures_evaluated": count_valid,
+            "failed_structures_count": len(values) - count_valid,
         }
 
         uncertainties = {
             primary_metric_name: {
                 "std": std_hhi,
-                "std_error": (
-                    std_hhi / np.sqrt(len(valid_values)) if valid_values else 0
-                ),
+                "std_error": (std_hhi / np.sqrt(count_valid) if valid_values else 0),
             }
         }
 
