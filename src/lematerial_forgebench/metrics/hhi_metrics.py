@@ -6,7 +6,7 @@ production and reserves, which can indicate supply risk for materials
 generation.
 """
 
-import sys
+import json
 from abc import ABC
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,29 +22,27 @@ from lematerial_forgebench.metrics.base import (
 )
 
 
-def _load_hhi_data():
-    """Load HHI data from data_props.py file."""
+def _load_element_properties():
+    """Load element properties from JSON file."""
     try:
-        # Get the root directory (go up from metrics folder to
-        # lematerial_forgebench to src to root)
-        current_file = Path(__file__).resolve()
-        root_dir = current_file.parent.parent.parent.parent  # Go up to root
-        data_props_path = root_dir / "data" / "data_props.py"
+        # Get the JSON file path relative to this module
+        current_dir = Path(__file__).parent
+        json_path = current_dir / "data" / "element_properties.json"
 
-        if not data_props_path.exists():
-            raise ImportError(f"data_props.py not found at {data_props_path}")
+        if not json_path.exists():
+            raise FileNotFoundError(
+                f"Element properties file not found at {json_path}"
+            )
 
-        # Add root directory to path and import
-        if str(root_dir) not in sys.path:
-            sys.path.insert(0, str(root_dir))
+        with open(json_path, "r") as f:
+            data = json.load(f)
 
-        from data.data_props import hhi_production, hhi_reserve
-
-        return hhi_production, hhi_reserve
-    except ImportError as e:
+        return data["hhi_production"], data["hhi_reserve"]
+    except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
         raise ImportError(
-            f"Could not import HHI data from data.data_props: {e}. "
-            "Make sure the data_props.py file is in the root/data directory."
+            f"Could not load element properties: {e}. "
+            "Make sure element_properties.json is in "
+            "src/lematerial_forgebench/metrics/data/"
         )
 
 
@@ -55,8 +53,8 @@ class HHIMetricConfig(MetricConfig):
     Parameters
     ----------
     scale_to_0_10 : bool, default=True
-        If True, divide the classical 0 to 10,000 HHI by 1000 to get the 0 to 10
-        convenience scale used in the MatterGen paper.
+        If True, divide the classical 0 to 10,000 HHI by 1000 to get the 0 to
+        10 convenience scale used in the MatterGen paper.
     """
 
     scale_to_0_10: bool = True
@@ -177,7 +175,8 @@ class BaseHHIMetric(BaseMetric, ABC):
         --------
         >>> metric = HHIProductionMetric()
         >>> structures = [...]  # Your structures
-        >>> structure_values = metric.get_individual_values_with_structures
+        >>> structure_values = metric.get_individual_values_with_structures(
+        ...     structures)
         >>> # Sort by HHI value to find lowest risk
         >>> structure_values.sort(key=lambda x: x[2])
         >>> print(f"Lowest risk structure has HHI = {structure_values[0][2]}")
@@ -334,7 +333,9 @@ class BaseHHIMetric(BaseMetric, ABC):
         uncertainties = {
             primary_metric_name: {
                 "std": std_hhi,
-                "std_error": (std_hhi / np.sqrt(count_valid) if valid_values else 0),
+                "std_error": (
+                    std_hhi / np.sqrt(count_valid) if valid_values.size else 0
+                ),
             }
         }
 
@@ -378,7 +379,7 @@ class HHIProductionMetric(BaseHHIMetric):
             Number of parallel jobs to run.
         """
         # Load HHI data
-        hhi_production, _ = _load_hhi_data()
+        hhi_production, _ = _load_element_properties()
 
         super().__init__(
             hhi_table=hhi_production,
@@ -427,7 +428,7 @@ class HHIReserveMetric(BaseHHIMetric):
             Number of parallel jobs to run.
         """
         # Load HHI data
-        _, hhi_reserve = _load_hhi_data()
+        _, hhi_reserve = _load_element_properties()
 
         super().__init__(
             hhi_table=hhi_reserve,
@@ -455,8 +456,8 @@ def compound_hhi(formula: str, hhi_table: dict, scale_to_0_10: bool = True) -> f
     hhi_table : dict[str, int]
         Per-element HHI values (either production or reserve).
     scale_to_0_10 : bool, optional
-        If True, divide the classical 0 to 10,000 HHI by 1000 to get the 0 to 10
-        convenience scale used in the MatterGen paper.
+        If True, divide the classical 0 to 10,000 HHI by 1000 to get the 0 to
+        10 convenience scale used in the MatterGen paper.
 
     Returns
     -------
@@ -467,7 +468,7 @@ def compound_hhi(formula: str, hhi_table: dict, scale_to_0_10: bool = True) -> f
 
     Examples
     --------
-    >>> hhi_production, hhi_reserve = _load_hhi_data()
+    >>> hhi_production, hhi_reserve = _load_element_properties()
     >>> compound_hhi("Nd2Fe14B", hhi_production)
     5.234
     >>> compound_hhi("LiFePO4", hhi_reserve, scale_to_0_10=False)

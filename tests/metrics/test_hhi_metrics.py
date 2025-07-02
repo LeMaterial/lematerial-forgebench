@@ -9,7 +9,7 @@ from lematerial_forgebench.metrics.hhi_metrics import (
     BaseHHIMetric,
     HHIProductionMetric,
     HHIReserveMetric,
-    _load_hhi_data,
+    _load_element_properties,
     compound_hhi,
 )
 
@@ -62,7 +62,7 @@ def create_test_structures():
 def get_hhi_data():
     """Get HHI data, skip test if not available."""
     try:
-        return _load_hhi_data()
+        return _load_element_properties()
     except ImportError:
         pytest.skip("HHI data not available - skipping test")
 
@@ -246,7 +246,10 @@ class TestHHIProductionMetric:
 
         # Check that individual values are also in the metrics dictionary
         assert "individual_hhi_values" in result.metrics
-        assert result.metrics["individual_hhi_values"] == result.individual_values
+        assert (
+            result.metrics["individual_hhi_values"]
+            == result.individual_values
+        )
         assert len(result.metrics["individual_hhi_values"]) == len(structures)
 
         # Verify individual values are accessible both ways
@@ -305,7 +308,9 @@ class TestHHIProductionMetric:
         structures = create_test_structures()
 
         # Get individual values with structures
-        structure_values = metric.get_individual_values_with_structures(structures)
+        structure_values = metric.get_individual_values_with_structures(
+            structures
+        )
 
         # Should have same number as input structures (assuming no failures)
         assert len(structure_values) == len(structures)
@@ -386,7 +391,9 @@ class TestCompoundHHIFunction:
         assert abs(result - expected) < 1e-6
 
         # Test without scaling
-        result_unscaled = compound_hhi("NaCl", hhi_production, scale_to_0_10=False)
+        result_unscaled = compound_hhi(
+            "NaCl", hhi_production, scale_to_0_10=False
+        )
         expected_unscaled = (hhi_production["Na"] + hhi_production["Cl"]) / 2
         assert abs(result_unscaled - expected_unscaled) < 1e-6
 
@@ -431,7 +438,10 @@ class TestErrorHandling:
     """Test error handling in HHI metrics."""
 
     def test_missing_element_handling(self):
-        """Test that missing elements are assigned maximum HHI value instead of erroring."""
+        """
+        Test that missing elements are assigned maximum HHI 
+        value instead of erroring.
+        """
         # Create a mock HHI table missing some elements
         mock_hhi_table = {"Fe": 2424, "Na": 1102}  # Missing Cl
 
@@ -501,7 +511,9 @@ class TestErrorHandling:
         assert abs(result - 10.0) < 1e-6
 
         # Test unscaled
-        result_unscaled = compound_hhi("NaCl", mock_hhi_table, scale_to_0_10=False)
+        result_unscaled = compound_hhi(
+            "NaCl", mock_hhi_table, scale_to_0_10=False
+        )
         assert abs(result_unscaled - 10000.0) < 1e-6
 
         # Test mixed (some elements present, some missing)
@@ -517,7 +529,7 @@ class TestErrorHandling:
         metric = HHIProductionMetric()
         structures = create_test_structures()
 
-        # Test with structures containing common elements that should be in data_props
+        # Test with structures containing common elements
         for structure in structures:
             try:
                 result = metric.compute_structure(
@@ -527,6 +539,6 @@ class TestErrorHandling:
                 assert not np.isnan(result)
                 assert result > 0
             except Exception:
-                # If this fails, it might be due to missing elements in data_props
+                # If this fails, it might be due to missing elements
                 # which is fine for this test
                 pass
