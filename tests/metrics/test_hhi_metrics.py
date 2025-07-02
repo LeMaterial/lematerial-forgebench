@@ -384,7 +384,6 @@ class TestCompoundHHIFunction:
     def test_compound_hhi_simple(self):
         """Test compound HHI function with simple compounds."""
         hhi_production, hhi_reserve = get_hhi_data()
-
         # Test with a simple compound
         result = compound_hhi("NaCl", hhi_production)
         expected = (hhi_production["Na"] + hhi_production["Cl"]) / 2 / 1000
@@ -399,7 +398,7 @@ class TestCompoundHHIFunction:
 
     def test_compound_hhi_complex(self):
         """Test compound HHI function with complex compounds."""
-        hhi_production, _ = get_hhi_data()
+        hhi_production, hhi_reserve = get_hhi_data()
 
         # Test with more complex formula
         result = compound_hhi("Nd2Fe14B", hhi_production)
@@ -415,7 +414,7 @@ class TestCompoundHHIFunction:
 
     def test_compound_hhi_consistency(self):
         """Test that standalone function gives same results as metric."""
-        hhi_production, _ = get_hhi_data()
+        hhi_production, hhi_reserve = get_hhi_data()
 
         # Create a structure
         structures = create_test_structures()

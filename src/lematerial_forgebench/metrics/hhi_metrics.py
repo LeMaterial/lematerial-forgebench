@@ -378,7 +378,6 @@ class HHIProductionMetric(BaseHHIMetric):
         n_jobs : int, default=1
             Number of parallel jobs to run.
         """
-        # Load HHI data
         hhi_production, _ = _load_element_properties()
 
         super().__init__(
@@ -427,7 +426,6 @@ class HHIReserveMetric(BaseHHIMetric):
         n_jobs : int, default=1
             Number of parallel jobs to run.
         """
-        # Load HHI data
         _, hhi_reserve = _load_element_properties()
 
         super().__init__(
