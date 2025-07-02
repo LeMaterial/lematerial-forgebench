@@ -28,15 +28,15 @@ def _load_element_properties():
         # Get the JSON file path relative to this module
         current_dir = Path(__file__).parent
         json_path = current_dir / "data" / "element_properties.json"
-
+        
         if not json_path.exists():
             raise FileNotFoundError(
                 f"Element properties file not found at {json_path}"
             )
-
+        
         with open(json_path, "r") as f:
             data = json.load(f)
-
+        
         return data["hhi_production"], data["hhi_reserve"]
     except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
         raise ImportError(
