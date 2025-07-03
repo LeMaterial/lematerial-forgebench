@@ -205,19 +205,18 @@ def frechet_distance(
 
     return float(diff.dot(diff) + np.trace(sigma1) + np.trace(sigma2) - 2 * tr_covmean)
 
-def compute_frechetdist(reference_data, generated_crystals, crystal_param):
+def compute_frechetdist(reference_data, generated_crystals):
+
+    X = np.stack(reference_data, axis = 0)
+    mu1 = np.mean(X, axis = 0) # mean generated distribution 
+
+    Y = np.stack(generated_crystals, axis = 0)
+    mu2 = np.mean(Y, axis = 0) # mean reference distribution
+
+    sigma1 = np.cov(X, rowvar = False) # covariance matrix generated distribution 
+    sigma2 = np.cov(Y, rowvar = False) # covariance matrix reference distribution
 
 
-
-    generated_crystals_dist = generate_probabilities(
-        generated_crystals, metric=crystal_param, return_2d_array=True
-    )
-    reference_data_dist = generate_probabilities(
-        reference_data, metric=crystal_param, return_2d_array=True
-    )
-
-    
-    
-    # distance = frdist(reference_data_dist, generated_crystals_dist)
-    distance = frechet_distance()
+    distance = frechet_distance(mu1=mu1, mu2=mu2, sigma1=sigma1, sigma2=sigma2)
+    print(distance)
     return distance

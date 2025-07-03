@@ -411,11 +411,17 @@ class FrechetDistance(BaseMetric):
         start_time = time.time()
 
         all_properties = [
-            structure.properties.get("distribution_properties", {})
+            structure.properties.get("graph_embedding", {})
             for structure in structures
         ]
-        df_all_properties = pd.DataFrame(all_properties)
         reference_df = compute_args.get("reference_df")
+
+        if structures[0].properties.get("mlip_model") == "ORBCalculator":
+            decorator = "Orb"
+        
+        reference_column = decorator + "GraphEmbeddings"
+        print(reference_df.columns)
+        reference_embeddings = reference_df[reference_column]
 
 
         if reference_df is None:
@@ -426,12 +432,11 @@ class FrechetDistance(BaseMetric):
         dist_metrics = {}
 
         frechetdist = compute_frechetdist(
-            reference_df, df_all_properties
+            reference_embeddings, all_properties
         )
         dist_metrics["FrechetDistance"] = frechetdist
 
         end_time = time.time()
-        breakpoint()
 
         return MetricResult(
             metrics=dist_metrics,
@@ -492,8 +497,9 @@ if __name__ == "__main__":
     from pymatgen.util.testing import PymatgenTest
 
     from lematerial_forgebench.preprocess.distribution_preprocess import (
-        DistributionPreprocessor,
+        DistributionPreprocessor, 
     )
+
 
     with open("data/small_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)
@@ -504,22 +510,30 @@ if __name__ == "__main__":
         test.get_structure("LiFePO4"),
     ]
 
-    distribution_preprocessor = DistributionPreprocessor()
-    preprocessor_result = distribution_preprocessor(structures)
+    # distribution_preprocessor = DistributionPreprocessor()
+    # preprocessor_result = distribution_preprocessor(structures)
 
-    metric = JSDistance(reference_df=test_lemat) 
-    default_args = metric._get_compute_attributes()
-    metric_result = metric(preprocessor_result.processed_structures, **default_args)
-    print(metric_result.metrics)
+    # metric = JSDistance(reference_df=test_lemat) 
+    # default_args = metric._get_compute_attributes()
+    # metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    # print(metric_result.metrics)
 
-    metric = MMD(reference_df=test_lemat) 
-    default_args = metric._get_compute_attributes()
-    metric_result = metric(preprocessor_result.processed_structures, **default_args)
-    print(metric_result.metrics)
+    # metric = MMD(reference_df=test_lemat) 
+    # default_args = metric._get_compute_attributes()
+    # metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    # print(metric_result.metrics)
 
-    metric = FrechetDistance(reference_df=test_lemat) 
+    with open("data/LeMatBulk_embeddings.pkl", "rb") as f:
+        sample_embeddings_df = pickle.load(f)
+    with open("data/small_lematbulk.pkl", "rb") as f:
+        reference_df = pickle.load(f)
+
+    metric = FrechetDistance(reference_df=reference_df) 
+
+    sample_embeddings = list(sample_embeddings_df.OrbProcessedStructures)
+
     default_args = metric._get_compute_attributes()
-    metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    metric_result = metric(sample_embeddings, **default_args)
     print(metric_result.metrics)
 
 
