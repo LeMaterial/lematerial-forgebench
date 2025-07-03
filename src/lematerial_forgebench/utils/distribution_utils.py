@@ -1,9 +1,8 @@
 import json
-from scipy import linalg
 
 import numpy as np
-from frechetdist import frdist
 from pymatgen.core import Element
+from scipy import linalg
 from scipy.spatial.distance import cdist, jensenshannon
 
 

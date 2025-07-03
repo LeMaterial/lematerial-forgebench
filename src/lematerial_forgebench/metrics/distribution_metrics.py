@@ -496,9 +496,6 @@ if __name__ == "__main__":
 
     from pymatgen.util.testing import PymatgenTest
 
-    from lematerial_forgebench.preprocess.distribution_preprocess import (
-        DistributionPreprocessor, 
-    )
 
 
     with open("data/small_lematbulk.pkl", "rb") as f:
