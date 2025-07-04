@@ -12,6 +12,8 @@ from lematerial_forgebench.preprocess.distribution_preprocess import (
     DistributionPreprocessor,
 )
 
+from lematerial_forgebench.preprocess.universal_stability_preprocess import UniversalStabilityPreprocessor
+from lematerial_forgebench.preprocess.base import PreprocessorResult
 
 @pytest.fixture
 def valid_structures():
@@ -46,7 +48,7 @@ class TestDistributionBenchmark:
         assert "version" in benchmark.config.metadata
 
         # Check correct evaluators
-        assert len(benchmark.evaluators) == 2
+        assert len(benchmark.evaluators) == 3
         assert "JSDistance" in benchmark.evaluators
         assert "MMD" in benchmark.evaluators
         assert "FrechetDistance" in benchmark.evaluators
@@ -76,13 +78,44 @@ class TestDistributionBenchmark:
         ]
 
         distribution_preprocessor = DistributionPreprocessor()
-        preprocessor_result = distribution_preprocessor(structures)
+        dist_preprocessor_result = distribution_preprocessor(structures)
+
+        stability_preprocessor = UniversalStabilityPreprocessor(model_name="orb")
+        stability_preprocessor_result = stability_preprocessor(structures)
+
+        final_processed_structures = []
+
+        for ind in range(0, len(dist_preprocessor_result.processed_structures)): 
+            combined_structure = dist_preprocessor_result.processed_structures[ind]
+            for entry in stability_preprocessor_result.processed_structures[ind].properties.keys():
+                combined_structure.properties[entry] = stability_preprocessor_result.processed_structures[ind].properties[entry]
+            final_processed_structures.append(combined_structure)
+
+        preprocessor_result = PreprocessorResult(processed_structures=final_processed_structures,
+                config={
+                    "stability_preprocessor_config":stability_preprocessor_result.config,
+                    "distribution_preprocessor_config": dist_preprocessor_result.config,
+                },
+                computation_time={
+                    "stability_preprocessor_computation_time": stability_preprocessor_result.computation_time,
+                    "distribution_preprocessor_computation_time": dist_preprocessor_result.computation_time,
+                },
+                n_input_structures=stability_preprocessor_result.n_input_structures,
+                failed_indices={
+                    "stability_preprocessor_failed_indices": stability_preprocessor_result.failed_indices,
+                    "distribution_preprocessor_failed_indices": dist_preprocessor_result.failed_indices,
+                },
+                warnings={
+                    "stability_preprocessor_warnings": stability_preprocessor_result.warnings,
+                    "distribution_preprocessor_warnings": dist_preprocessor_result.warnings,
+                },
+            )
 
         benchmark = DistributionBenchmark(reference_df=reference_data)
         result = benchmark.evaluate(preprocessor_result.processed_structures)
 
         # Check result format
-        assert len(result.evaluator_results) == 2
+        assert len(result.evaluator_results) == 3
         assert "JSDistance" in result.final_scores
         assert "MMD" in result.final_scores
         assert "FrechetDistance" in result.final_scores
