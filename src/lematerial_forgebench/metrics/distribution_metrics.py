@@ -500,7 +500,7 @@ if __name__ == "__main__":
         DistributionPreprocessor,
     )
 
-    with open("data/small_lematbulk.pkl", "rb") as f:
+    with open("data/sample_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)
     test = PymatgenTest()
 

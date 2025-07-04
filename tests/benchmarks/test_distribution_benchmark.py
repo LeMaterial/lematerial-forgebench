@@ -8,12 +8,14 @@ from pymatgen.util.testing import PymatgenTest
 from lematerial_forgebench.benchmarks.distribution_benchmark import (
     DistributionBenchmark,
 )
+from lematerial_forgebench.preprocess.base import PreprocessorResult
 from lematerial_forgebench.preprocess.distribution_preprocess import (
     DistributionPreprocessor,
 )
+from lematerial_forgebench.preprocess.universal_stability_preprocess import (
+    UniversalStabilityPreprocessor,
+)
 
-from lematerial_forgebench.preprocess.universal_stability_preprocess import UniversalStabilityPreprocessor
-from lematerial_forgebench.preprocess.base import PreprocessorResult
 
 @pytest.fixture
 def valid_structures():
