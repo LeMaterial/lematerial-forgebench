@@ -61,12 +61,12 @@ def process_item_action(dataset):
 
     orb_result = stability_preprocessor.stability_preprocessor_orb(struts)
     mace_result = stability_preprocessor.stability_preprocessor_mace(struts)
-
+    
     orb_graph_embeddings = []
     orb_node_embeddings = []
+    
     mace_graph_embeddings = []
     mace_node_embeddings = []
-
 
     for orb_strut in orb_result.processed_structures:
         orb_graph_embeddings.append(orb_strut.properties.get("graph_embedding"))
@@ -102,13 +102,13 @@ def process_structures_wrapper(dataset):
 
     try:
         result = func_timeout(
-            600_000, process_item_action, [dataset]
+            60_000, process_item_action, [dataset]
         )  # TODO This should not be hardcoded!
         return result
     except FunctionTimedOut:
         timeout_list = []
         for i in range(0, len(dataset)):
-            timeout_list.append("TimedOut>1000min")
+            timeout_list.append("TimedOut>100min")
         print("Function timed out and was skipped")
         return [dataset.immutable_id, 
                 np.ones(len(dataset)), 
@@ -121,8 +121,8 @@ if __name__ == "__main__":
     import pandas as pd
 
     full_dataset = False
-    vals_spacing = 1000
-    vals = np.arange(0, 10000, vals_spacing)
+    vals_spacing = 10
+    vals = np.arange(0, 100, vals_spacing)
     dir_name = "test_small_lematbulk"
     
     dataset_name = "Lematerial/LeMat-Bulk"

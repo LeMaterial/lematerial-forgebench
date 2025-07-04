@@ -496,7 +496,9 @@ if __name__ == "__main__":
 
     from pymatgen.util.testing import PymatgenTest
 
-
+    from lematerial_forgebench.preprocess.distribution_preprocess import (
+        DistributionPreprocessor,
+    )
 
     with open("data/small_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)
@@ -507,25 +509,23 @@ if __name__ == "__main__":
         test.get_structure("LiFePO4"),
     ]
 
-    # distribution_preprocessor = DistributionPreprocessor()
-    # preprocessor_result = distribution_preprocessor(structures)
+    distribution_preprocessor = DistributionPreprocessor()
+    preprocessor_result = distribution_preprocessor(structures)
 
-    # metric = JSDistance(reference_df=test_lemat) 
-    # default_args = metric._get_compute_attributes()
-    # metric_result = metric(preprocessor_result.processed_structures, **default_args)
-    # print(metric_result.metrics)
+    metric = JSDistance(reference_df=test_lemat) 
+    default_args = metric._get_compute_attributes()
+    metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    print(metric_result.metrics)
 
-    # metric = MMD(reference_df=test_lemat) 
-    # default_args = metric._get_compute_attributes()
-    # metric_result = metric(preprocessor_result.processed_structures, **default_args)
-    # print(metric_result.metrics)
+    metric = MMD(reference_df=test_lemat) 
+    default_args = metric._get_compute_attributes()
+    metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    print(metric_result.metrics)
 
     with open("data/LeMatBulk_embeddings.pkl", "rb") as f:
         sample_embeddings_df = pickle.load(f)
-    with open("data/small_lematbulk.pkl", "rb") as f:
-        reference_df = pickle.load(f)
 
-    metric = FrechetDistance(reference_df=reference_df) 
+    metric = FrechetDistance(reference_df=test_lemat) 
 
     sample_embeddings = list(sample_embeddings_df.OrbProcessedStructures)
 

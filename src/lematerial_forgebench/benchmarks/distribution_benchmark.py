@@ -12,6 +12,7 @@ from lematerial_forgebench.benchmarks.base import BaseBenchmark
 from lematerial_forgebench.evaluator import EvaluationResult, EvaluatorConfig
 from lematerial_forgebench.metrics.distribution_metrics import (
     MMD,
+    FrechetDistance,
     JSDistance,
 )
 from lematerial_forgebench.utils.distribution_utils import safe_float
@@ -74,16 +75,16 @@ class DistributionBenchmark(BaseBenchmark):
         )
 
         # Initialize the MFrechetDistanceMD metric
-        # FrechetDistance_metric = FrechetDistance(reference_df=reference_df)
+        FrechetDistance_metric = FrechetDistance(reference_df=reference_df)
 
-        # # add to evaluator config
-        # evaluator_configs["FrechetDistance"] = EvaluatorConfig(
-        #     name="FrechetDistance Analysis",
-        #     description="Calculates the Frechet Distance between two distributions",
-        #     metrics={"FrechetDistance": FrechetDistance_metric},
-        #     weights={"FrechetDistance": 1.0},
-        #     aggregation_method="weighted_mean",
-        # )
+        # add to evaluator config
+        evaluator_configs["FrechetDistance"] = EvaluatorConfig(
+            name="FrechetDistance Analysis",
+            description="Calculates the Frechet Distance between two distributions",
+            metrics={"FrechetDistance": FrechetDistance_metric},
+            weights={"FrechetDistance": 1.0},
+            aggregation_method="weighted_mean",
+        )
 
         # Create benchmark metadata
         benchmark_metadata = {
@@ -128,7 +129,6 @@ class DistributionBenchmark(BaseBenchmark):
 
         # Extract MMD results 
         MMD_results = evaluator_results.get("MMD")
-        print("MMD_results")
         if MMD_results:
             final_scores["MMD"] = safe_float(MMD_results.get("combined_value"))
 
@@ -147,8 +147,12 @@ if __name__ == "__main__":
 
     from pymatgen.util.testing import PymatgenTest
 
+    from lematerial_forgebench.preprocess.base import PreprocessorResult
     from lematerial_forgebench.preprocess.distribution_preprocess import (
         DistributionPreprocessor,
+    )
+    from lematerial_forgebench.preprocess.universal_stability_preprocess import (
+        UniversalStabilityPreprocessor,
     )
 
     with open("data/small_lematbulk.pkl", "rb") as f:
@@ -161,9 +165,48 @@ if __name__ == "__main__":
     ]
 
     distribution_preprocessor = DistributionPreprocessor()
-    preprocessor_result = distribution_preprocessor(structures)
+    dist_preprocessor_result = distribution_preprocessor(structures)
+
+    stability_preprocessor = UniversalStabilityPreprocessor(model_name="orb")
+    stability_preprocessor_result = stability_preprocessor(structures)
+
+    final_processed_structures = []
+
+    for ind in range(0, len(dist_preprocessor_result.processed_structures)): 
+        combined_structure = dist_preprocessor_result.processed_structures[ind]
+        for entry in stability_preprocessor_result.processed_structures[ind].properties.keys():
+            combined_structure.properties[entry] = stability_preprocessor_result.processed_structures[ind].properties[entry]
+        final_processed_structures.append(combined_structure)
+
+    preprocessor_result = PreprocessorResult(processed_structures=final_processed_structures,
+            config={
+                "stability_preprocessor_config":stability_preprocessor_result.config,
+                "distribution_preprocessor_config": dist_preprocessor_result.config,
+            },
+            computation_time={
+                "stability_preprocessor_computation_time": stability_preprocessor_result.computation_time,
+                "distribution_preprocessor_computation_time": dist_preprocessor_result.computation_time,
+            },
+            n_input_structures=stability_preprocessor_result.n_input_structures,
+            failed_indices={
+                "stability_preprocessor_failed_indices": stability_preprocessor_result.failed_indices,
+                "distribution_preprocessor_failed_indices": dist_preprocessor_result.failed_indices,
+            },
+            warnings={
+                "stability_preprocessor_warnings": stability_preprocessor_result.warnings,
+                "distribution_preprocessor_warnings": dist_preprocessor_result.warnings,
+            },
+        )
 
     benchmark = DistributionBenchmark(reference_df=test_lemat)
     benchmark_result = benchmark.evaluate(preprocessor_result.processed_structures)
-    print(benchmark_result.evaluator_results["JSDistance"]["JSDistance_value"])
-    print(benchmark_result.evaluator_results["MMD"]["MMD_value"])
+
+    print("JSDistance")
+    print(benchmark_result.evaluator_results["JSDistance"]["metric_results"]["JSDistance"].metrics)
+    print("Average JSDistance: " + str(benchmark_result.evaluator_results["JSDistance"]["JSDistance_value"]))
+    print("MMD")
+    print(benchmark_result.evaluator_results["MMD"]["metric_results"]["MMD"].metrics)
+    print("Average MMD: " + str(benchmark_result.evaluator_results["MMD"]["MMD_value"]))
+    print("FrechetDistance")
+    print(benchmark_result.evaluator_results["FrechetDistance"]["metric_results"]["FrechetDistance"].metrics)
+    print("Average Frechet Distance: " + str(benchmark_result.evaluator_results["FrechetDistance"]["FrechetDistance_value"]))

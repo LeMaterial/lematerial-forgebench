@@ -217,5 +217,4 @@ def compute_frechetdist(reference_data, generated_crystals):
 
 
     distance = frechet_distance(mu1=mu1, mu2=mu2, sigma1=sigma1, sigma2=sigma2)
-    print(distance)
     return distance

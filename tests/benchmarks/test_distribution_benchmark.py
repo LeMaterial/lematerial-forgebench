@@ -49,7 +49,7 @@ class TestDistributionBenchmark:
         assert len(benchmark.evaluators) == 2
         assert "JSDistance" in benchmark.evaluators
         assert "MMD" in benchmark.evaluators
-        # assert "FrechetDistance" in benchmark.evaluators
+        assert "FrechetDistance" in benchmark.evaluators
 
     def test_custom_initialization(self):
         """Test initialization with custom parameters."""
@@ -85,7 +85,7 @@ class TestDistributionBenchmark:
         assert len(result.evaluator_results) == 2
         assert "JSDistance" in result.final_scores
         assert "MMD" in result.final_scores
-        # assert "FrechetDistance" in result.final_scores
+        assert "FrechetDistance" in result.final_scores
 
         # Check score ranges
         for name, score in result.final_scores.items():
