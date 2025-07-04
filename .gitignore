@@ -172,3 +172,8 @@ src/lematerial_forgebench/.DS_Store
 
 # Ignore .gz
 *.gz
+*.csv
+*.npy
+*.pkl
+*.cif
+*.json
