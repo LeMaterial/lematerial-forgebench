@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass, field
 from typing import Any, Dict
+from func_timeout import FunctionTimedOut, func_timeout
 
 import numpy as np
 from pymatgen.core import Structure
@@ -34,6 +35,7 @@ class UniversalStabilityPreprocessorConfig(PreprocessorConfig):
     """
 
     model_name: str = "orb"
+    timeout: int = 60
     model_config: Dict[str, Any] = field(default_factory=dict)
     relax_structures: bool = True
     relaxation_config: Dict[str, Any] = field(default_factory=dict)
@@ -75,6 +77,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
     def __init__(
         self,
         model_name: str = "orb",
+        timeout: int = 60, 
         model_config: Dict[str, Any] = None,
         relax_structures: bool = True,
         relaxation_config: Dict[str, Any] = None,
@@ -96,6 +99,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
             description=self.config.description,
             n_jobs=self.config.n_jobs,
             model_name=model_name,
+            timeout=timeout,
             model_config=model_config or {},
             relax_structures=relax_structures,
             relaxation_config=relaxation_config or {"fmax": 0.02, "steps": 500},
@@ -118,6 +122,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
         """Get the attributes for the process_structure method."""
         return {
             "calculator": self.calculator,
+            "timeout": self.config.timeout, 
             "relax_structures": self.config.relax_structures,
             "relaxation_config": self.config.relaxation_config,
             "calculate_formation_energy": self.config.calculate_formation_energy,
@@ -129,6 +134,7 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
     def process_structure(
         structure: Structure,
         calculator,
+        timeout: int, 
         relax_structures: bool,
         relaxation_config: Dict[str, Any],
         calculate_formation_energy: bool,
@@ -164,124 +170,155 @@ class UniversalStabilityPreprocessor(BasePreprocessor):
         Exception
             If computation fails
         """
+
+
         try:
-            # Store model information
-            structure.properties["mlip_model"] = calculator.__class__.__name__
-            structure.properties["model_config"] = getattr(
-                calculator, "model_type", "unknown"
+            result = func_timeout(
+                timeout, _process_structure_action, [
+                                                structure, 
+                                                calculator, 
+                                                relax_structures,
+                                                relaxation_config, 
+                                                calculate_formation_energy, 
+                                                calculate_energy_above_hull, 
+                                                extract_embeddings,
+                                                ]
             )
+            return result
+        except FunctionTimedOut:
 
-            # Calculate basic energy and forces for original structure
-            energy_result = calculator.calculate_energy_forces(structure)
-            structure.properties["energy"] = energy_result.energy
-            structure.properties["forces"] = energy_result.forces
-
-            # Calculate formation energy if requested
-            if calculate_formation_energy:
-                try:
-                    formation_energy = calculator.calculate_formation_energy(structure)
-                    structure.properties["formation_energy"] = formation_energy
-                    logger.debug(
-                        f"Computed formation_energy: {formation_energy:.3f} eV/atom for {structure.formula}"
-                    )
-                except Exception as e:
-                    logger.warning(
-                        f"Failed to compute formation_energy for {structure.formula}: {str(e)}"
-                    )
-                    structure.properties["formation_energy"] = None
-
-            # Calculate energy above hull if requested
-            if calculate_energy_above_hull:
-                try:
-                    e_above_hull = calculator.calculate_energy_above_hull(structure)
-                    structure.properties["e_above_hull"] = e_above_hull
-                    logger.debug(
-                        f"Computed e_above_hull: {e_above_hull:.3f} eV/atom for {structure.formula}"
-                    )
-                except Exception as e:
-                    logger.warning(
-                        f"Failed to compute e_above_hull for {structure.formula}: {str(e)}"
-                    )
-                    structure.properties["e_above_hull"] = None
-
-            # Extract embeddings if requested
-            if extract_embeddings:
-                embeddings = calculator.extract_embeddings(structure)
-                structure.properties["node_embeddings"] = embeddings.node_embeddings
-                structure.properties["graph_embedding"] = embeddings.graph_embedding
-
-            # Optionally relax the structure
-            if relax_structures:
-                try:
-                    relaxed_structure, relaxation_result = calculator.relax_structure(
-                        structure, **relaxation_config
-                    )
-
-                    # Calculate RMSE between original and relaxed positions
-                    rmse = _calculate_rmse(structure, relaxed_structure)
-
-                    # Store relaxed structure and properties
-                    structure.properties["relaxed_structure"] = relaxed_structure
-                    structure.properties["relaxation_rmse"] = rmse
-                    structure.properties["relaxation_energy"] = relaxation_result.energy
-
-                    if (
-                        relaxation_result.metadata
-                        and "relaxation_steps" in relaxation_result.metadata
-                    ):
-                        structure.properties["relaxation_steps"] = (
-                            relaxation_result.metadata["relaxation_steps"]
-                        )
-
-                    # Calculate properties for relaxed structure if requested
-                    if calculate_formation_energy:
-                        try:
-                            relaxed_formation_energy = (
-                                calculator.calculate_formation_energy(relaxed_structure)
-                            )
-                            structure.properties["relaxed_formation_energy"] = (
-                                relaxed_formation_energy
-                            )
-                        except Exception as e:
-                            logger.warning(
-                                f"Failed to compute formation_energy for relaxed {relaxed_structure.formula}: {str(e)}"
-                            )
-                            structure.properties["relaxed_formation_energy"] = None
-
-                    if calculate_energy_above_hull:
-                        try:
-                            relaxed_e_above_hull = (
-                                calculator.calculate_energy_above_hull(
-                                    relaxed_structure
-                                )
-                            )
-                            structure.properties["relaxed_e_above_hull"] = (
-                                relaxed_e_above_hull
-                            )
-                        except Exception as e:
-                            logger.warning(
-                                f"Failed to compute e_above_hull for relaxed {relaxed_structure.formula}: {str(e)}"
-                            )
-                            structure.properties["relaxed_e_above_hull"] = None
-
-                    logger.debug(
-                        f"Relaxed structure: RMSE: {rmse:.3f} Å, "
-                        f"energy: {relaxation_result.energy:.3f} eV for {structure.formula}"
-                    )
-
-                except Exception as e:
-                    logger.warning(
-                        f"Failed to relax structure {structure.formula}: {str(e)}"
-                    )
-                    # Continue without relaxation
-                    structure.properties["relaxation_failed"] = True
-                    structure.properties["relaxation_error"] = str(e)
-
+            print("Function timed out and was skipped")
             return structure
 
-        except Exception as e:
-            logger.error(f"Failed to process structure {structure.formula}: {str(e)}")
-            raise
+def _process_structure_action(        
+    structure: Structure,
+    calculator,
+    relax_structures: bool,
+    relaxation_config: Dict[str, Any],
+    calculate_formation_energy: bool,
+    calculate_energy_above_hull: bool,
+    extract_embeddings: bool,
+    ) -> Structure:
+
+
+    try:
+        # Store model information
+        structure.properties["mlip_model"] = calculator.__class__.__name__
+        structure.properties["model_config"] = getattr(
+            calculator, "model_type", "unknown"
+        )
+
+        # Calculate basic energy and forces for original structure
+        energy_result = calculator.calculate_energy_forces(structure)
+        structure.properties["energy"] = energy_result.energy
+        structure.properties["forces"] = energy_result.forces
+
+        # Calculate formation energy if requested
+        if calculate_formation_energy:
+            try:
+                formation_energy = calculator.calculate_formation_energy(structure)
+                structure.properties["formation_energy"] = formation_energy
+                logger.debug(
+                    f"Computed formation_energy: {formation_energy:.3f} eV/atom for {structure.formula}"
+                )
+            except Exception as e:
+                logger.warning(
+                    f"Failed to compute formation_energy for {structure.formula}: {str(e)}"
+                )
+                structure.properties["formation_energy"] = None
+
+        # Calculate energy above hull if requested
+        if calculate_energy_above_hull:
+            try:
+                e_above_hull = calculator.calculate_energy_above_hull(structure)
+                structure.properties["e_above_hull"] = e_above_hull
+                logger.debug(
+                    f"Computed e_above_hull: {e_above_hull:.3f} eV/atom for {structure.formula}"
+                )
+            except Exception as e:
+                logger.warning(
+                    f"Failed to compute e_above_hull for {structure.formula}: {str(e)}"
+                )
+                structure.properties["e_above_hull"] = None
+
+        # Extract embeddings if requested
+        if extract_embeddings:
+            embeddings = calculator.extract_embeddings(structure)
+            structure.properties["node_embeddings"] = embeddings.node_embeddings
+            structure.properties["graph_embedding"] = embeddings.graph_embedding
+
+        # Optionally relax the structure
+        if relax_structures:
+            try:
+                relaxed_structure, relaxation_result = calculator.relax_structure(
+                    structure, **relaxation_config
+                )
+
+                # Calculate RMSE between original and relaxed positions
+                rmse = _calculate_rmse(structure, relaxed_structure)
+
+                # Store relaxed structure and properties
+                structure.properties["relaxed_structure"] = relaxed_structure
+                structure.properties["relaxation_rmse"] = rmse
+                structure.properties["relaxation_energy"] = relaxation_result.energy
+
+                if (
+                    relaxation_result.metadata
+                    and "relaxation_steps" in relaxation_result.metadata
+                ):
+                    structure.properties["relaxation_steps"] = (
+                        relaxation_result.metadata["relaxation_steps"]
+                    )
+
+                # Calculate properties for relaxed structure if requested
+                if calculate_formation_energy:
+                    try:
+                        relaxed_formation_energy = (
+                            calculator.calculate_formation_energy(relaxed_structure)
+                        )
+                        structure.properties["relaxed_formation_energy"] = (
+                            relaxed_formation_energy
+                        )
+                    except Exception as e:
+                        logger.warning(
+                            f"Failed to compute formation_energy for relaxed {relaxed_structure.formula}: {str(e)}"
+                        )
+                        structure.properties["relaxed_formation_energy"] = None
+
+                if calculate_energy_above_hull:
+                    try:
+                        relaxed_e_above_hull = (
+                            calculator.calculate_energy_above_hull(
+                                relaxed_structure
+                            )
+                        )
+                        structure.properties["relaxed_e_above_hull"] = (
+                            relaxed_e_above_hull
+                        )
+                    except Exception as e:
+                        logger.warning(
+                            f"Failed to compute e_above_hull for relaxed {relaxed_structure.formula}: {str(e)}"
+                        )
+                        structure.properties["relaxed_e_above_hull"] = None
+
+                logger.debug(
+                    f"Relaxed structure: RMSE: {rmse:.3f} Å, "
+                    f"energy: {relaxation_result.energy:.3f} eV for {structure.formula}"
+                )
+
+            except Exception as e:
+                logger.warning(
+                    f"Failed to relax structure {structure.formula}: {str(e)}"
+                )
+                # Continue without relaxation
+                structure.properties["relaxation_failed"] = True
+                structure.properties["relaxation_error"] = str(e)
+
+        return structure
+
+    except Exception as e:
+        logger.error(f"Failed to process structure {structure.formula}: {str(e)}")
+        raise
 
 
 def _calculate_rmse(original: Structure, relaxed: Structure) -> float:
