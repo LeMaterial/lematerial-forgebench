@@ -22,8 +22,21 @@ from lematerial_forgebench.metrics.base import (
 )
 
 
-def _load_element_properties():
-    """Load element properties from JSON file."""
+def _load_hhi_data():
+    """Load HHI production and reserve data from JSON file.
+    
+    Returns
+    -------
+    tuple[dict[str, int], dict[str, int]]
+        A tuple containing (hhi_production, hhi_reserve) dictionaries.
+        Each dictionary maps element symbols to their HHI values.
+    
+    Raises
+    ------
+    ImportError
+        If the JSON file cannot be found or loaded, or if the required
+        HHI data keys are missing.
+    """
     try:
         # Get the JSON file path relative to this module
         current_dir = Path(__file__).parent
@@ -40,7 +53,7 @@ def _load_element_properties():
         return data["hhi_production"], data["hhi_reserve"]
     except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
         raise ImportError(
-            f"Could not load element properties: {e}. "
+            f"Could not load HHI data: {e}. "
             "Make sure element_properties.json is in "
             "src/lematerial_forgebench/metrics/data/"
         )
@@ -378,7 +391,7 @@ class HHIProductionMetric(BaseHHIMetric):
         n_jobs : int, default=1
             Number of parallel jobs to run.
         """
-        hhi_production, _ = _load_element_properties()
+        hhi_production, _ = _load_hhi_data()
 
         super().__init__(
             hhi_table=hhi_production,
@@ -426,7 +439,7 @@ class HHIReserveMetric(BaseHHIMetric):
         n_jobs : int, default=1
             Number of parallel jobs to run.
         """
-        _, hhi_reserve = _load_element_properties()
+        _, hhi_reserve = _load_hhi_data()
 
         super().__init__(
             hhi_table=hhi_reserve,
@@ -466,7 +479,7 @@ def compound_hhi(formula: str, hhi_table: dict, scale_to_0_10: bool = True) -> f
 
     Examples
     --------
-    >>> hhi_production, hhi_reserve = _load_element_properties()
+    >>> hhi_production, hhi_reserve = _load_hhi_data()
     >>> compound_hhi("Nd2Fe14B", hhi_production)
     5.234
     >>> compound_hhi("LiFePO4", hhi_reserve, scale_to_0_10=False)

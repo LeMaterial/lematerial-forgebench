@@ -9,7 +9,7 @@ from lematerial_forgebench.metrics.hhi_metrics import (
     BaseHHIMetric,
     HHIProductionMetric,
     HHIReserveMetric,
-    _load_element_properties,
+    _load_hhi_data,
     compound_hhi,
 )
 
@@ -62,7 +62,7 @@ def create_test_structures():
 def get_hhi_data():
     """Get HHI data, skip test if not available."""
     try:
-        return _load_element_properties()
+        return _load_hhi_data()
     except ImportError:
         pytest.skip("HHI data not available - skipping test")
 
