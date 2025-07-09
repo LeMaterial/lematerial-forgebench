@@ -6,13 +6,18 @@ import numpy as np
 import pytest
 from pymatgen.util.testing import PymatgenTest
 
-from lematerial_forgebench.metrics.distribution_metrics import MMD, JSDistance, FrechetDistance
+from lematerial_forgebench.metrics.distribution_metrics import (
+    MMD,
+    FrechetDistance,
+    JSDistance,
+)
 from lematerial_forgebench.preprocess.distribution_preprocess import (
     DistributionPreprocessor,
 )
 from lematerial_forgebench.preprocess.universal_stability_preprocess import (
     UniversalStabilityPreprocessor,
 )
+
 
 @pytest.fixture
 def valid_structures():
