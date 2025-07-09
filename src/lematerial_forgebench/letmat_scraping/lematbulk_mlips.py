@@ -135,30 +135,28 @@ if __name__ == "__main__":
     name = "compatible_pbe"
     split = "train"
     dataset = load_dataset(dataset_name, name=name, split=split, streaming=False)
-    target_columns = ["LeMatID", "OrbGraphEmbeddings", "OrbNodeEmbeddings",
-                        "MaceGraphEmbeddings", "MaceNodeEmbeddings"]
 
 
     timeout = 60 # seconds, for one MLIP calculation
 
     try:
         orb_stability_preprocessor = UniversalStabilityPreprocessor(model_name="orb", timeout=timeout, relax_structures=False)
-    except: 
+    except (ImportError, ValueError): 
         orb_stability_preprocessor = None
     
     try:
         mace_stability_preprocessor = UniversalStabilityPreprocessor(model_name="mace", timeout=timeout, relax_structures=False)
-    except: 
+    except (ImportError, ValueError): 
         mace_stability_preprocessor = None
 
     try:
         uma_stability_preprocessor = UniversalStabilityPreprocessor(model_name="uma", timeout=timeout, relax_structures=False)
-    except: 
+    except (ImportError, ValueError): 
         uma_stability_preprocessor = None
 
     try:
         equiformer_stability_preprocessor = UniversalStabilityPreprocessor(model_name="equiformer", timeout=timeout, relax_structures=False)
-    except: 
+    except (ImportError, ValueError): 
         equiformer_stability_preprocessor = None
 
 
