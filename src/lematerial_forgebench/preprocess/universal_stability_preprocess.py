@@ -2,9 +2,9 @@
 
 from dataclasses import dataclass, field
 from typing import Any, Dict
-from func_timeout import FunctionTimedOut, func_timeout
 
 import numpy as np
+from func_timeout import FunctionTimedOut, func_timeout
 from pymatgen.core import Structure
 
 from lematerial_forgebench.models.registry import get_calculator, list_available_models

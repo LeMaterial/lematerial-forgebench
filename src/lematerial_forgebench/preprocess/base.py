@@ -4,9 +4,10 @@ from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, List, Optional, TypeVar
-from tqdm import tqdm 
+
 import pandas as pd
 from pymatgen.core.structure import Structure
+from tqdm import tqdm
 
 from lematerial_forgebench.data.structure import format_structures
 from lematerial_forgebench.utils.logging import logger
