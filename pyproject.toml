@@ -21,6 +21,7 @@ dependencies = [
     "pytest>=8.3.5",
     "rich==13.9.4",
     "torch>=2.4.0",
+    "torch-geometric>=2.6.1",
 ]
 
 [project.optional-dependencies]

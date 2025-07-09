@@ -62,19 +62,11 @@ def stability_calculations(structures, stability_preprocessor, batch_size=32):
         Dictionary containing the processed results with keys:
         - GraphEmbeddings: list of graph embeddings
         - NodeEmbeddings: list of node embeddings
-        - Energy: list of energies
-        - Forces: list of forces
-        - FormationEnergy: list of formation energies
-        - EAboveHull: list of energies above hull
     """
     # Initialize result containers
     results = {
         "GraphEmbeddings": [],
         "NodeEmbeddings": [],
-        "Energy": [],
-        "Forces": [],
-        "FormationEnergy": [],
-        "EAboveHull": [],
     }
 
     # Process structures in batches
@@ -84,33 +76,12 @@ def stability_calculations(structures, stability_preprocessor, batch_size=32):
             f"Processing batch {i // batch_size + 1}/{(len(structures) + batch_size - 1) // batch_size}"
         )
 
-        # Get embeddings for the batch
-        embeddings = stability_preprocessor.calculator.extract_embeddings(batch)
+        graph_embeddings = stability_preprocessor.calculator.extract_embeddings(batch)
 
-        # Process each structure individually for energy calculations
-        for j, (struct, emb) in enumerate(zip(batch, embeddings)):
-            # Calculate energy and forces
-            energy_result = stability_preprocessor.calculator.calculate_energy_forces(
-                struct
-            )
-
-            # Calculate formation energy
-            formation_energy = (
-                stability_preprocessor.calculator.calculate_formation_energy(struct)
-            )
-
-            # Calculate energy above hull
-            hull_energy = stability_preprocessor.calculator.calculate_energy_above_hull(
-                struct
-            )
-
-            # Store results
-            results["GraphEmbeddings"].append(emb.graph_embedding)
-            results["NodeEmbeddings"].append(emb.node_embeddings)
-            results["Energy"].append(energy_result.energy)
-            results["Forces"].append(energy_result.forces)
-            results["FormationEnergy"].append(formation_energy)
-            results["EAboveHull"].append(hull_energy)
+        # Extract results for each structure in the batch
+        for graph_embedding in graph_embeddings:
+            results["GraphEmbeddings"].append(graph_embedding.graph_embedding)
+            results["NodeEmbeddings"].append(graph_embedding.node_embeddings)
 
     return results
 
@@ -165,7 +136,7 @@ if __name__ == "__main__":
     import pandas as pd
 
     full_dataset = True
-    vals_spacing = 1000
+    vals_spacing = 100000
     batch_size = 8
     dir_name = "test_small_lematbulk"
 
