@@ -57,7 +57,7 @@ def stability_calculations(structures, stability_preprocessor):
 
         for processed_strut in result.processed_structures:
             graph_embeddings.append(processed_strut.properties.get("graph_embedding"))
-            node_embeddings.append(processed_strut.properties.get("node_embedding"))
+            node_embeddings.append(processed_strut.properties.get("node_embeddings"))
             energy.append(processed_strut.properties.get("energy"))  
             forces.append(processed_strut.properties.get("forces"))  
             formation_energy.append(processed_strut.properties.get("formation_energy"))  
@@ -87,6 +87,7 @@ def process_item_action(dataset, stability_processors):
         pass
     else:
         print("starting orb calculation")
+        print(stability_processors.stability_preprocessor_orb.config.name)
         output["orb"] = stability_calculations(struts, 
                                         stability_processors.stability_preprocessor_orb)  
         print("finished orb calculation")
@@ -95,6 +96,7 @@ def process_item_action(dataset, stability_processors):
         pass
     else:
         print("starting mace calculation")
+        print(stability_processors.stability_preprocessor_mace.config.name)
         output["mace"] = stability_calculations(struts, 
                                         stability_processors.stability_preprocessor_mace) 
         print("finished mace calculation")
@@ -103,6 +105,7 @@ def process_item_action(dataset, stability_processors):
     if stability_processors.stability_preprocessor_uma is None:
         pass
     else:
+        print(stability_processors.stability_preprocessor_uma.config.name)
         print("starting uma calculation")
         output["uma"] = stability_calculations(struts, 
                                         stability_processors.stability_preprocessor_uma)
@@ -113,6 +116,7 @@ def process_item_action(dataset, stability_processors):
         pass
     else:
         print("starting equiformer calculation")
+        print(stability_processors.stability_preprocessor_equiformer.config.name)
         output["equiformer"] = stability_calculations(struts, 
                                         stability_processors.stability_preprocessor_equiformer)  
         print("finished equiformer calculation")
@@ -123,9 +127,9 @@ def process_item_action(dataset, stability_processors):
 if __name__ == "__main__":
     import pandas as pd
 
-    full_dataset = True
-    vals_spacing = 100000
-    # vals = np.arange(0, 100000, vals_spacing)
+    full_dataset = False
+    vals_spacing = 10
+    vals = np.arange(0, 1000, vals_spacing)
     dir_name = "test_small_lematbulk"
     
     dataset_name = "Lematerial/LeMat-Bulk"
@@ -133,25 +137,34 @@ if __name__ == "__main__":
     split = "train"
     dataset = load_dataset(dataset_name, name=name, split=split, streaming=False)
 
+    mlips = ["orb", "mace"]
 
     timeout = 60 # seconds, for one MLIP calculation
 
     try:
+        if "orb" not in mlips:
+            raise ValueError
         orb_stability_preprocessor = UniversalStabilityPreprocessor(model_name="orb", timeout=timeout, relax_structures=False)
     except (ImportError, ValueError): 
         orb_stability_preprocessor = None
     
     try:
+        if "mace" not in mlips:
+            raise ValueError
         mace_stability_preprocessor = UniversalStabilityPreprocessor(model_name="mace", timeout=timeout, relax_structures=False)
     except (ImportError, ValueError): 
         mace_stability_preprocessor = None
 
     try:
+        if "uma" not in mlips:
+            raise ValueError
         uma_stability_preprocessor = UniversalStabilityPreprocessor(model_name="uma", timeout=timeout, relax_structures=False)
     except (ImportError, ValueError): 
         uma_stability_preprocessor = None
 
     try:
+        if "equiformer" not in mlips:
+            raise ValueError
         equiformer_stability_preprocessor = UniversalStabilityPreprocessor(model_name="equiformer", timeout=timeout, relax_structures=False)
     except (ImportError, ValueError): 
         equiformer_stability_preprocessor = None
