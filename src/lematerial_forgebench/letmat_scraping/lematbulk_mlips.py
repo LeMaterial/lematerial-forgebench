@@ -19,8 +19,10 @@ class StabilityPreprocessors:
     
     """
 
-    stability_preprocessor_orb: UniversalStabilityPreprocessor
-    stability_preprocessor_mace: UniversalStabilityPreprocessor
+    stability_preprocessor_orb: UniversalStabilityPreprocessor | None = None 
+    stability_preprocessor_mace: UniversalStabilityPreprocessor | None = None
+    stability_preprocessor_uma: UniversalStabilityPreprocessor | None = None 
+    stability_preprocessor_equiformer: UniversalStabilityPreprocessor | None = None
 
 
 def lematbulk_item_to_structure(item: dict) -> Structure:
@@ -46,83 +48,87 @@ def lematbulk_item_to_structure(item: dict) -> Structure:
 
     return structure
 
-def process_item_action(dataset):
-    if not hasattr(process_item_action, "stability_processors"):
-        process_item_action.stability_processors = StabilityPreprocessors(
-                                            UniversalStabilityPreprocessor(model_name="orb"), 
-                                            UniversalStabilityPreprocessor(model_name="mace"))
+def stability_calculations(structures, stability_preprocessor):
+        graph_embeddings = []
+        node_embeddings = []
+        energy = []
+        forces = []
+        formation_energy = []
+        e_above_hull = []
+
+        result = stability_preprocessor(structures)
+
+        for processed_strut in result.processed_structures:
+            graph_embeddings.append(processed_strut.properties.get("graph_embedding"))
+            node_embeddings.append(processed_strut.properties.get("node_embedding"))
+            energy.append(processed_strut.properties.get("energy"))  
+            forces.append(processed_strut.properties.get("forces"))  
+            formation_energy.append(processed_strut.properties.get("formation_energy"))  
+            e_above_hull.append(processed_strut.properties.get("e_above_hull"))
+
+        return {"GraphEmbeddings":graph_embeddings, 
+                "NodeEmbeddings":node_embeddings, 
+                "Energy":energy, 
+                "Forces":forces, 
+                "FormationEnergy":formation_energy, 
+                "EAboveHull":e_above_hull}
+
+def process_item_action(dataset, stability_processors):
+
     LeMatIDs = []
     struts = []
-    for i in tqdm(range(0, len(dataset))):
+    for i in range(0, len(dataset)):
         struts.append(lematbulk_item_to_structure(dataset[i]))
         LeMatIDs.append(dataset[i]["immutable_id"])
     
-    stability_preprocessor = process_item_action.stability_processors
+    output = {"orb": [],
+              "mace": [],
+              "uma": [],
+              "equiformer": []}
 
-    orb_result = stability_preprocessor.stability_preprocessor_orb(struts)
-    mace_result = stability_preprocessor.stability_preprocessor_mace(struts)
-    
-    orb_graph_embeddings = []
-    orb_node_embeddings = []
-    
-    mace_graph_embeddings = []
-    mace_node_embeddings = []
+    if stability_processors.stability_preprocessor_orb is None:
+        pass
+    else:
+        print("starting orb calculation")
+        output["orb"] = stability_calculations(struts, 
+                                        stability_processors.stability_preprocessor_orb)  
+        print("finished orb calculation")
 
-    for orb_strut in orb_result.processed_structures:
-        orb_graph_embeddings.append(orb_strut.properties.get("graph_embedding"))
-        orb_node_embeddings.append(orb_strut.properties.get("node_embedding"))
-    
-    for mace_strut in mace_result.processed_structures:
-        mace_graph_embeddings.append(mace_strut.properties.get("graph_embedding"))
-        mace_node_embeddings.append(mace_strut.properties.get("node_embedding"))
+    if stability_processors.stability_preprocessor_mace is None:
+        pass
+    else:
+        print("starting mace calculation")
+        output["mace"] = stability_calculations(struts, 
+                                        stability_processors.stability_preprocessor_mace) 
+        print("finished mace calculation")
 
-    return {
-        "LeMatIDs": LeMatIDs,
-        "orb_graph_embeddings": orb_graph_embeddings, 
-        "orb_node_embeddings": orb_node_embeddings, 
-        "mace_graph_embeddings": mace_graph_embeddings, 
-        "mace_node_embeddings": mace_node_embeddings, 
-    }
+         
+    if stability_processors.stability_preprocessor_uma is None:
+        pass
+    else:
+        print("starting uma calculation")
+        output["uma"] = stability_calculations(struts, 
+                                        stability_processors.stability_preprocessor_uma)
+        print("finished uma calculation")
 
+        
+    if stability_processors.stability_preprocessor_equiformer is None:
+        pass
+    else:
+        print("starting equiformer calculation")
+        output["equiformer"] = stability_calculations(struts, 
+                                        stability_processors.stability_preprocessor_equiformer)  
+        print("finished equiformer calculation")
 
-
-def process_structures_wrapper(dataset):
-    """Process an item.
-
-    Parameters
-    ----------
-    item : dict 
-        The item to process.
-
-    Returns
-    -------
-    list[Any]
-        The result of the processing of the item.
-    """
-
-    try:
-        result = func_timeout(
-            60_000, process_item_action, [dataset]
-        )  # TODO This should not be hardcoded!
-        return result
-    except FunctionTimedOut:
-        timeout_list = []
-        for i in range(0, len(dataset)):
-            timeout_list.append("TimedOut>100min")
-        print("Function timed out and was skipped")
-        return [dataset.immutable_id, 
-                np.ones(len(dataset)), 
-                np.ones(len(dataset)), 
-                timeout_list]
-
+    return output
 
 
 if __name__ == "__main__":
     import pandas as pd
 
-    full_dataset = False
-    vals_spacing = 100
-    vals = np.arange(0, 1000, vals_spacing)
+    full_dataset = True
+    vals_spacing = 100000
+    # vals = np.arange(0, 100000, vals_spacing)
     dir_name = "test_small_lematbulk"
     
     dataset_name = "Lematerial/LeMat-Bulk"
@@ -133,24 +139,58 @@ if __name__ == "__main__":
                         "MaceGraphEmbeddings", "MaceNodeEmbeddings"]
 
 
+    timeout = 60 # seconds, for one MLIP calculation
+
+    try:
+        orb_stability_preprocessor = UniversalStabilityPreprocessor(model_name="orb", timeout=timeout, relax_structures=False)
+    except: 
+        orb_stability_preprocessor = None
+    
+    try:
+        mace_stability_preprocessor = UniversalStabilityPreprocessor(model_name="mace", timeout=timeout, relax_structures=False)
+    except: 
+        mace_stability_preprocessor = None
+
+    try:
+        uma_stability_preprocessor = UniversalStabilityPreprocessor(model_name="uma", timeout=timeout, relax_structures=False)
+    except: 
+        uma_stability_preprocessor = None
+
+    try:
+        equiformer_stability_preprocessor = UniversalStabilityPreprocessor(model_name="equiformer", timeout=timeout, relax_structures=False)
+    except: 
+        equiformer_stability_preprocessor = None
+
+
+    preprocessors = StabilityPreprocessors(
+        orb_stability_preprocessor,
+        mace_stability_preprocessor,
+        uma_stability_preprocessor,
+        equiformer_stability_preprocessor,
+    )
+
     if full_dataset: 
         vals = np.arange(0, len(dataset), vals_spacing) # example for running on all of LeMatBulk
 
-    for i in tqdm(vals):
+    if os.path.exists("data/"+dir_name):
+        pass
+    else:
+        os.mkdir("data/"+dir_name)
+
+    for i in vals:
         dataset_temp = dataset.select(range(i, min(len(dataset), i + vals_spacing))) 
 
-        # Process and handle results as they come
-        print(
-            f"Processing {len(dataset_temp)} structures using {cpu_count()} workers..."
-        )
-
-
-        output = process_structures_wrapper(dataset=dataset_temp)
+        output = process_item_action(dataset=dataset_temp, 
+                                            stability_processors=preprocessors)
         print("Creating DataFrame and saving to pkl...")
+        for key in output.keys():
+            if isinstance(output[key], dict): 
+                temp_df = pd.DataFrame(output[key], columns = output[key].keys())
+                if os.path.exists("data/"+dir_name+"/"+key):
+                    pass
+                else:
+                    os.mkdir("data/"+dir_name+"/"+key)
 
-        df = pd.DataFrame(output, columns=target_columns)
-        if os.path.exists("data/"+dir_name):
-            df.to_pickle("data/"+dir_name+"/lematbulk_embeddings_full_" + str(i) + ".pkl")
-        else:
-            os.mkdir("data/"+dir_name)
-            df.to_pickle("data/"+dir_name+"/lematbulk_embeddings_full_" + str(i) + ".pkl")
+                temp_df.to_pickle("data/"+dir_name+"/"+key+"/"+key+"_lematbulk_MLIP_full_" + str(i) + ".pkl")
+            else:
+                pass
