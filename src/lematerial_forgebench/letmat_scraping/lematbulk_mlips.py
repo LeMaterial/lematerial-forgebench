@@ -127,9 +127,9 @@ def process_item_action(dataset, stability_processors):
 if __name__ == "__main__":
     import pandas as pd
 
-    full_dataset = False
-    vals_spacing = 10
-    vals = np.arange(0, 1000, vals_spacing)
+    full_dataset = True
+    vals_spacing = 100000
+    # vals = np.arange(0, 1000, vals_spacing)
     dir_name = "test_small_lematbulk"
     
     dataset_name = "Lematerial/LeMat-Bulk"
