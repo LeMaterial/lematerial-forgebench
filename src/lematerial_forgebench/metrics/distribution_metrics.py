@@ -416,11 +416,7 @@ class FrechetDistance(BaseMetric):
         ]
         reference_df = compute_args.get("reference_df")
 
-        if structures[0].properties.get("mlip_model") == "ORBCalculator":
-            decorator = "Orb"
-        
-        reference_column = decorator + "GraphEmbeddings"
-        print(reference_df.columns)
+        reference_column = "GraphEmbeddings"
         reference_embeddings = reference_df[reference_column]
 
 
@@ -499,6 +495,9 @@ if __name__ == "__main__":
     from lematerial_forgebench.preprocess.distribution_preprocess import (
         DistributionPreprocessor,
     )
+    from lematerial_forgebench.preprocess.universal_stability_preprocess import (
+        UniversalStabilityPreprocessor,
+    )
 
     with open("data/sample_lematbulk.pkl", "rb") as f:
         test_lemat = pickle.load(f)
@@ -510,27 +509,39 @@ if __name__ == "__main__":
     ]
 
     distribution_preprocessor = DistributionPreprocessor()
-    preprocessor_result = distribution_preprocessor(structures)
+    distribution_preprocessor_result = distribution_preprocessor(structures)
 
     metric = JSDistance(reference_df=test_lemat) 
     default_args = metric._get_compute_attributes()
-    metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    metric_result = metric(distribution_preprocessor_result.processed_structures, **default_args)
     print(metric_result.metrics)
 
     metric = MMD(reference_df=test_lemat) 
     default_args = metric._get_compute_attributes()
-    metric_result = metric(preprocessor_result.processed_structures, **default_args)
+    metric_result = metric(distribution_preprocessor_result.processed_structures, **default_args)
     print(metric_result.metrics)
 
-    with open("data/LeMatBulk_embeddings.pkl", "rb") as f:
-        sample_embeddings_df = pickle.load(f)
+    mlips = ["orb", "mace"]
+    for mlip in mlips:
+        with open("data/test_small_lematbulk/"+mlip+"_full_embedding_df.pkl", "rb") as f:
+            sample_embeddings_df = pickle.load(f)
 
-    metric = FrechetDistance(reference_df=test_lemat) 
+        print(sample_embeddings_df.columns)
+        print(sample_embeddings_df.iloc[0]["GraphEmbeddings"])
 
-    sample_embeddings = list(sample_embeddings_df.OrbProcessedStructures)
+        metric = FrechetDistance(reference_df=sample_embeddings_df) 
+        
+        timeout = 60 # seconds to timeout for each MLIP run 
+        stability_preprocessor = UniversalStabilityPreprocessor(
+            model_name=mlip,
+            timeout=timeout,
+            relax_structures=False,
+        )
 
-    default_args = metric._get_compute_attributes()
-    metric_result = metric(sample_embeddings, **default_args)
-    print(metric_result.metrics)
+        stability_preprocessor_result = stability_preprocessor(structures)
+
+        default_args = metric._get_compute_attributes()
+        metric_result = metric(stability_preprocessor_result.processed_structures, **default_args)
+        print(mlip +" " + str(metric_result.metrics))
 
 

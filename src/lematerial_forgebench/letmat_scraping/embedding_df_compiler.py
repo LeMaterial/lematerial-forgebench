@@ -1,6 +1,7 @@
-import pandas as pd
 import glob
-import pickle 
+import pickle
+
+import pandas as pd
 
 if __name__ == "__main__":
     mlips = ["orb", "mace"]
