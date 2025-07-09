@@ -102,18 +102,26 @@ class BaseMLIPCalculator(ABC):
         pass
 
     @abstractmethod
-    def extract_embeddings(self, structure: Structure) -> EmbeddingResult:
-        """Extract node and graph embeddings from a structure.
+    def extract_embeddings(
+        self, structure: Union[Structure, list[Structure]]
+    ) -> Union[EmbeddingResult, list[EmbeddingResult]]:
+        """Extract node and graph embeddings from structure(s).
+
+        This method supports both single structure and batched processing of multiple structures.
+        When a single structure is provided, returns a single EmbeddingResult.
+        When a list of structures is provided, returns a list of EmbeddingResults.
 
         Parameters
         ----------
-        structure : Structure
-            Pymatgen Structure object
+        structure : Union[Structure, list[Structure]]
+            Either a single Pymatgen Structure object or a list of Structure objects
 
         Returns
         -------
-        EmbeddingResult
-            Node embeddings, graph embedding, and metadata
+        Union[EmbeddingResult, list[EmbeddingResult]]
+            If input is a single structure: EmbeddingResult with node embeddings,
+            graph embedding, and metadata.
+            If input is a list: List of EmbeddingResults, one for each input structure.
         """
         pass
 
@@ -215,58 +223,89 @@ class BaseEmbeddingExtractor(ABC):
         )
 
     @abstractmethod
-    def extract_node_embeddings(self, structure: Structure) -> np.ndarray:
+    def extract_node_embeddings(
+        self, structure: Union[Structure, list[Structure]]
+    ) -> Union[np.ndarray, list[np.ndarray]]:
         """Extract per-atom embeddings.
 
         Parameters
         ----------
-        structure : Structure
-            Input structure
+        structure : Union[Structure, list[Structure]]
+            Input structure or list of structures
 
         Returns
         -------
-        np.ndarray
-            Node embeddings with shape (n_atoms, embedding_dim)
+        Union[np.ndarray, list[np.ndarray]]
+            If single structure: Node embeddings with shape (n_atoms, embedding_dim)
+            If list of structures: List of node embeddings arrays
         """
         pass
 
     def extract_graph_embedding(
-        self, structure: Structure, aggregation: str = "mean"
-    ) -> np.ndarray:
+        self, structure: Union[Structure, list[Structure]], aggregation: str = "mean"
+    ) -> Union[np.ndarray, list[np.ndarray]]:
         """Extract graph-level embedding by aggregating node embeddings.
 
         Parameters
         ----------
-        structure : Structure
-            Input structure
+        structure : Union[Structure, list[Structure]]
+            Input structure or list of structures
         aggregation : str
             Aggregation method for node embeddings
 
         Returns
         -------
-        np.ndarray
-            Graph-level embedding
+        Union[np.ndarray, list[np.ndarray]]
+            If single structure: Graph-level embedding
+            If list of structures: List of graph-level embeddings
         """
         node_embs = self.extract_node_embeddings(structure)
+
+        if isinstance(structure, list):
+            return [
+                BaseMLIPCalculator._aggregate_node_embeddings(emb, aggregation)
+                for emb in node_embs
+            ]
         return BaseMLIPCalculator._aggregate_node_embeddings(node_embs, aggregation)
 
     def extract_embeddings(
-        self, structure: Structure, aggregation: str = "mean"
-    ) -> EmbeddingResult:
+        self, structure: Union[Structure, list[Structure]], aggregation: str = "mean"
+    ) -> Union[EmbeddingResult, list[EmbeddingResult]]:
         """Extract both node and graph embeddings.
 
         Parameters
         ----------
-        structure : Structure
-            Input structure
+        structure : Union[Structure, list[Structure]]
+            Input structure or list of structures
         aggregation : str
             Aggregation method for graph embedding
 
         Returns
         -------
-        EmbeddingResult
-            Both node and graph embeddings with metadata
+        Union[EmbeddingResult, list[EmbeddingResult]]
+            If single structure: EmbeddingResult with node and graph embeddings
+            If list of structures: List of EmbeddingResults
         """
+        if isinstance(structure, list):
+            node_embs = self.extract_node_embeddings(structure)
+            graph_embs = [
+                BaseMLIPCalculator._aggregate_node_embeddings(emb, aggregation)
+                for emb in node_embs
+            ]
+
+            return [
+                EmbeddingResult(
+                    node_embeddings=node_emb,
+                    graph_embedding=graph_emb,
+                    metadata={
+                        "aggregation_method": aggregation,
+                        "embedding_dim": node_emb.shape[1],
+                        "n_atoms": node_emb.shape[0],
+                    },
+                )
+                for node_emb, graph_emb in zip(node_embs, graph_embs)
+            ]
+
         node_embs = self.extract_node_embeddings(structure)
         graph_emb = BaseMLIPCalculator._aggregate_node_embeddings(
             node_embs, aggregation

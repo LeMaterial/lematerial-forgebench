@@ -62,7 +62,7 @@ class UMACalculator(BaseMLIPCalculator):
             )
 
             # Get the underlying model for embeddings
-            self.model = self.predictor.model
+            self.model = self.predictor.model.to(self.device)
             self.model.eval()
 
             # Create ASE calculator wrapper

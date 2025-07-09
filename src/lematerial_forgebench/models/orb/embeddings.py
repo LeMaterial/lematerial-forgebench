@@ -1,12 +1,16 @@
 """ORB embedding extraction utilities."""
 
+from typing import Union
+
 import numpy as np
+import torch
 from pymatgen.core.structure import Structure
 
 from lematerial_forgebench.models.base import BaseEmbeddingExtractor
 
 try:
     from orb_models.forcefield import atomic_system
+    from orb_models.forcefield.base import batch_graphs
 
     ORB_AVAILABLE = True
 except ImportError:
@@ -25,19 +29,47 @@ class ORBEmbeddingExtractor(BaseEmbeddingExtractor):
         super().__init__(model, device)
         self.system_config = model._system_config
 
-    def extract_node_embeddings(self, structure: Structure) -> np.ndarray:
+    def extract_node_embeddings(
+        self, structure: Union[Structure, list[Structure]]
+    ) -> Union[np.ndarray, list[np.ndarray]]:
         """Extract per-atom embeddings from ORB model.
 
         Parameters
         ----------
-        structure : Structure
-            Input structure
+        structure : Union[Structure, list[Structure]]
+            Input structure or list of structures
 
         Returns
         -------
-        np.ndarray
-            Node embeddings with shape (n_atoms, 1024)
+        Union[np.ndarray, list[np.ndarray]]
+            If single structure: Node embeddings with shape (n_atoms, 1024)
+            If list of structures: List of node embeddings arrays
         """
+        if isinstance(structure, list):
+            # Convert all structures to ASE atoms
+            atoms_list = [s.to_ase_atoms() for s in structure]
+
+            # Convert all to ORB graph format
+            graphs = [
+                atomic_system.ase_atoms_to_atom_graphs(atoms, self.system_config)
+                for atoms in atoms_list
+            ]
+
+            # Move all graphs to device
+            batch = batch_graphs(graphs)
+            batch = batch.to(self.device)
+
+            # Forward pass to get embeddings for each graph
+            out = self.model(batch)
+            node_features = out["node_features"].detach()  # Shape: (N_atoms, 1024)
+            node_features_list = torch.split(node_features, batch.n_node.tolist())
+            node_features_list = [
+                node_features.detach().cpu().numpy()
+                for node_features in node_features_list
+            ]
+
+            return node_features_list
+
         # Convert to ASE atoms
         atoms = structure.to_ase_atoms()
 

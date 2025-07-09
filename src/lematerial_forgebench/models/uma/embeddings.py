@@ -1,5 +1,7 @@
 """UMA embedding extraction utilities."""
 
+from typing import Union
+
 import numpy as np
 import torch
 from pymatgen.core.structure import Structure
@@ -32,19 +34,45 @@ class UMAEmbeddingExtractor(BaseEmbeddingExtractor):
 
         self.model.module.output_heads.energyandforcehead.register_forward_hook(hook)
 
-    def extract_node_embeddings(self, structure: Structure) -> np.ndarray:
+    def extract_node_embeddings(
+        self, structure: Union[Structure, list[Structure]]
+    ) -> Union[np.ndarray, list[np.ndarray]]:
         """Extract per-atom embeddings from UMA model.
 
         Parameters
         ----------
-        structure : Structure
-            Input structure
+        structure : Union[Structure, list[Structure]]
+            Input structure or list of structures
 
         Returns
         -------
-        np.ndarray
-            Node embeddings with shape (n_atoms, hidden_dim)
+        Union[np.ndarray, list[np.ndarray]]
+            If single structure: Node embeddings with shape (n_atoms, hidden_dim)
+            If list of structures: List of node embeddings arrays
         """
+        if isinstance(structure, list):
+            # Convert all structures to ASE atoms
+            atoms_list = [s.to_ase_atoms() for s in structure]
+
+            # Convert all to FAIRChem's AtomicData format
+            adata_list = [
+                AtomicData.from_ase(atoms, task_name=self.task).to(self.device)
+                for atoms in atoms_list
+            ]
+
+            # Batch process all structures
+            batch = data_list_collater(adata_list, otf_graph=True)
+
+            # Forward pass through model
+            self.model(batch)
+            node_embeddings = self.features["node_embeddings"]
+
+            # Split batch back into individual structures
+            split_sizes = [len(adata.pos) for adata in adata_list]
+            node_embeddings_list = torch.split(node_embeddings, split_sizes)
+
+            return [emb.detach().cpu().numpy() for emb in node_embeddings_list]
+
         atoms = structure.to_ase_atoms()
 
         # Convert to FAIRChem's AtomicData format
@@ -80,7 +108,6 @@ class UMAEmbeddingExtractor(BaseEmbeddingExtractor):
         self.model(batch)
         node_embeddings = self.features["node_embeddings"]
 
-        breakpoint()
         # Pool over atoms to get graph representation
         if pooling_method in {"mean", "sum", "max"}:
             graph_emb = torch.scatter_reduce(
