@@ -416,7 +416,15 @@ class FrechetDistance(BaseMetric):
         ]
         reference_df = compute_args.get("reference_df")
 
-        reference_column = "GraphEmbeddings"
+        if "ORB" in structures[0].properties.get("mlip_model"):
+            reference_column = "OrbGraphEmbeddings"
+        if "MACE" in structures[0].properties.get("mlip_model"):
+            reference_column = "MaceGraphEmbeddings"
+        if "UMA" in structures[0].properties.get("mlip_model"):
+            reference_column = "UmaGraphEmbeddings"
+        if "Equiformer" in structures[0].properties.get("mlip_model"):
+            reference_column = "EquiformerGraphEmbeddings"        
+
         reference_embeddings = reference_df[reference_column]
 
 
@@ -499,7 +507,7 @@ if __name__ == "__main__":
         UniversalStabilityPreprocessor,
     )
 
-    with open("data/sample_lematbulk.pkl", "rb") as f:
+    with open("data/full_reference_df.pkl", "rb") as f:
         test_lemat = pickle.load(f)
     test = PymatgenTest()
 
@@ -523,13 +531,7 @@ if __name__ == "__main__":
 
     mlips = ["orb", "mace"]
     for mlip in mlips:
-        with open("data/test_small_lematbulk/"+mlip+"_full_embedding_df.pkl", "rb") as f:
-            sample_embeddings_df = pickle.load(f)
-
-        print(sample_embeddings_df.columns)
-        print(sample_embeddings_df.iloc[0]["GraphEmbeddings"])
-
-        metric = FrechetDistance(reference_df=sample_embeddings_df) 
+        metric = FrechetDistance(reference_df=test_lemat) 
         
         timeout = 60 # seconds to timeout for each MLIP run 
         stability_preprocessor = UniversalStabilityPreprocessor(
