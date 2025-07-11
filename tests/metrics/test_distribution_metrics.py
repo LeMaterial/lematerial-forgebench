@@ -33,24 +33,24 @@ def valid_structures():
 @pytest.fixture
 def reference_data():
     "create reference dataset"
-    with open("data/sample_lematbulk.pkl", "rb") as f:
+    with open("data/full_reference_df.pkl", "rb") as f:
         reference_df = pickle.load(f)
 
     return reference_df
 
-@pytest.fixture
-def reference_data_embeddings():
-    "create reference dataset for embedding matching"
-    output_dfs = {}
-    for mlip in ["orb", "mace", "uma", "equiformer"]:
-        try:
-            with open("data/test_small_lematbulk/"+mlip+"_full_embedding_df.pkl", "rb") as f:
-                sample_embeddings_df = pickle.load(f)
-            output_dfs[mlip] = sample_embeddings_df
-        except FileNotFoundError:
-            pass
+# @pytest.fixture
+# def reference_data_embeddings():
+#     "create reference dataset for embedding matching"
+#     output_dfs = {}
+#     for mlip in ["orb", "mace", "uma", "equiformer"]:
+#         try:
+#             with open("data/test_small_lematbulk/"+mlip+"_full_embedding_df.pkl", "rb") as f:
+#                 sample_embeddings_df = pickle.load(f)
+#             output_dfs[mlip] = sample_embeddings_df
+#         except FileNotFoundError:
+#             pass
 
-    return output_dfs
+#     return output_dfs
 
 
 def test_JSDistance_metric(valid_structures, reference_data):
@@ -97,7 +97,7 @@ def test_MMD_metric(valid_structures, reference_data):
     for val in values:
         assert 0.0 <= val <= 1.0
 
-def test_FrechetDistance_metric(valid_structures, reference_data_embeddings):
+def test_FrechetDistance_metric(valid_structures, reference_data):
     """Test MMD_metric on valid structures."""
 
     for mlip in ["orb", "mace", "uma", "equiformer"]:
@@ -110,7 +110,7 @@ def test_FrechetDistance_metric(valid_structures, reference_data_embeddings):
             )
 
             stability_preprocessor_result = stability_preprocessor(valid_structures)
-            metric = FrechetDistance(reference_df=reference_data_embeddings[mlip])
+            metric = FrechetDistance(reference_df=reference_data)
             default_args = metric._get_compute_attributes()
             result = metric.compute(
                 stability_preprocessor_result.processed_structures, **default_args
