@@ -177,4 +177,3 @@ src/lematerial_forgebench/.DS_Store
 *.npy
 *.pkl
 *.cif
-*.json
